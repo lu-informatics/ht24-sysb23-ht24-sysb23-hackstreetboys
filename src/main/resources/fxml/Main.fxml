@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
+
+
+<AnchorPane prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <TabPane prefHeight="500.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab text="Consultants">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView layoutX="16.0" layoutY="56.0" prefHeight="282.0" prefWidth="566.0">
+                          <columns>
+                            <TableColumn prefWidth="100.0" text="Employee ID" />
+                            <TableColumn prefWidth="69.5999755859375" text="Name" />
+                              <TableColumn prefWidth="69.5999755859375" text="Title" />
+                              <TableColumn prefWidth="126.39996337890625" text="No. of projects" />
+                              <TableColumn prefWidth="126.39996337890625" text="Total hours" />
+                          </columns>
+                        </TableView>
+                        <Button layoutX="15.0" layoutY="348.0" mnemonicParsing="false" text="Add new constultant ..." />
+                        <Button layoutX="156.0" layoutY="348.0" mnemonicParsing="false" text="Delete consultant" />
+                        <Button layoutX="399.0" layoutY="348.0" mnemonicParsing="false" text="View details..." />
+                        <TextField layoutX="156.0" layoutY="20.0" text="Find Employee by ID ..." />
+                        <Button layoutX="331.0" layoutY="20.0" mnemonicParsing="false" text="Search" />
+                        <ComboBox layoutX="26.0" layoutY="20.0" prefHeight="26.0" prefWidth="95.0" promptText="Title: All" />
+                        <Text layoutX="399.0" layoutY="425.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Total no. of consultants:" />
+                        <Text layoutX="377.0" layoutY="442.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Total hrs. for all consultants:" />
+                        <Text layoutX="534.0" layoutY="442.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1234" />
+                        <Text layoutX="534.0" layoutY="425.0" strokeType="OUTSIDE" strokeWidth="0.0" text="67" />
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+          <Tab text="Projects">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView layoutX="17.0" layoutY="56.0" prefHeight="282.0" prefWidth="566.0">
+                           <columns>
+                              <TableColumn prefWidth="69.5999755859375" text="Project ID" />
+                              <TableColumn prefWidth="56.0" text="Name" />
+                              <TableColumn prefWidth="85.5999755859375" text="Start date" />
+                              <TableColumn prefWidth="74.39996337890625" text="End date" />
+                              <TableColumn prefWidth="112.0" text="No. of consultants" />
+                              <TableColumn prefWidth="74.39996337890625" text="Resources" />
+                              <TableColumn prefWidth="92.79998779296875" text="Milestones" />
+                           </columns>
+                        </TableView>
+                        <Button layoutX="17.0" layoutY="355.0" mnemonicParsing="false" text="Add new project ..." />
+                        <Button layoutX="166.0" layoutY="355.0" mnemonicParsing="false" text="Delete project" />
+                        <Button layoutX="441.0" layoutY="355.0" mnemonicParsing="false" text="View details ..." />
+                        <TextField layoutX="14.0" layoutY="22.0" prefHeight="26.0" prefWidth="217.0" text="Find project by Project ID ..." />
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+        </tabs>
+      </TabPane>
+   </children>
+</AnchorPane>

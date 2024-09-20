@@ -48,7 +48,7 @@ public class App {
                 System.out.println("Query executed successfully.");
 
                 while (resultSet.next()) {
-                    System.out.println(resultSet.getString("EmployeeID") + " " + resultSet.getString("EmployeeName"));
+                    System.out.println(resultSet.getString("ConsultantID") + " " + resultSet.getString("EmployeeName"));
                 }
             }
         } catch (SQLException e) {

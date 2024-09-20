@@ -14,7 +14,7 @@ public class Main {
 
         // Load connection properties from file
         Properties connectionProperties = new Properties();
-        try (FileInputStream stream = new FileInputStream("src\\main\\resources\\config.properties")) {
+        try (FileInputStream stream = new FileInputStream("src/main/resources/config.p  roperties")) {
             connectionProperties.load(stream);
         } catch (IOException e) {
             System.err.println("Could not load properties file: " + e.getMessage());

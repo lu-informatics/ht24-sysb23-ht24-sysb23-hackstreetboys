@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
+
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Text layoutX="51.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Project [ID] [Name]" />
+      <TableView layoutX="51.0" layoutY="100.0" prefHeight="200.0" prefWidth="266.0">
+        <columns>
+          <TableColumn prefWidth="100.79998779296875" text="Constultants" />
+          <TableColumn prefWidth="73.60003662109375" text="Total Hours" />
+            <TableColumn prefWidth="91.20001220703125" text="Weekly Hours" />
+        </columns>
+      </TableView>
+      <TableView layoutX="348.0" layoutY="100.0" prefHeight="200.0" prefWidth="232.0">
+        <columns>
+          <TableColumn prefWidth="75.0" text="Milestone" />
+          <TableColumn prefWidth="75.0" text="Date" />
+            <TableColumn prefWidth="75.0" text="Description" />
+        </columns>
+      </TableView>
+      <Button layoutX="51.0" layoutY="316.0" mnemonicParsing="false" text="Add constultant ..." />
+      <Button layoutX="51.0" layoutY="349.0" mnemonicParsing="false" text="Remove consultant" />
+      <Button layoutX="512.0" layoutY="349.0" mnemonicParsing="false" text="Close" />
+      <Button layoutX="348.0" layoutY="316.0" mnemonicParsing="false" text="Add milestone ..." />
+      <Button layoutX="348.0" layoutY="349.0" mnemonicParsing="false" text="Remove milestone" />
+      <Text layoutX="51.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Project ID: " />
+      <Text layoutX="51.0" layoutY="81.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name:" />
+      <TextField layoutX="110.0" layoutY="38.0" text="1234" />
+      <TextField layoutX="109.0" layoutY="64.0" text="jtso6478" />
+      <Button layoutX="322.0" layoutY="51.0" mnemonicParsing="false" text="Edit project info ..." />
+   </children>
+</AnchorPane>

@@ -1,57 +1,59 @@
 package se.lu.ics;
 
-
 import java.io.FileInputStream;
-import java.util.Properties;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
+import java.sql.SQLException;
+import java.util.Properties;
 
 public class Main {
-   public static void main(String[] args) {
+    public static void main(String[] args) {
 
+        // Load connection properties from file
+        Properties connectionProperties = new Properties();
+        try (FileInputStream stream = new FileInputStream("src\\main\\resources\\config.properties")) {
+            connectionProperties.load(stream);
+        } catch (IOException e) {
+            System.err.println("Could not load properties file: " + e.getMessage());
+            e.printStackTrace();
+        }
 
-       Properties connectionProperties = new Properties();
+        // Create ConnectionUrl string from properties
+        String databaseServerName = connectionProperties.getProperty("database.server.name");
+        String databaseServerPort = connectionProperties.getProperty("database.server.port");
+        String databaseName = connectionProperties.getProperty("database.name");
+        String databaseUsername = connectionProperties.getProperty("database.user.username");
+        String databaseUserPassword = connectionProperties.getProperty("database.user.password");
 
+        String connectionUrl = "jdbc:sqlserver://"
+                + databaseServerName + ":"
+                + databaseServerPort + ";"
+                + "databaseName=" + databaseName + ";"
+                + "user=" + databaseUsername + ";"
+                + "password=" + databaseUserPassword + ";"
+                + "encrypt=true;"
+                + "trustServerCertificate=true;";
 
-       try {
-           FileInputStream stream = new FileInputStream("src\\main\\resources\\config.properties");
-           connectionProperties.load(stream);
+        // Testing connection to database with query
+        String query = "SELECT * FROM Consultant";
 
+        try (Connection conn = DriverManager.getConnection(connectionUrl)) {
+            System.out.println("Connection established successfully.");
 
-           // Connection string
-           String databaseServerName = (String) connectionProperties.get("database.server.name");
-           String databaseServerPort = (String) connectionProperties.get("database.server.port");
-           String databaseName = (String) connectionProperties.get("database.name");
-           String databaseUsername = (String) connectionProperties.get("database.username");
-           String databaseUserPassword = (String) connectionProperties.get("database.user.password");
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query);
+                    ResultSet resultSet = preparedStatement.executeQuery()) {
+                System.out.println("Query executed successfully.");
 
-
-           String connectionUrl = "jdbc:sqlserver://"
-           + databaseServerName + ":"
-           + databaseServerPort + ";"
-           + "databaseName=" + databaseName + ";" 
-           + "user=" + databaseUsername + ";"      
-           + "password=" + databaseUserPassword + ";"
-           + "encrypt=true;"
-           + "trustServerCertificate=true;";
-
-
-           System.out.println(connectionUrl);
-
-
-
-          
-
-
-           // Exception handling(tillfällig)
-       } catch (Exception e) {
-           System.out.println("Could not load properties file");
-           System.exit(1);
-       }
-
-
-   }
+                while (resultSet.next()) {
+                    System.out.println(resultSet.getString("EmployeeID") + " " + resultSet.getString("EmployeeName"));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("SQL Exception: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
 }

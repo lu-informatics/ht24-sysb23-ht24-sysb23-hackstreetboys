@@ -9,7 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 
-public class Main {
+public class App {
     public static void main(String[] args) {
 
         // Load connection properties from file

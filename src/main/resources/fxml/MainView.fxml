@@ -18,11 +18,11 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TableView layoutX="16.0" layoutY="56.0" prefHeight="282.0" prefWidth="566.0">
+                        <TableView fx:id="tableViewConsultants" layoutX="16.0" layoutY="56.0" prefHeight="282.0" prefWidth="566.0">
                           <columns>
-                            <TableColumn fx:id="tableViewConsultants" prefWidth="100.0" text="Employee ID" />
-                            <TableColumn prefWidth="69.5999755859375" text="Name" />
-                              <TableColumn prefWidth="69.5999755859375" text="Title" />
+                            <TableColumn fx:id="tableColumnConsultantId" prefWidth="100.0" text="Employee ID" />
+                            <TableColumn fx:id="tableColumnConsultantName" prefWidth="69.5999755859375" text="Name" />
+                              <TableColumn fx:id="tableColumnConsultantTitle" prefWidth="69.5999755859375" text="Title" />
                               <TableColumn prefWidth="126.39996337890625" text="No. of projects" />
                               <TableColumn prefWidth="126.39996337890625" text="Total hours" />
                           </columns>
@@ -47,10 +47,10 @@
                      <children>
                         <TableView fx:id="tableViewProjects" layoutX="17.0" layoutY="56.0" prefHeight="282.0" prefWidth="566.0">
                            <columns>
-                              <TableColumn prefWidth="69.5999755859375" text="Project ID" />
-                              <TableColumn prefWidth="56.0" text="Name" />
-                              <TableColumn prefWidth="85.5999755859375" text="Start date" />
-                              <TableColumn prefWidth="74.39996337890625" text="End date" />
+                              <TableColumn fx:id="tableColumnProjectID" prefWidth="69.5999755859375" text="Project ID" />
+                              <TableColumn fx:id="tableColumnProjectName" prefWidth="56.0" text="Name" />
+                              <TableColumn fx:id="tableColumnProjectStartDate" prefWidth="85.5999755859375" text="Start date" />
+                              <TableColumn fx:id="tableColumnProjectEndDate" prefWidth="74.39996337890625" text="End date" />
                               <TableColumn prefWidth="112.0" text="No. of consultants" />
                               <TableColumn prefWidth="74.39996337890625" text="Resources" />
                               <TableColumn prefWidth="92.79998779296875" text="Milestones" />

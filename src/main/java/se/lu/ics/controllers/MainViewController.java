@@ -1,15 +1,31 @@
 package se.lu.ics.controllers;
 
+import java.net.URL;
+import java.util.List;
+import java.util.ResourceBundle;
+import java.time.LocalDate;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
+import se.lu.ics.data.ConsultantDao;
+import se.lu.ics.data.ProjectDao;
+import se.lu.ics.models.Consultant;
+import se.lu.ics.models.Project;
 
-public class MainViewController {
+public class MainViewController implements Initializable {
+
+    private ProjectDao projectDao;
+    private ConsultantDao consultantDao;
 
     @FXML
     private Button btnAddNewConsultant;
@@ -42,10 +58,31 @@ public class MainViewController {
     private Tab tabProjects;
 
     @FXML
-    private TableColumn<?, ?> tableViewConsultants;
+    private TableView<Consultant> tableViewConsultants;
 
     @FXML
-    private TableView<?> tableViewProjects;
+    private TableColumn<Consultant, String> tableColumnConsultantId;
+
+    @FXML
+    private TableColumn<Consultant, String> tableColumnConsultantName;
+
+    @FXML
+    private TableColumn<Consultant, String> tableColumnConsultantTitle;
+
+    @FXML
+    private TableView<Project> tableViewProjects;
+
+    @FXML
+    private TableColumn<Project, String> tableColumnProjectID;
+
+    @FXML
+    private TableColumn<Project, String> tableColumnProjectName;
+
+    @FXML
+    private TableColumn<Project, LocalDate> tableColumnProjectStartDate;
+
+    @FXML
+    private TableColumn<Project, LocalDate> tableColumnProjectEndDate;
 
     @FXML
     private TextField textFieldFindEmployeeById;
@@ -59,4 +96,35 @@ public class MainViewController {
     @FXML
     private Text textTotalNoOfConsultants;
 
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        try {
+            consultantDao = new ConsultantDao();
+            projectDao = new ProjectDao();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // Set up the consultants table view
+        tableColumnConsultantId.setCellValueFactory(new PropertyValueFactory<>("employeeNo"));
+        tableColumnConsultantName.setCellValueFactory(new PropertyValueFactory<>("employeeName"));
+        tableColumnConsultantTitle.setCellValueFactory(new PropertyValueFactory<>("employeeTitle"));
+
+        List<Consultant> consultants = consultantDao.findAllConsultants();
+
+        ObservableList<Consultant> observableConsultants = FXCollections.observableArrayList(consultants);
+        tableViewConsultants.setItems(observableConsultants);
+
+
+        // Set up the projects table view
+        tableColumnProjectID.setCellValueFactory(new PropertyValueFactory<>("projectNo"));
+        tableColumnProjectName.setCellValueFactory(new PropertyValueFactory<>("projectName"));
+        tableColumnProjectStartDate.setCellValueFactory(new PropertyValueFactory<>("startDate"));
+        tableColumnProjectEndDate.setCellValueFactory(new PropertyValueFactory<>("endDate"));
+
+        List<Project> projects = projectDao.findAllProjects();
+
+        ObservableList<Project> observableProjects = FXCollections.observableArrayList(projects);
+        tableViewProjects.setItems(observableProjects);
+    }
 }

@@ -150,6 +150,26 @@ public class ConsultantDao {
         }
     }
 
+    //find consultasnts with special title
+    public List<Consultant> findConsultantsByTitle(String title) {
+        String query = "SELECT ConsultantNo, ConsultantName, ConsultantEmail FROM Consultant WHERE ConsultantTitle = ?";
+        List<Consultant> consultants = new ArrayList<>();
+
+        try (Connection connection = connectionHandler.getConnection();
+                PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setString(1, title);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                consultants.add(mapToConsultant(resultSet));
+            }
+        } catch (SQLException e) {
+            throw DaoException.couldNotFetchConsultants(e);
+        }
+        return consultants;
+    }
+
 
 //• Retrieve information on all consultants who work in three projects or less.
     public List<Consultant> findConsultantsWithThreeProjectsOrLess() {

@@ -44,16 +44,38 @@ public class DaoException extends RuntimeException {
         return new DaoException("Could not fetch milestones", cause);
     }
 
-    // Consultant problematics error handling for ProjectDao, could fetch all consultants
+    // Consultant error messages for ConsultantDao
     public static DaoException couldNotFetchConsultants(Throwable cause) {
         return new DaoException("Could not fetch consultants", cause);
     }
 
+    public static DaoException consultantAlreadyExists (String EmployeeNo, Throwable cause) {
+        return new DaoException("Consultant with number " + EmployeeNo + " already exists.", cause);
+    }
+
+    public static DaoException couldNotSaveConsultant (String EmployeeName, Throwable cause) {
+        return new DaoException("Could not save consultant: " + EmployeeName, cause);
+    }
+
+    public static DaoException couldNotDeleteConsultant(String consultantNo, Throwable cause) {
+        return new DaoException("Could not delete consultant with number " + consultantNo, cause);
+    }
+
+    public static DaoException consultantNotFound(String consultantNo) {
+        return new DaoException("Consultant with number " + consultantNo + " not found.");
+    }
+
+    public static DaoException couldNotUpdateConsultant(String consultantNo, Throwable cause) {
+        return new DaoException("Could not update consultant with number " + consultantNo, cause);
+    }
+
+
+    // Project error messages for ProjectDao
     public static DaoException couldNotDeleteProject (String projectNo, Throwable cause) {
         return new DaoException("Could not delete project with number " + projectNo, cause);
     } 
 
-    public static Exception couldNotUpdateProject(String projectNo, SQLException e) {
+    public static Exception couldNotUpdateProject (String projectNo, SQLException e) {
         return new DaoException ("Could not update project with number " + projectNo, e);
     }
 

@@ -113,15 +113,6 @@ public class ProjectDao {
         return consultants; // Return the list of consultants
     }
 
-    // METHOD mapToProject
-    private Project mapToProject(ResultSet resultSet) throws SQLException {
-        return new Project(
-                resultSet.getString("ProjectNo"),
-                resultSet.getString("ProjectName"),
-                resultSet.getDate("StartDate").toLocalDate(),
-                resultSet.getDate("EndDate").toLocalDate(),
-                new ArrayList<>());
-    }
 
    // METHOD: Delete a project by project number
 public void deleteProject(String projectNo) throws SQLException {
@@ -194,5 +185,14 @@ public List<Project> findProjectsInvolvingAllConsultants() {
 }
 
 
+    // METHOD mapToProject
+    private Project mapToProject(ResultSet resultSet) throws SQLException {
+        return new Project(
+                resultSet.getString("ProjectNo"),
+                resultSet.getString("ProjectName"),
+                resultSet.getDate("StartDate").toLocalDate(),
+                resultSet.getDate("EndDate").toLocalDate(),
+                new ArrayList<>());
+    }
 
 }

@@ -4,14 +4,14 @@ import java.util.ArrayList; // Tillfällig import för att bedriva tester, ska b
 
 public class Consultant {
     private String employeeNo;
-    private String title;
+    private String employeeTitle;
     private String employeeName;
     private ArrayList<Project> projects;
 
     // Constructor
-    public Consultant(String employeeNo, String title, String employeeName, ArrayList<Project> projects) {
+    public Consultant(String employeeNo, String employeeTitle, String employeeName, ArrayList<Project> projects) {
         this.employeeNo = employeeNo;
-        this.title = title;
+        this.employeeTitle = employeeTitle;
         this.employeeName = employeeName;
         this.projects = projects;
     }
@@ -22,8 +22,8 @@ public class Consultant {
         return employeeNo;
     }
 
-    public String getTitle() {
-        return title;
+    public String getEmployeeTitle() {
+        return employeeTitle;
     }
 
     public String getEmployeeName() {
@@ -41,7 +41,7 @@ public class Consultant {
     }
 
     public void setTitle(String title) {
-        this.title = title;
+        this.employeeTitle = title;
     }
 
     public void setEmployeeName(String employeeName) {

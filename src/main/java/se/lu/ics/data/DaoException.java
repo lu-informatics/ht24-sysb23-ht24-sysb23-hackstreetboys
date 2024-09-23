@@ -54,4 +54,16 @@ public class DaoException extends RuntimeException {
     public static Exception couldNotUpdateProject(String projectNo, SQLException e) {
         return new DaoException ("Could not update project with number " + projectNo, e);
     }
+
+    //Error handling for ConsultantDao
+    //Could not find ConsultantID by EmployeeNo
+    public static DaoException couldNotFindConsultantIdByEmployeeNo(String employeeNo, Throwable cause) {
+        return new DaoException("Could not find ConsultantID by EmployeeNo: " + employeeNo, cause);
+    }
+
+    //Error handling for WorkDao
+    //Could not add consultant to project
+    public static DaoException couldNotAddConsultantToProject(String projectNo, String employeeNo, Throwable cause) {
+        return new DaoException("Could not add consultant with id " + employeeNo + " to project with number " + projectNo, cause);
+    }
 }

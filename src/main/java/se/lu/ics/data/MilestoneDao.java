@@ -18,7 +18,7 @@ public class MilestoneDao {
     public MilestoneDao () throws IOException {
         this.connectionHandler = new ConnectionHandler();
     }
-    // METHOD: addMilestone to project method
+    // METHOD: create milestone and save it to database
 
     public void createMilestone(Project project, String milstoneNo, String milestoneDescription, LocalDate milestoneDate) { 
         String query = "INSERT INTO Milestone (ProjectNo, MilestoneNo, MilestoneDate, MilestoneDescription) VALUES (?, ?, ?, ?)";
@@ -29,8 +29,8 @@ public class MilestoneDao {
             // Set project data into the prepared statement
             statement.setString(1, project.getProjectNo());
             statement.setString(2, milstoneNo);
-            statement.setString(2, milestoneDescription);
-            statement.setDate(3, java.sql.Date.valueOf(milestoneDate)); // Omvandla LocalDate till SQL Date
+            statement.setString(3, milestoneDescription);
+            statement.setDate(4, java.sql.Date.valueOf(milestoneDate)); // Omvandla LocalDate till SQL Date
 
             // Execute the insert operation
             statement.executeUpdate();
@@ -44,32 +44,109 @@ public class MilestoneDao {
         }
     }
 
-    // METHOD: find all milestones from the List of Milestones
+    // METHOD: total number of milestones for a project
 
-    public List<Milestone> findAllMilestones(Project project) {
-        String query = "SELECT Milestone, MilestoneDate FROM Milestone WHERE ProjectNo = ?";
-        List<Milestone> milestones = new ArrayList<>();
-
+    public int getTotalMilestonesForProject(String projectNo) {
+        String query = "SELECT COUNT(*) AS total FROM Milestone WHERE ProjectNo = ?";
+        int totalMilestones = 0;
+    
         try (Connection connection = connectionHandler.getConnection();
-                PreparedStatement statement = connection.prepareStatement(query)) {
-
-            // Set project data into the prepared statement
-            statement.setString(1, project.getProjectNo());
-            ResultSet resultSet = statement.executeQuery();
-
-            // Iterate through the result set to create Milestone objects
-            while (resultSet.next()) {
-                String milestoneDescription = resultSet.getString("Milestone");
-                LocalDate milestoneDate = resultSet.getDate("MilestoneDate").toLocalDate();
-
-                Milestone milestone = new Milestone("generatedMilestoneNo", milestoneDate, milestoneDescription,
-                        project);
-                milestones.add(milestone);
+             PreparedStatement statement = connection.prepareStatement(query)) {
+    
+            // Set the project number parameter
+            statement.setString(1, projectNo);
+    
+            // Execute the query
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    // Get the total number of milestones
+                    totalMilestones = resultSet.getInt("total");
+                }
             }
         } catch (SQLException e) {
-            throw DaoException.couldNotFetchMilestones(e);
+            throw DaoException.couldNotGetTotalMilestonesForProject(projectNo, e); 
         }
-
-        return milestones; // Return the list of milestones
+    
+        return totalMilestones;
     }
+
+
+   
+    // METHOD: find milestones by projectNo method
+    
+public List<Milestone> findMilestonesByProjectNo(String projectNo) {
+    String query = "SELECT MilestoneNo, Milestone, MilestoneDate, ProjectNo FROM Milestone WHERE ProjectNo = ?";
+    List<Milestone> milestones = new ArrayList<>();
+
+    try (Connection connection = connectionHandler.getConnection();
+         PreparedStatement statement = connection.prepareStatement(query)) {
+
+        // Set the project number parameter
+        statement.setString(1, projectNo);
+
+        // Execute the query
+        try (ResultSet resultSet = statement.executeQuery()) {
+            while (resultSet.next()) {
+                // Create a new Milestone object and set its properties
+                Milestone milestone = new Milestone();
+                milestone.setMilestoneNo(resultSet.getString("MilestoneNo"));
+                milestone.setMilestoneDescription(resultSet.getString("Milestone"));
+                milestone.setMilestoneDate(resultSet.getDate("MilestoneDate").toLocalDate());
+                milestone.setProject(new Project(resultSet.getString("ProjectNo"))); // Assuming Project has a constructor that takes projectNo
+
+                // Add the milestone to the list
+                milestones.add(milestone);
+            }
+        }
+    } catch (SQLException e) {
+        throw DaoException.couldNotFindMilestonesByProjectNo(projectNo, e);
+    }
+
+    return milestones;
+}
+
+    // METHOD: update milestone method
+    public void updateMilestone(Milestone milestone) {
+        String query = "UPDATE Milestone SET Milestone = ?, MilestoneDate = ? WHERE MilestoneNo = ? AND ProjectNo = ?";
+
+        try (Connection connection = connectionHandler.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            // Set milestone data into the prepared statement
+            statement.setString(1, milestone.getMilestoneDescription());
+            statement.setDate(2, java.sql.Date.valueOf(milestone.getMilestoneDate()));
+            statement.setString(3, milestone.getMilestoneNo());
+            statement.setString(4, milestone.getProject().getProjectNo());
+
+            // Execute the update operation
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw DaoException.couldNotUpdateMilestone(milestone.getMilestoneNo(), e);
+        }
+    }
+
+
+
+    // METHOD: delete milestone from project 
+    public void deleteMilestone(Milestone milestone, Project project) {
+        String query = "DELETE FROM Milestone WHERE MilestoneNo = ? AND ProjectNo = ?";
+    
+        try (Connection connection = connectionHandler.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+    
+            // Set milestone data into the prepared statement
+            statement.setString(1, milestone.getMilestoneNo());
+            statement.setString(2, project.getProjectNo());
+    
+            // Execute the delete operation
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw DaoException.couldNotDeleteMilestone(milestone, e);
+        }
+    }
+
+    //
+
+
+
 }

@@ -2,6 +2,8 @@ package se.lu.ics.data;
 
 import java.sql.SQLException;
 
+import se.lu.ics.models.Milestone;
+
 public class DaoException extends RuntimeException {
     public DaoException(String message, Throwable cause) {
         super(message, cause);
@@ -83,9 +85,40 @@ public class DaoException extends RuntimeException {
         return new DaoException("Could not find ConsultantID by EmployeeNo: " + employeeNo, cause);
     }
 
+
     //Error handling for WorkDao
     //Could not add consultant to project
     public static DaoException couldNotAddConsultantToProject(String projectNo, String employeeNo, Throwable cause) {
         return new DaoException("Could not add consultant with id " + employeeNo + " to project with number " + projectNo, cause);
     }
+
+    
+    //Error handling for MilestoneDao:
+    
+    //Could not find Milestone by MilestoneNo
+    public static DaoException couldNotFindMilestoneByMilestoneNo(String milestoneNo, Throwable cause) {
+        return new DaoException("Could not find Milestone by MilestoneNo: " + milestoneNo, cause);
+    }
+
+    //Could not find Milestones by ProjectNo
+    public static DaoException couldNotFindMilestonesByProjectNo(String projectNo, Throwable cause) {
+        return new DaoException("Could not find Milestones by ProjectNo: " + projectNo, cause);
+    }
+
+    //Could not update Milestone
+    public static DaoException couldNotUpdateMilestone(String milestoneNo, Throwable cause) {
+        return new DaoException("Could not update Milestone with MilestoneNo: " + milestoneNo, cause);
+    }
+
+    //Could not delete Milestone
+    public static DaoException couldNotDeleteMilestone(Milestone milestoneNo, Throwable cause) {
+        return new DaoException("Could not delete Milestone with MilestoneNo: " + milestoneNo, cause);
+    }
+
+    //Could not count milestones for a project
+    public static DaoException couldNotGetTotalMilestonesForProject(String projectNo, Throwable cause) {
+        return new DaoException("Could not count milestones for project with number: " + projectNo, cause);
+    }
+
+
 }

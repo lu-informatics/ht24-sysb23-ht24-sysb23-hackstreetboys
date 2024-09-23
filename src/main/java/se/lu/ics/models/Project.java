@@ -19,6 +19,10 @@ public class Project {
         this.endDate = endDate;
         this.milestones = milestones;
     }
+    //Constructor for findMilestonesByProjectNo in milestoneDao
+
+    public Project(String projectNo) {
+    }
 
     // Getters
 

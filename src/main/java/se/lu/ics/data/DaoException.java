@@ -1,5 +1,7 @@
 package se.lu.ics.data;
 
+import java.sql.SQLException;
+
 public class DaoException extends RuntimeException {
     public DaoException(String message, Throwable cause) {
         super(message, cause);
@@ -45,6 +47,11 @@ public class DaoException extends RuntimeException {
         return new DaoException("Could not fetch consultants", cause);
     }
 
+    public static DaoException couldNotDeleteProject (String projectNo, Throwable cause) {
+        return new DaoException("Could not delete project with number " + projectNo, cause);
+    } 
 
-
+    public static Exception couldNotUpdateProject(String projectNo, SQLException e) {
+        return new DaoException ("Could not update project with number " + projectNo, e);
+    }
 }

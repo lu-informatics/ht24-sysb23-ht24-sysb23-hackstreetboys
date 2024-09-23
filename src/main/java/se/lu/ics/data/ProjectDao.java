@@ -8,10 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import se.lu.ics.models.Consultant;
-import se.lu.ics.models.Milestone;
 import se.lu.ics.models.Project;
-import java.time.LocalDate;
-
 public class ProjectDao {
 
     private ConnectionHandler connectionHandler;
@@ -21,7 +18,7 @@ public class ProjectDao {
     }
 
     // METHOD: Fetching all projects from the database
-    public List<Project> findAll() {
+    public List<Project> findAllProjects() {
         String query = "SELECT ProjectNo, ProjectName, StartDate, EndDate FROM Project";
         List<Project> projects = new ArrayList<>();
 
@@ -63,31 +60,6 @@ public class ProjectDao {
         }
     }
 
-    // METHOD: addMilestone to project method
-
-    public void addMilestoneToProject(Project project, String milestoneDescription, LocalDate milestoneDate) {
-        String query = "INSERT INTO Milestone (ProjectNo, Milestone, MilestoneDate) VALUES (?, ?, ?)";
-
-        try (Connection connection = connectionHandler.getConnection();
-                PreparedStatement statement = connection.prepareStatement(query)) {
-
-            // Set project data into the prepared statement
-            statement.setString(1, project.getProjectNo());
-            statement.setString(2, milestoneDescription);
-            statement.setDate(3, java.sql.Date.valueOf(milestoneDate)); // Omvandla LocalDate till SQL Date
-
-            // Execute the insert operation
-            statement.executeUpdate();
-
-            // Create a new milestone and add it to the project
-            Milestone newMilestone = new Milestone("generatedMilestoneNo", milestoneDate, milestoneDescription,
-                    project);
-            project.getMilestones().add(newMilestone);
-        } catch (SQLException e) {
-            throw DaoException.couldNotAddMilestone(milestoneDescription, e);
-        }
-    }
-
     // MEHTOD: Find project by project number
     public Project findByProjectNo(String projectNo) {
         String query = "SELECT ProjectNo, ProjectName, StartDate, EndDate FROM Project WHERE ProjectNo = ?";
@@ -110,38 +82,8 @@ public class ProjectDao {
             throw DaoException.couldNotFetchProjects(e);
         }
     }
-
-    // METHOD: find all milestones from the List of Milestones
-
-    public List<Milestone> findAllMilestones(Project project) {
-        String query = "SELECT Milestone, MilestoneDate FROM Milestone WHERE ProjectNo = ?";
-        List<Milestone> milestones = new ArrayList<>();
-
-        try (Connection connection = connectionHandler.getConnection();
-                PreparedStatement statement = connection.prepareStatement(query)) {
-
-            // Set project data into the prepared statement
-            statement.setString(1, project.getProjectNo());
-            ResultSet resultSet = statement.executeQuery();
-
-            // Iterate through the result set to create Milestone objects
-            while (resultSet.next()) {
-                String milestoneDescription = resultSet.getString("Milestone");
-                LocalDate milestoneDate = resultSet.getDate("MilestoneDate").toLocalDate();
-
-                Milestone milestone = new Milestone("generatedMilestoneNo", milestoneDate, milestoneDescription,
-                        project);
-                milestones.add(milestone);
-            }
-        } catch (SQLException e) {
-            throw DaoException.couldNotFetchMilestones(e);
-        }
-
-        return milestones; // Return the list of milestones
-    }
-
     // METHOD: Find all consultants in the project from the List of Consultants
-    public List<Consultant> findAllConsultants(Project project) {
+    public List<Consultant> findAllConsultantsInProject(Project project) {
         String query = "SELECT Consultant.EmployeeNo, Consultant.Title, Consultant.EmployeeName " +
                 "FROM Work " +
                 "JOIN Consultant ON Work.ConsultantEmployeeNo = Consultant.EmployeeNo " +
@@ -180,5 +122,77 @@ public class ProjectDao {
                 resultSet.getDate("EndDate").toLocalDate(),
                 new ArrayList<>());
     }
+
+   // METHOD: Delete a project by project number
+public void deleteProject(String projectNo) throws SQLException {
+    String query = "DELETE FROM Project WHERE ProjectNo = ?";
+
+    try (Connection connection = connectionHandler.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query)) {
+
+        // Set the project number in the prepared statement
+        statement.setString(1, projectNo);
+
+        // Execute the delete operation and check if any rows were affected
+        int rowsAffected = statement.executeUpdate();
+
+        // If no rows were deleted, the project was not found
+        if (rowsAffected == 0) {
+            throw DaoException.projectNotFound(projectNo);
+        }
+
+    } catch (SQLException e) {
+        throw DaoException.couldNotDeleteProject(projectNo, e);
+    }
+}
+// METHOD: Update an existing project
+public void updateProject(Project project) throws Exception {
+    String query = "UPDATE Project SET ProjectName = ?, StartDate = ?, EndDate = ? WHERE ProjectNo = ?";
+
+    try (Connection connection = connectionHandler.getConnection();
+         PreparedStatement statement = connection.prepareStatement(query)) {
+
+        // Set the updated project data into the prepared statement
+        statement.setString(1, project.getProjectName());
+        statement.setDate(2, java.sql.Date.valueOf(project.getStartDate()));
+        statement.setDate(3, project.getEndDate() != null ? java.sql.Date.valueOf(project.getEndDate()) : null);
+        statement.setString(4, project.getProjectNo());
+
+        // Execute the update operation
+        int rowsUpdated = statement.executeUpdate();
+        if (rowsUpdated == 0) {
+            throw DaoException.projectNotFound(project.getProjectNo());
+        }
+
+    } catch (SQLException e) {
+        throw DaoException.couldNotUpdateProject(project.getProjectName(), e);
+    }
+}
+
+public List<Project> findProjectsInvolvingAllConsultants() {
+    String query = "SELECT p.ProjectNo, p.ProjectName, p.StartDate, p.EndDate " +
+            "FROM Project p " +
+            "JOIN Work w ON p.ProjectID = w.ProjectID " +
+            "JOIN Consultant c ON w.EmployeeID = c.ConsultantID " +
+            "GROUP BY p.ProjectNo, p.ProjectName, p.StartDate, p.EndDate " +
+            "HAVING COUNT(DISTINCT w.EmployeeID) = (SELECT COUNT(*) FROM Consultant)";
+    
+    List<Project> projects = new ArrayList<>();
+
+    try (Connection connection = connectionHandler.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+            ResultSet resultSet = statement.executeQuery()) {
+
+        while (resultSet.next()) {
+            projects.add(mapToProject(resultSet));
+        }
+    } catch (SQLException e) {
+        throw DaoException.couldNotFetchProjects(e);
+    }
+
+    return projects;
+}
+
+
 
 }

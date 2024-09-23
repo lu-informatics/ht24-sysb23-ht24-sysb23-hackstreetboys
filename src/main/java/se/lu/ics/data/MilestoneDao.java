@@ -127,7 +127,6 @@ public List<Milestone> findMilestonesByProjectNo(String projectNo) {
 
 
 
-
     // METHOD: delete milestone from project 
     public void deleteMilestone(Milestone milestone, Project project) {
         String query = "DELETE FROM Milestone WHERE MilestoneNo = ? AND ProjectNo = ?";

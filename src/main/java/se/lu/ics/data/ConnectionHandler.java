@@ -7,48 +7,45 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-// Class definition, connectionURL stores the JDBC URL for connecting to the database, propertiedFilePath stores the path to the properties file
 public class ConnectionHandler {
     private String connectionURL;
-    private final String propertiedFilePath = "src/main/resources/config.properties";
+    private final String propertiesFilePath = "config.properties";
 
+    // Constructor
+    public ConnectionHandler () throws IOException {
+        Properties connectionProperties = new Properties();
 
-// Constructor
+        // Load properties file from classpath
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(propertiesFilePath)) {
 
-public ConnectionHandler () throws IOException {
-    Properties connectionProperties = new Properties();
+            if (inputStream != null) {
+                connectionProperties.load(inputStream);
+            } else {
+                throw new IOException("Properties file not found in the classpath");
+            }
 
-    // Load properties file from classpath
-    try (InputStream inputStream = getClass().getResourceAsStream(propertiedFilePath)) {
-
-        if (inputStream != null) {
-            connectionProperties.load(inputStream);
-        } else {
-            throw new IOException("Config file confik.properties not found in classpath");
         }
-    
+        // Fetching properties from the properties file
+        String databaseServerName = connectionProperties.getProperty("database.server.name");
+        String databaseServerPort = connectionProperties.getProperty("database.server.port");
+        String databaseName = connectionProperties.getProperty("database.name");
+        String databaseUsername = connectionProperties.getProperty("database.user.username");
+        String databaseUserPassword = connectionProperties.getProperty("database.user.password");
+
+        // Creating the connectionURL string
+        connectionURL = "jdbc:sqlserver://"
+                + databaseServerName + ":"
+                + databaseServerPort + ";"
+                + "databaseName=" + databaseName + ";"
+                + "user=" + databaseUsername + ";"
+                + "password=" + databaseUserPassword + ";"
+                + "encrypt=true;"
+                + "trustServerCertificate=true;";
+
     }
-    // Fetching properties from the properties file
-    String databaseServerName = connectionProperties.getProperty("database.server.name");
-    String databaseServerPort = connectionProperties.getProperty("database.server.port");
-    String databaseName = connectionProperties.getProperty("database.name");
-    String databaseUsername = connectionProperties.getProperty("database.user.username");
-    String databaseUserPassword = connectionProperties.getProperty("database.user.password");
 
-    // Creating the connectionURL string
-    connectionURL = "jdbc:sqlserver://"
-            + databaseServerName + ":"
-            + databaseServerPort + ";"
-            + "databaseName=" + databaseName + ";"
-            + "user=" + databaseUsername + ";"
-            + "password=" + databaseUserPassword + ";"
-            + "encrypt=true;"
-            + "trustServerCertificate=true;";
-
-}
-// Connection method
-public Connection getConnection() throws SQLException {
-    return DriverManager.getConnection(connectionURL);
-}
-
+    // Connection method
+    public Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(connectionURL);
+    }
 }

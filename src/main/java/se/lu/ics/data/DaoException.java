@@ -13,8 +13,7 @@ public class DaoException extends RuntimeException {
         super(message);
     }
 
-    // Project problematics error handling for ProjectDao
-    // Projects could not be fetched
+    //Error handling for ProjectDao
     // Throwable cause to keep messages easy to understand for the user
     public static DaoException couldNotFetchProjects(Throwable cause) {
         return new DaoException("Could not fetch projects", cause);
@@ -44,7 +43,20 @@ public class DaoException extends RuntimeException {
         return new DaoException("Could not fetch milestones", cause);
     }
 
-    // Consultant error messages for ConsultantDao
+    public static DaoException couldNotDeleteProject (String projectNo, Throwable cause) {
+        return new DaoException("Could not delete project with number " + projectNo, cause);
+    } 
+
+    public static Exception couldNotUpdateProject (String projectNo, SQLException e) {
+        return new DaoException ("Could not update project with number " + projectNo, e);
+    }
+
+    //Error handling for ConsultantDao
+    //Could not find ConsultantID by EmployeeNo
+    public static DaoException couldNotFindConsultantIdByEmployeeNo(String employeeNo, Throwable cause) {
+        return new DaoException("Could not find ConsultantID by EmployeeNo: " + employeeNo, cause);
+    }
+
     public static DaoException couldNotFetchConsultants(Throwable cause) {
         return new DaoException("Could not fetch consultants", cause);
     }
@@ -69,23 +81,6 @@ public class DaoException extends RuntimeException {
         return new DaoException("Could not update consultant with number " + consultantNo, cause);
     }
 
-
-    // Project error messages for ProjectDao
-    public static DaoException couldNotDeleteProject (String projectNo, Throwable cause) {
-        return new DaoException("Could not delete project with number " + projectNo, cause);
-    } 
-
-    public static Exception couldNotUpdateProject (String projectNo, SQLException e) {
-        return new DaoException ("Could not update project with number " + projectNo, e);
-    }
-
-    //Error handling for ConsultantDao
-    //Could not find ConsultantID by EmployeeNo
-    public static DaoException couldNotFindConsultantIdByEmployeeNo(String employeeNo, Throwable cause) {
-        return new DaoException("Could not find ConsultantID by EmployeeNo: " + employeeNo, cause);
-    }
-
-
     //Error handling for WorkDao
     //Could not add consultant to project
     public static DaoException couldNotAddConsultantToProject(String projectNo, String employeeNo, Throwable cause) {
@@ -94,7 +89,6 @@ public class DaoException extends RuntimeException {
 
     
     //Error handling for MilestoneDao:
-    
     //Could not find Milestone by MilestoneNo
     public static DaoException couldNotFindMilestoneByMilestoneNo(String milestoneNo, Throwable cause) {
         return new DaoException("Could not find Milestone by MilestoneNo: " + milestoneNo, cause);

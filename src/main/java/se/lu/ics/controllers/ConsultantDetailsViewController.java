@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import se.lu.ics.models.Project;
 import javafx.event.ActionEvent;
@@ -25,14 +26,14 @@ public class ConsultantDetailsViewController {
         private Button btnEditConsultant;
     
         @FXML
-        private Button btnRegisterToExistingProject;
+        private Button btnRegisterConsultantToProject;
     
         @FXML
-        private Button btnRemoveFromProject;
+        private Button btnRemoveConsultantFromProject;
     
         //tableview
         @FXML
-        private TableView<Project> tableviewProjectsConsultantDetails;
+        private TableView<Project> tableViewConsultantProjects;
 
         @FXML
         private TableColumn<Project, String> tableColumnProjectName;
@@ -44,18 +45,23 @@ public class ConsultantDetailsViewController {
         private TableColumn<Work, Integer> tableColumnTotaltHours;
     
         @FXML
-        private TableColumn<Work, Integer> tableColumnWeeklyhours;
+        private TableColumn<Work, Integer> tableColumnWeeklyHours;
     
         //textfields
         @FXML
-        private Text textFieldEmployeeID;
+        private Text textEmployeeNO;
     
         @FXML
-        private Text textFieldEmployeeName;
+        private Text textEmployeeName;
     
         @FXML
-        private Text textFieldEmployeeTitle;
+        private Text textEmployeeTitle;
     
+        //Warning Pane
+
+        @FXML
+        private Pane warningPane;
+
         @FXML
         void handleBtnCloseConsultantDetails(ActionEvent event) {
             System.out.println("Submit-knappen klickades");        }

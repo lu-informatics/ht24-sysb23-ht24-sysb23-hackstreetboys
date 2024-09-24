@@ -29,7 +29,7 @@
                         </TableView>
                         <Button fx:id="btnAddNewConsultant" layoutX="15.0" layoutY="348.0" mnemonicParsing="false" text="Add new constultant ..." />
                         <Button fx:id="btnDeleteConsultant" layoutX="156.0" layoutY="348.0" mnemonicParsing="false" text="Delete consultant" />
-                        <Button fx:id="btnViewConsultantDetails" layoutX="399.0" layoutY="348.0" mnemonicParsing="false" text="View details..." />
+                        <Button fx:id="btnViewConsultantDetails" layoutX="399.0" layoutY="348.0" mnemonicParsing="false" onAction="#handleBtnViewConsultantDetails" text="View details..." />
                         <TextField fx:id="textFieldFindEmployeeById" layoutX="271.0" layoutY="21.0" text="Find Employee by ID ..." />
                         <Button fx:id="btnSearch" layoutX="499.0" layoutY="26.0" mnemonicParsing="false" text="Search" />
                         <ComboBox fx:id="comboBoxTitleFilter" layoutX="26.0" layoutY="20.0" prefHeight="26.0" prefWidth="95.0" promptText="Title: All" />
@@ -59,7 +59,7 @@
                         </TableView>
                         <Button fx:id="btnAddNewProject" layoutX="17.0" layoutY="355.0" mnemonicParsing="false" text="Add new project ..." />
                         <Button fx:id="btnDeleteProject" layoutX="166.0" layoutY="355.0" mnemonicParsing="false" text="Delete project" />
-                        <Button fx:id="btnViewProjectDetails" layoutX="410.0" layoutY="355.0" mnemonicParsing="false" text="View details ..." />
+                        <Button fx:id="btnViewProjectDetails" layoutX="410.0" layoutY="355.0" mnemonicParsing="false" onAction="#handleBtnViewProjectDetails" text="View details ..." />
                         <TextField fx:id="textFieldFindProjectByProjectId" layoutX="14.0" layoutY="22.0" prefHeight="26.0" prefWidth="217.0" text="Find project by Project ID ..." />
                      </children>
                   </AnchorPane>

@@ -7,8 +7,11 @@ import java.time.LocalDate;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Tab;
@@ -17,6 +20,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import se.lu.ics.data.ConsultantDao;
 import se.lu.ics.data.ProjectDao;
 import se.lu.ics.models.Consultant;
@@ -126,5 +131,49 @@ public class MainViewController implements Initializable {
 
         ObservableList<Project> observableProjects = FXCollections.observableArrayList(projects);
         tableViewProjects.setItems(observableProjects);
+    }
+
+    @FXML
+    void handleBtnViewConsultantDetails (ActionEvent event) {
+        // Get the selected project
+        Consultant selectedConsultant = tableViewConsultants.getSelectionModel().getSelectedItem();
+
+        if(selectedConsultant == null) {
+            try {
+                ConsultantViewController consultantViewController = new ConsultantViewController();
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ConsultantView.fxml"));
+                consultantViewController.setConsultant(selectedConsultant);
+        
+                Stage modalStage = new Stage();
+                modalStage.setScene(new Scene(loader.load()));
+                modalStage.setTitle("Project Details");
+                modalStage.initModality(Modality.APPLICATION_MODAL);
+                modalStage.showAndWait();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    @FXML
+    void handleBtnViewProjectDetails (ActionEvent event) {
+        // Get the selected project
+        Project selectedProject = tableViewProjects.getSelectionModel().getSelectedItem();
+
+        if(selectedProject == null) {
+            try {
+                ProjectViewController projectViewController = new ProjectViewController();
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ProjectView.fxml"));
+                projectViewController.setProject(selectedProject);
+        
+                Stage modalStage = new Stage();
+                modalStage.setScene(new Scene(loader.load()));
+                modalStage.setTitle("Project Details");
+                modalStage.initModality(Modality.APPLICATION_MODAL);
+                modalStage.showAndWait();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

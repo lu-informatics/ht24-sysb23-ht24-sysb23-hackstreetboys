@@ -171,7 +171,7 @@ public class ConsultantDao {
     }
 
 
-//• Retrieve information on all consultants who work in three projects or less.
+    // Retrieve information on all consultants who work in three projects or less.
     public List<Consultant> findConsultantsWithThreeProjectsOrLess() {
         String query = "SELECT ConsultantNo, ConsultantName, ConsultantEmail FROM Consultant WHERE ConsultantNo IN (SELECT ConsultantNo FROM Work GROUP BY ConsultantNo HAVING COUNT(ProjectNo) <= 3)";
         List<Consultant> consultants = new ArrayList<>();
@@ -189,5 +189,56 @@ public class ConsultantDao {
         return consultants;
     }
 
+// Convert consultantNo to ConsultantID
+public int convertConsultantNoToConsultantId(String employeeNo) {
+    if (employeeNo == null) {
+        throw new IllegalArgumentException("consultantNo cannot be null");
+    }
+
+    String query = "SELECT ConsultantID FROM Consultant WHERE EmployeeNo = ?";
+    int consultantID = 0;
+
+    try (Connection connection = connectionHandler.getConnection();
+         PreparedStatement statement = connection.prepareStatement(query)) {
+
+        statement.setString(1, employeeNo);
+        ResultSet resultSet = statement.executeQuery();
+
+        if (resultSet.next()) {
+            consultantID = resultSet.getInt("ConsultantID");
+        }
+    } catch (SQLException e) {
+        // Log the exception (assuming a logger is available)
+        // logger.error("Error fetching ConsultantID for ConsultantNo: " + consultantNo, e);
+        throw DaoException.couldNotFetchConsultants(e);
+    }
+
+    return consultantID;
+}
+
+    //Find total number of projects for a consultant
+    public int findTotalNumberOfProjectsForConsultant(String employeeNo) {
+
+        //Convert consultantNo to ConsultantID
+        int consultantId = convertConsultantNoToConsultantId(employeeNo);
+
+        //Find total number of projects
+        String query = "SELECT COUNT(ProjectID) FROM Work WHERE ConsultantID = ?";
+        int totalProjects = 0;
+
+        try (Connection connection = connectionHandler.getConnection();
+                PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setInt(1, consultantId);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                totalProjects = resultSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            throw DaoException.couldNotFetchConsultants(e);
+        }
+        return totalProjects;
+    }
 
 }

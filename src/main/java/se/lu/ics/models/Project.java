@@ -9,6 +9,7 @@ public class Project {
     private LocalDate startDate;
     private LocalDate endDate;
     private ArrayList<Milestone> milestones;
+    private Work work;
 
     // Constructor
     public Project(String projectNo, String projectName, LocalDate startDate, LocalDate endDate,
@@ -66,5 +67,13 @@ public class Project {
 
     public void setMilestones(ArrayList<Milestone> milestones) {
         this.milestones = milestones;
+    }
+
+    public Work getWork() {
+        return work;
+    }
+
+    public void setWork(Work work) {
+        this.work = work;
     }
 }

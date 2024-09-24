@@ -12,7 +12,7 @@
 
 <AnchorPane prefHeight="637.0" prefWidth="815.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <TabPane layoutY="122.0" prefHeight="516.0" prefWidth="815.0" tabClosingPolicy="UNAVAILABLE">
+      <TabPane layoutY="122.0" prefHeight="517.0" prefWidth="815.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab fx:id="tabConsultants" text="Consultants">
             <content>

@@ -4,18 +4,35 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Text?>
-
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <TableView layoutX="62.0" layoutY="100.0" prefHeight="200.0" prefWidth="473.0">
+      <TableView fx:id="tableViewConstraints" layoutX="364.0" layoutY="242.0" prefHeight="109.0" prefWidth="205.0">
         <columns>
-          <TableColumn prefWidth="75.0" text="Column" />
-          <TableColumn prefWidth="75.0" text="No. of rows" />
+          <TableColumn fx:id="tableColumnConstraintName" prefWidth="204.0" text="Name" />
         </columns>
       </TableView>
-      <Text layoutX="62.0" layoutY="57.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Metadata" />
-      <Button layoutX="483.0" layoutY="349.0" mnemonicParsing="false" text="Close" />
+      <Text layoutX="270.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Metadata" wrappingWidth="57.06982421875" />
+      <Button fx:id="btnHighestNoOfRows" layoutX="191.0" layoutY="84.0" mnemonicParsing="false" onAction="#handleBtnHighestNoOfRows" text="Highest No. of rows" />
+      <Button fx:id="btnConsultantTextColumns" layoutX="31.0" layoutY="84.0" mnemonicParsing="false" onAction="#handleBtnConsultantTextColumns" prefHeight="25.0" prefWidth="154.0" text="Consultant text columns" />
+      <TableView fx:id="tableViewMetadataColumns" layoutX="31.0" layoutY="123.0" prefHeight="227.0" prefWidth="285.0">
+         <columns>
+            <TableColumn fx:id="tableColumnNameOfColumn" prefWidth="186.0" text="Name of column" />
+            <TableColumn fx:id="tableColumnNoOfRows" prefWidth="98.0" text="No. of rows" />
+         </columns>
+      </TableView>
+      <Button fx:id="btnAllColumns" layoutX="31.0" layoutY="50.0" mnemonicParsing="false" onAction="#handleBtnAllColumns" text="All columns" />
+      <TableView fx:id="tableViewPrimaryKeys" layoutX="364.0" layoutY="84.0" prefHeight="109.0" prefWidth="205.0">
+         <columns>
+            <TableColumn fx:id="tableColumnPrimaryKeysName" prefWidth="203.0" text="Name" />
+         </columns>
+      </TableView>
+      <Text layoutX="31.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Retrive:" wrappingWidth="57.06982421875" />
+      <Button fx:id="btnPrimaryKeys" layoutX="364.0" layoutY="50.0" mnemonicParsing="false" onAction="#handleBtnPrimaryKeys" text="Primary keys" />
+      <Button fx:id="btnConstraints" layoutX="364.0" layoutY="210.0" mnemonicParsing="false" onAction="#handleBtnConstraints" text="Constraints" />
+      <Pane fx:id="warningPaneMetadata" layoutY="368.0" prefHeight="33.0" prefWidth="600.0" />
    </children>
 </AnchorPane>
+

@@ -14,6 +14,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -134,7 +135,6 @@ public class MainViewController implements Initializable {
         ObservableList<Consultant> observableConsultants = FXCollections.observableArrayList(consultants);
         tableViewConsultants.setItems(observableConsultants);
 
-
         // Set up the projects table view
         tableColumnProjectID.setCellValueFactory(new PropertyValueFactory<>("projectNo"));
         tableColumnProjectName.setCellValueFactory(new PropertyValueFactory<>("projectName"));
@@ -148,16 +148,16 @@ public class MainViewController implements Initializable {
     }
 
     @FXML
-    void handleBtnViewConsultantDetails (ActionEvent event) {
+    void handleBtnViewConsultantDetails(ActionEvent event) {
         // Get the selected project
         Consultant selectedConsultant = tableViewConsultants.getSelectionModel().getSelectedItem();
 
-        if(selectedConsultant == null) {
+        if (selectedConsultant == null) {
             try {
                 ConsultantViewController consultantViewController = new ConsultantViewController();
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ConsultantView.fxml"));
                 consultantViewController.setConsultant(selectedConsultant);
-        
+
                 Stage modalStage = new Stage();
                 modalStage.setScene(new Scene(loader.load()));
                 modalStage.setTitle("Project Details");
@@ -168,18 +168,18 @@ public class MainViewController implements Initializable {
             }
         }
     }
-    
+
     @FXML
-    void handleBtnViewProjectDetails (ActionEvent event) {
+    void handleBtnViewProjectDetails(ActionEvent event) {
         // Get the selected project
         Project selectedProject = tableViewProjects.getSelectionModel().getSelectedItem();
 
-        if(selectedProject == null) {
+        if (selectedProject == null) {
             try {
                 ProjectViewController projectViewController = new ProjectViewController();
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ProjectView.fxml"));
                 projectViewController.setProject(selectedProject);
-        
+
                 Stage modalStage = new Stage();
                 modalStage.setScene(new Scene(loader.load()));
                 modalStage.setTitle("Project Details");
@@ -206,9 +206,26 @@ public class MainViewController implements Initializable {
 
     }
 
+    // Opens ConsultantRegisterConsultantView.fxml
     @FXML
-    void handleBtnRegisterNewConsultant(ActionEvent event) {
+    public void handleBtnRegisterNewConsultant(ActionEvent event) {
+        try {
+            // Load FXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ConsultantRegisterConsultantView.fxml"));
+            Parent root = loader.load();
 
+            // Create a new stage
+            Stage stage = new Stage();
+            stage.setTitle("Register New Consultant");
+            stage.setScene(new javafx.scene.Scene(root));
+
+            // Show the stage
+            stage.show();
+        } catch (Exception e) {
+            setWarning("Could not open the register consultant view, contact support");
+            e.printStackTrace(); // For debugging purposes
+
+        }
     }
 
     @FXML
@@ -232,26 +249,25 @@ public class MainViewController implements Initializable {
     }
 
     @FXML
-    void handleComboBoxTitleFilter(ActionEvent event) { 
+    void handleComboBoxTitleFilter(ActionEvent event) {
     }
 
     // setWarning() method for error message handling
-   public void setWarning(String message) {
-       System.out.println("WARNING: " + message);
-       paneWarningConsultantTab.setVisible(true);
-       paneWarningProjectsTab.setVisible(true);
+    public void setWarning(String message) {
+        System.out.println("WARNING: " + message);
+        paneWarningConsultantTab.setVisible(true);
+        paneWarningProjectsTab.setVisible(true);
 
-
-       Timeline timeline = new Timeline(new KeyFrame(
-               Duration.seconds(5),
-               new EventHandler<ActionEvent>() {
-                   @Override
-                   public void handle(ActionEvent event) {
-                       paneWarningConsultantTab.setVisible(false);
-                       paneWarningProjectsTab.setVisible(false);
-                   }
-               }));
-       timeline.play();
-   }
+        Timeline timeline = new Timeline(new KeyFrame(
+                Duration.seconds(5),
+                new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent event) {
+                        paneWarningConsultantTab.setVisible(false);
+                        paneWarningProjectsTab.setVisible(false);
+                    }
+                }));
+        timeline.play();
+    }
 
 }

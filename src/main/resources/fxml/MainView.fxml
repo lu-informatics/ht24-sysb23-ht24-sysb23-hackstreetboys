@@ -25,8 +25,8 @@
                           <TableColumn fx:id="tableColumnConsultantId" prefWidth="100.0" text="Employee ID" />
                           <TableColumn fx:id="tableColumnConsultantName" prefWidth="69.5999755859375" text="Name" />
                             <TableColumn fx:id="tableColumnConsultantTitle" prefWidth="69.5999755859375" text="Title" />
-                            <TableColumn prefWidth="126.39996337890625" text="No. of projects" />
-                            <TableColumn prefWidth="126.39996337890625" text="Total hours" />
+                            <TableColumn fx:id="tableColumnConsultantNoProjects" prefWidth="126.39996337890625" text="No. of projects" />
+                            <TableColumn fx:id="tableColumnConsultantTotalHours" prefWidth="126.39996337890625" text="Total hours" />
                         </columns>
                       </TableView>
                       <Button fx:id="btnRegisterNewConsultant" layoutX="15.0" layoutY="348.0" mnemonicParsing="false" onAction="#handleBtnRegisterNewConsultant" text="Register new consultant" />

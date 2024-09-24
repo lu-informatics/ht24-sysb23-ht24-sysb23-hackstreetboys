@@ -5,9 +5,12 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.time.LocalDate;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -19,9 +22,11 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import se.lu.ics.data.ConsultantDao;
 import se.lu.ics.data.ProjectDao;
 import se.lu.ics.models.Consultant;
@@ -54,7 +59,10 @@ public class MainViewController implements Initializable {
     private Button btnViewProjectDetails;
 
     @FXML
-    private ComboBox<?> comboBoxTitleFilter;
+    private ComboBox<String> comboBoxTitleFilter;
+
+    @FXML
+    private ComboBox<Integer> comboBoxNoProjectFilter;
 
     @FXML
     private Tab tabConsultants;
@@ -100,6 +108,12 @@ public class MainViewController implements Initializable {
 
     @FXML
     private Text textTotalNoOfConsultants;
+
+    @FXML
+    private Pane paneWarningConsultantTab;
+
+    @FXML
+    private Pane paneWarningProjectsTab;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -176,4 +190,68 @@ public class MainViewController implements Initializable {
             }
         }
     }
+
+    @FXML
+    void handleBtnDeleteConsultant(ActionEvent event) {
+
+    }
+
+    @FXML
+    void handleBtnDeleteProject(ActionEvent event) {
+
+    }
+
+    @FXML
+    void handleBtnOpenExcelFile(ActionEvent event) {
+
+    }
+
+    @FXML
+    void handleBtnRegisterNewConsultant(ActionEvent event) {
+
+    }
+
+    @FXML
+    void handleBtnRegisterNewProject(ActionEvent event) {
+
+    }
+
+    @FXML
+    void handleBtnSearch(ActionEvent event) {
+
+    }
+
+    @FXML
+    void handleBtnViewMetadata(ActionEvent event) {
+
+    }
+
+    @FXML
+    void handleComboBoxNoProjectFilter(ActionEvent event) {
+
+    }
+
+    @FXML
+    void handleComboBoxTitleFilter(ActionEvent event) { 
+    }
+
+    // setWarning() method for error message handling
+   public void setWarning(String message) {
+       System.out.println("WARNING: " + message);
+       paneWarningConsultantTab.setVisible(true);
+       paneWarningProjectsTab.setVisible(true);
+
+
+       Timeline timeline = new Timeline(new KeyFrame(
+               Duration.seconds(5),
+               new EventHandler<ActionEvent>() {
+                   @Override
+                   public void handle(ActionEvent event) {
+                       paneWarningConsultantTab.setVisible(false);
+                       paneWarningProjectsTab.setVisible(false);
+                   }
+               }));
+       timeline.play();
+   }
+
 }

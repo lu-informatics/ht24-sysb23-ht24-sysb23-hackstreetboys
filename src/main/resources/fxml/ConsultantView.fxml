@@ -17,9 +17,9 @@
             <TableColumn fx:id="tableColumnWeeklyHours" prefWidth="107.0" text="Weekly hours" />
         </columns>
       </TableView>
-      <Text layoutX="30.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Employee No" />
-      <Text layoutX="30.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name:" />
-      <Text layoutX="30.0" layoutY="100.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Title:" />
+      <Text fx:id="textEmployeeNO" layoutX="30.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Employee No" />
+      <Text fx:id="textEmployeeName" layoutX="30.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name:" />
+      <Text fx:id="textEmployeeTitle" layoutX="30.0" layoutY="100.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Title:" />
       <Button fx:id="btnCloseConsultantDetails" layoutX="514.0" layoutY="356.0" mnemonicParsing="false" onAction="#handleBtnCloseConsultantDetails" text="Close" />
       <Button fx:id="btnEditConsultant" layoutX="444.0" layoutY="66.0" mnemonicParsing="false" onAction="#handleBtnEditConsultant" prefHeight="26.0" prefWidth="148.0" text="Edit consultant info ..." />
       <Button fx:id="btnRemoveConsultantFromProject" layoutX="29.0" layoutY="356.0" mnemonicParsing="false" onAction="#handleBtnRemoveFromProject" text="Remove from project" />

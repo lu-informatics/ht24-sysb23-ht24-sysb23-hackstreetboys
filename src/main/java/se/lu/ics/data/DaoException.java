@@ -87,6 +87,10 @@ public class DaoException extends RuntimeException {
         return new DaoException("Could not add consultant with id " + employeeNo + " to project with number " + projectNo, cause);
     }
 
+    public static DaoException couldNotFindConsultantByEmployeeNo(String employeeNo, Throwable cause) {
+        return new DaoException("Could not find Consultant by EmployeeNo: " + employeeNo, cause);
+    }
+
     
     //Error handling for MilestoneDao:
     //Could not find Milestone by MilestoneNo

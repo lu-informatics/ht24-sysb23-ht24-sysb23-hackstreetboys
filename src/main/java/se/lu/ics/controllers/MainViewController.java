@@ -356,6 +356,26 @@ public class MainViewController implements Initializable {
 
     @FXML
     void handleBtnViewMetadata(ActionEvent event) {
+        try {
+            // Load the FXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MetadataView.fxml"));
+            Parent root = loader.load();
+
+            // Get the controller
+            MetadataViewController metadataViewController = loader.getController();
+            metadataViewController.setMainViewController(this);
+
+            // Create a new stage
+            Stage stage = new Stage();
+            stage.setTitle("Metadata");
+            stage.setScene(new Scene(root));
+
+            // Show the stage
+            stage.show();
+        } catch (Exception e) {
+            setWarning("Could not open the metadata view, contact support");
+            e.printStackTrace(); // For debugging purposes
+        }
 
     }
 

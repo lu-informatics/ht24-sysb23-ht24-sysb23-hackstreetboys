@@ -4,35 +4,66 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:controller="se.lu.ics.controllers.MetadataViewController" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="472.0" prefWidth="764.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se.lu.ics.controllers.MetadataViewController">
    <children>
-      <TableView fx:id="tableViewConstraints" layoutX="364.0" layoutY="242.0" prefHeight="109.0" prefWidth="205.0">
+      <TableView fx:id="tableViewAllColumns" layoutX="14.0" layoutY="74.0" prefHeight="239.0" prefWidth="205.0">
         <columns>
-          <TableColumn fx:id="tableColumnConstraintName" prefWidth="204.0" text="Name" />
+          <TableColumn fx:id="tableColumnConstraintName" prefWidth="204.0" text="Table Names" />
         </columns>
       </TableView>
-      <Text layoutX="270.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Metadata" wrappingWidth="57.06982421875" />
-      <Button fx:id="btnHighestNoOfRows" layoutX="191.0" layoutY="84.0" mnemonicParsing="false" onAction="#handleBtnHighestNoOfRows" text="Highest No. of rows" />
-      <Button fx:id="btnConsultantTextColumns" layoutX="31.0" layoutY="84.0" mnemonicParsing="false" onAction="#handleBtnConsultantTextColumns" prefHeight="25.0" prefWidth="154.0" text="Consultant text columns" />
-      <TableView fx:id="tableViewMetadataColumns" layoutX="31.0" layoutY="123.0" prefHeight="227.0" prefWidth="285.0">
+      <Text layoutX="270.0" layoutY="38.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Metadata overview" textAlignment="CENTER" wrappingWidth="224.06982421875">
+         <font>
+            <Font size="25.0" />
+         </font></Text>
+      <TableView fx:id="tableViewMetadataColumns" layoutX="14.0" layoutY="351.0" prefHeight="59.0" prefWidth="285.0">
          <columns>
             <TableColumn fx:id="tableColumnNameOfColumn" prefWidth="186.0" text="Name of column" />
-            <TableColumn fx:id="tableColumnNoOfRows" prefWidth="98.0" text="No. of rows" />
+            <TableColumn fx:id="tableColumnMostNoOfRows" prefWidth="98.0" text="No. of rows" />
+            <TableColumn fx:id="tableColumnNameOfColumn1" prefWidth="186.0" text="Name of column" />
          </columns>
       </TableView>
-      <Button fx:id="btnAllColumns" layoutX="31.0" layoutY="50.0" mnemonicParsing="false" onAction="#handleBtnAllColumns" text="All columns" />
-      <TableView fx:id="tableViewPrimaryKeys" layoutX="364.0" layoutY="84.0" prefHeight="109.0" prefWidth="205.0">
+      <Text layoutX="14.0" layoutY="68.0" strokeType="OUTSIDE" strokeWidth="0.0" text="All columns in ArcticByte database" textAlignment="CENTER" wrappingWidth="205.0">
+         <font>
+            <Font name="System Bold" size="13.0" />
+         </font></Text>
+      <Button fx:id="btnClose" layoutX="648.0" layoutY="397.0" mnemonicParsing="false" onAction="#handleBtnClose" text="Cancel" />
+      <TableView fx:id="tableViewConstraints1" layoutX="280.0" layoutY="74.0" prefHeight="239.0" prefWidth="205.0">
          <columns>
-            <TableColumn fx:id="tableColumnPrimaryKeysName" prefWidth="203.0" text="Name" />
+            <TableColumn fx:id="tableViewPrimaryKeys" prefWidth="204.0" text="Primary key constraints" />
          </columns>
       </TableView>
-      <Text layoutX="31.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Retrive:" wrappingWidth="57.06982421875" />
-      <Button fx:id="btnPrimaryKeys" layoutX="364.0" layoutY="50.0" mnemonicParsing="false" onAction="#handleBtnPrimaryKeys" text="Primary keys" />
-      <Button fx:id="btnConstraints" layoutX="364.0" layoutY="210.0" mnemonicParsing="false" onAction="#handleBtnConstraints" text="Constraints" />
-      <Pane fx:id="warningPaneMetadata" layoutY="368.0" prefHeight="33.0" prefWidth="600.0" />
+      <TableView fx:id="tableViewConstraints11" layoutX="545.0" layoutY="74.0" prefHeight="239.0" prefWidth="205.0">
+         <columns>
+            <TableColumn fx:id="tableViewCheckConstraints" prefWidth="204.0" text="Check Constraints" />
+         </columns>
+      </TableView>
+      <Text layoutX="280.0" layoutY="68.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name of Primary Keys Constraints" textAlignment="CENTER" wrappingWidth="205.0">
+         <font>
+            <Font name="System Bold" size="13.0" />
+         </font>
+      </Text>
+      <Text layoutX="545.0" layoutY="68.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name of check constraints" textAlignment="CENTER" wrappingWidth="205.0">
+         <font>
+            <Font name="System Bold" size="13.0" />
+         </font>
+      </Text>
+      <Text layoutX="336.0" layoutY="340.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Names of all columns in Consultant table " textAlignment="CENTER" wrappingWidth="269.0">
+         <font>
+            <Font name="System Bold" size="13.0" />
+         </font>
+      </Text>
+      <TableView fx:id="tableViewConstraints111" layoutX="361.0" layoutY="351.0" prefHeight="97.0" prefWidth="205.0">
+         <columns>
+            <TableColumn fx:id="tableViewConsultantColumns" prefWidth="204.0" text="Column Names in Consultant" />
+         </columns>
+      </TableView>
+      <Text layoutX="30.0" layoutY="340.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Information about the table with most rows" textAlignment="CENTER" wrappingWidth="269.0">
+         <font>
+            <Font name="System Bold" size="13.0" />
+         </font>
+      </Text>
    </children>
 </AnchorPane>
-

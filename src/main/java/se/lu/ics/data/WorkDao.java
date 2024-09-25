@@ -127,7 +127,7 @@ public class WorkDao {
         int weeklyHours = resultSet.getInt("WeeklyHours");
     
         // Create Project and Consultant objects (this might involve fetching additional data if needed)
-        Project project = new Project(projectNo, projectName, null, null, null); // Assuming startDate and endDate are not relevant here
+        Project project = new Project(projectNo, projectName, null, null); // Assuming startDate and endDate are not relevant here
         Consultant consultant = new Consultant(employeeNo, null, null, null); // Set other parameters as needed
     
         // Create and return a Work object

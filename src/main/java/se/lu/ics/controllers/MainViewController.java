@@ -32,7 +32,6 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import se.lu.ics.data.ConsultantDao;
 import se.lu.ics.data.ProjectDao;
-import se.lu.ics.data.WorkDao;
 import se.lu.ics.models.Consultant;
 import se.lu.ics.models.Project;
 
@@ -225,6 +224,22 @@ public class MainViewController implements Initializable {
             
         });
 
+        // Set cell value factory for resources
+        Map<String, Double> resourcesMap = projectDao.findResourcesPercentageForEachProject();
+        tableColumnResources.setCellValueFactory(cellData -> {
+            Project project = cellData.getValue();
+            double resources = resourcesMap.getOrDefault(project.getProjectNo(), 0.0);
+            return new SimpleStringProperty(String.valueOf(resources) + " %");
+        });
+
+        // Set cell value factory for milestones
+        Map<String, Integer> milestonesMap = projectDao.findNoOfMilestonesForEachProject();
+        tableColumnMilestones.setCellValueFactory(cellData -> {
+            Project project = cellData.getValue();
+            int milestones = milestonesMap.getOrDefault(project.getProjectNo(), 0);
+            return new SimpleStringProperty(String.valueOf(milestones));
+        });
+
         List<Project> projects = projectDao.findAllProjects();
         ObservableList<Project> observableProjects = FXCollections.observableArrayList(projects);
         tableViewProjects.setItems(observableProjects);
@@ -356,6 +371,26 @@ public class MainViewController implements Initializable {
 
     @FXML
     void handleBtnViewMetadata(ActionEvent event) {
+        try {
+            // Load the FXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MetadataView.fxml"));
+            Parent root = loader.load();
+
+            // Get the controller
+            MetadataViewController metadataViewController = loader.getController();
+            metadataViewController.setMainViewController(this);
+
+            // Create a new stage
+            Stage stage = new Stage();
+            stage.setTitle("Metadata");
+            stage.setScene(new Scene(root));
+
+            // Show the stage
+            stage.show();
+        } catch (Exception e) {
+            setWarning("Could not open the metadata view, contact support");
+            e.printStackTrace(); // For debugging purposes
+        }
 
     }
 

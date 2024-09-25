@@ -20,13 +20,11 @@ import se.lu.ics.data.ConsultantDao;
     import se.lu.ics.data.ProjectDao;
     import se.lu.ics.data.WorkDao;
     import se.lu.ics.models.Consultant;
-    import se.lu.ics.models.Project;
     import se.lu.ics.models.Work;
 
 import java.io.IOException;
 import java.net.URL;
     import java.util.ResourceBundle;
-    import java.util.Set;
 
 
     public class ConsultantViewController implements Initializable {

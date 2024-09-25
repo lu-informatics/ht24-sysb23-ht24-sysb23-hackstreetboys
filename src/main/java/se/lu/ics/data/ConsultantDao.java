@@ -237,6 +237,36 @@ public class ConsultantDao {
 
         return consultantTotalHoursMap;
     }
+    
+    public List<Consultant> findAllConsultantsInProject(Project project) {
+        String query = "SELECT Consultant.EmployeeNo, Consultant.EmployeeTitle, Consultant.EmployeeName " +
+                       "FROM Consultant " +
+                       "JOIN Work ON Work.ConsultantID = Consultant.ConsultantID " +
+                       "WHERE Work.ProjectID = ?";
+        List<Consultant> consultants = new ArrayList<>();
+    
+        try (Connection connection = connectionHandler.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+    
+            // Convert ProjectNo to ProjectID
+            int projectID = findProjectIDByProjectNo(project.getProjectNo());
+    
+            // Set project data into the prepared statement
+            statement.setInt(1, projectID);
+            ResultSet resultSet = statement.executeQuery();
+    
+            // Iterate through the result set to create Consultant objects
+            while (resultSet.next()) {
+                Consultant consultant = mapToConsultant(resultSet);
+                consultants.add(consultant);
+            }
+        } catch (SQLException e) {
+            throw new DaoException("Could not fetch consultants", e);
+        }
+    
+        return consultants; // Return the list of consultants
+    }
+
 
     // Fetch all unique titles for consultants from the database
     public List<String> findUniqueTitlesForConsultants() {
@@ -355,4 +385,30 @@ public class ConsultantDao {
 
         return consultantID;
     }
-}
+
+
+          // Convert ProjectNo to ProjectID
+          public int findProjectIDByProjectNo(String projectNo) {
+            String query = "SELECT ProjectID FROM Project WHERE ProjectNo = ?";
+            int projectID = 0;
+    
+            try (Connection connection = connectionHandler.getConnection();
+                    PreparedStatement statement = connection.prepareStatement(query)) {
+    
+                statement.setString(1, projectNo);
+                ResultSet resultSet = statement.executeQuery();
+    
+                if (resultSet.next()) {
+                    projectID = resultSet.getInt("ProjectID");
+                } else {
+                    throw DaoException.projectNotFound(projectNo);
+                }
+            } catch (SQLException e) {
+                throw DaoException.couldNotFetchProjects(e);
+            }
+    
+            return projectID;
+    
+        }
+
+    }

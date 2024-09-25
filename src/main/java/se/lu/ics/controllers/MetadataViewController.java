@@ -1,76 +1,76 @@
 package se.lu.ics.controllers;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
+import javafx.util.Duration;
+import se.lu.ics.data.MetadataDao;
 
 public class MetadataViewController {
+    private MetadataDao metadataDao;
+    private MainViewController mainViewController;
 
-    @FXML
-    private Button btnAllColumns;
+    // Constructor
+    public MetadataViewController() {
+        try {
+            metadataDao = new MetadataDao();
+        } catch (Exception e) {
+        }
+    }
 
-    @FXML
-    private Button btnConstraints;
-
-    @FXML
-    private Button btnConsultantTextColumns;
-
-    @FXML
-    private Button btnHighestNoOfRows;
-
-    @FXML
-    private Button btnPrimaryKeys;
-
-    @FXML
-    private TableColumn<String, String> tableColumnConstraintName;
-
-    @FXML
-    private TableColumn<String, String> tableColumnNameOfColumn;
-
-    @FXML
-    private TableColumn<String, Integer> tableColumnNoOfRows;
-
-    @FXML
-    private TableColumn<String, String> tableColumnPrimaryKeysName;
-
-    @FXML
-    private TableView<String> tableViewConstraints;
-
-    @FXML
-    private TableView<String> tableViewMetadataColumns;
-
-    @FXML
-    private TableView<String> tableViewPrimaryKeys;
-
-    @FXML
-    private Pane warningPaneMetadata;
-
-    @FXML
-    void handleBtnAllColumns(ActionEvent event) {
-
+    public void setMainViewController(MainViewController mainViewController) {
+        this.mainViewController = mainViewController; 
     }
 
     @FXML
-    void handleBtnConstraints(ActionEvent event) {
-
-    }
+    private Button btnClose;
 
     @FXML
-    void handleBtnConsultantTextColumns(ActionEvent event) {
-
-    }
+    private TableColumn<?, ?> tableColumnConstraintName;
 
     @FXML
-    void handleBtnHighestNoOfRows(ActionEvent event) {
-
-    }
+    private TableColumn<?, ?> tableColumnMostNoOfRows;
 
     @FXML
-    void handleBtnPrimaryKeys(ActionEvent event) {
+    private TableColumn<?, ?> tableColumnNameOfColumn;
 
+    @FXML
+    private TableColumn<?, ?> tableColumnNameOfColumn1;
+
+    @FXML
+    private TableView<?> tableViewAllColumns;
+
+    @FXML
+    private TableColumn<?, ?> tableViewCheckConstraints;
+
+    @FXML
+    private TableView<?> tableViewConstraints1;
+
+    @FXML
+    private TableView<?> tableViewConstraints11;
+
+    @FXML
+    private TableView<?> tableViewConstraints111;
+
+    @FXML
+    private TableColumn<?, ?> tableViewConsultantColumns;
+
+    @FXML
+    private TableView<?> tableViewMetadataColumns;
+
+    @FXML
+    private TableColumn<?, ?> tableViewPrimaryKeys;
+
+    @FXML
+    void handleBtnClose(ActionEvent event) {
+        Stage stage = (Stage) btnClose.getScene().getWindow();
+        stage.close();
     }
 
 }

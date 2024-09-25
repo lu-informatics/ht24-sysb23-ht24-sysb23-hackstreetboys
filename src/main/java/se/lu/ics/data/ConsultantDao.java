@@ -9,7 +9,9 @@ import java.sql.SQLException;
 import se.lu.ics.models.Consultant;
 import se.lu.ics.models.Project;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ConsultantDao {
     private ConnectionHandler connectionHandler;
@@ -192,29 +194,28 @@ public int convertConsultantNoToConsultantId(String employeeNo) {
     return consultantID;
 }
 
-    //Find total number of projects for a consultant
-    public int findTotalNumberOfProjectsForConsultant(String employeeNo) {
-
-        //Convert consultantNo to ConsultantID
-        int consultantId = convertConsultantNoToConsultantId(employeeNo);
-
-        //Find total number of projects
-        String query = "SELECT COUNT(ProjectID) FROM Work WHERE ConsultantID = ?";
-        int totalProjects = 0;
-
+    public Map<String, Integer> findTotalProjectsForAllConsultants() {
+        String query = "SELECT Consultant.EmployeeNo, COUNT(Work.ProjectID) as totalProjects " +
+                       "FROM Work " +
+                       "JOIN Consultant ON Work.ConsultantID = Consultant.ConsultantID " +
+                       "GROUP BY Consultant.EmployeeNo";
+    
+        Map<String, Integer> consultantProjectsMap = new HashMap<>();
+    
         try (Connection connection = connectionHandler.getConnection();
-                PreparedStatement statement = connection.prepareStatement(query)) {
-
-            statement.setInt(1, consultantId);
-            ResultSet resultSet = statement.executeQuery();
-
-            if (resultSet.next()) {
-                totalProjects = resultSet.getInt(1);
+             PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet resultSet = statement.executeQuery()) {
+    
+            while (resultSet.next()) {
+                String employeeNo = resultSet.getString("employeeNo");
+                int totalProjects = resultSet.getInt("totalProjects");
+                consultantProjectsMap.put(employeeNo, totalProjects);
             }
         } catch (SQLException e) {
             throw DaoException.couldNotFetchConsultants(e);
         }
-        return totalProjects;
+    
+        return consultantProjectsMap;
     }
 
 }

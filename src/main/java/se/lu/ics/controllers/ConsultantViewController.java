@@ -1,13 +1,19 @@
 package se.lu.ics.controllers;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
+import se.lu.ics.data.ConsultantDao;
+import se.lu.ics.data.ProjectDao;
+import se.lu.ics.data.WorkDao;
 import se.lu.ics.models.Consultant;
 import se.lu.ics.models.Project;
 import se.lu.ics.models.Work;
@@ -15,9 +21,14 @@ import se.lu.ics.models.Work;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+
 public class ConsultantViewController implements Initializable {
 
+    private ProjectDao projectDao;
+    private ConsultantDao consultantDao;
+    private WorkDao workDao;
     private Consultant consultant;
+
 
           //buttons
         @FXML
@@ -34,19 +45,19 @@ public class ConsultantViewController implements Initializable {
     
         //tableview
         @FXML
-        private TableView<Project> tableViewConsultantProjects;
+        private TableView<Work> tableViewConsultantProjects;
 
         @FXML
-        private TableColumn<Project, String> tableColumnProjectName;
+        private TableColumn<Work, String> tableColumnProjectName;
     
         @FXML
-        private TableColumn<Project, String> tableColumnProjectID;
+        private TableColumn<Work, String> tableColumnProjectID;
     
         @FXML
-        private TableColumn<Project, Integer> tableColumnTotaltHours;
+        private TableColumn<Work, Integer> tableColumnTotaltHours;
     
         @FXML
-        private TableColumn<Project, Integer> tableColumnWeeklyHours;
+        private TableColumn<Work, Integer> tableColumnWeeklyHours;
     
         //textfields
         @FXML
@@ -80,16 +91,47 @@ public class ConsultantViewController implements Initializable {
         }
 
 
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        //Set up consultant table view
-        
 
-    }
+        try {
+            consultantDao = new ConsultantDao();
+            projectDao = new ProjectDao();
+            workDao = new WorkDao();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }   
 
-    public void setConsultant(Consultant consultant) {
-        this.consultant = consultant;
-    }
+       
+        // Initialize the TableView columns
+        //    tableColumnProjectName.setCellValueFactory(cellData -> 
+        //     new SimpleStringProperty(cellData.getValue().getProject().getProjectName()));
+        //     tableColumnProjectID.setCellValueFactory(cellData -> 
+        //     new SimpleStringProperty(cellData.getValue().getProject().getProjectNo()));
 
+        //     tableColumnTotaltHours.setCellValueFactory(new PropertyValueFactory<>("hoursWorked"));
+        //     tableColumnWeeklyHours.setCellValueFactory(new PropertyValueFactory<>("weeklyHours"));
+
+        // // Load data into the TableView
+        // // if (workDao != null && consultant.getEmployeeNo() != null) {
+        //     ObservableList<Work> workDetails = workDao.findConsultantByEmployeeNo(consultant.getEmployeeNo());
+        //     tableViewConsultantProjects.setItems(workDetails);
+        // }
+}
+
+     public void setConsultant(Consultant consultant) {
+         this.consultant = consultant;
+     }
+
+    //     // Populate text fields with consultant details
+    //     textEmployeeNO.setText(consultant.getEmployeeNo());
+    //     textEmployeeName.setText(consultant.getEmployeeName());
+    //     textEmployeeTitle.setText(consultant.getEmployeeTitle());
+
+
+    //     // Load and populate table with project details
+    //     ObservableList<Work> workDetails = workDao.findConsultantByEmployeeNo(employeeNo);
+    //     tableViewConsultantProjects.setItems(workDetails);
+    // }
 }

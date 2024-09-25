@@ -7,6 +7,7 @@ public class Consultant {
     private String employeeTitle;
     private String employeeName;
     private ArrayList<Project> projects;
+    private Work work;
 
     // Constructor
     public Consultant(String employeeNo, String employeeTitle, String employeeName, ArrayList<Project> projects) {
@@ -34,6 +35,10 @@ public class Consultant {
         return projects;
     }
 
+    public Work getWork() {
+        return work;
+    }
+
     // Setters
 
     public void setEmployeeNo(String employeeNo) {
@@ -50,5 +55,9 @@ public class Consultant {
 
     public void setProjects(ArrayList<Project> projects) {
         this.projects = projects;
+    }
+
+    public void setWork(Work work) {
+        this.work = work;
     }
 }

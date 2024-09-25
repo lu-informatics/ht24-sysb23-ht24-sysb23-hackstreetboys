@@ -69,22 +69,26 @@ public class DaoException extends RuntimeException {
         return new DaoException("Could not save consultant: " + EmployeeName, cause);
     }
 
-    public static DaoException couldNotDeleteConsultant(String consultantNo, Throwable cause) {
-        return new DaoException("Could not delete consultant with number " + consultantNo, cause);
+    public static DaoException couldNotDeleteConsultant(String EmployeeNo, Throwable cause) {
+        return new DaoException("Could not delete consultant with number " + EmployeeNo, cause);
     }
 
-    public static DaoException consultantNotFound(String consultantNo) {
-        return new DaoException("Consultant with number " + consultantNo + " not found.");
+    public static DaoException consultantNotFound(String EmployeeNo) {
+        return new DaoException("Consultant with number " + EmployeeNo + " not found.");
     }
 
-    public static DaoException couldNotUpdateConsultant(String consultantNo, Throwable cause) {
-        return new DaoException("Could not update consultant with number " + consultantNo, cause);
+    public static DaoException couldNotUpdateConsultant(String EmployeeNo, Throwable cause) {
+        return new DaoException("Could not update consultant with number " + EmployeeNo, cause);
     }
 
     //Error handling for WorkDao
     //Could not add consultant to project
     public static DaoException couldNotAddConsultantToProject(String projectNo, String employeeNo, Throwable cause) {
         return new DaoException("Could not add consultant with id " + employeeNo + " to project with number " + projectNo, cause);
+    }
+
+    public static DaoException couldNotFindConsultantByEmployeeNo(String employeeNo, Throwable cause) {
+        return new DaoException("Could not find Consultant by EmployeeNo: " + employeeNo, cause);
     }
 
     

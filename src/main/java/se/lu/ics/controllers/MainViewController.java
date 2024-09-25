@@ -32,6 +32,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import se.lu.ics.data.ConsultantDao;
 import se.lu.ics.data.ProjectDao;
+import se.lu.ics.data.WorkDao;
 import se.lu.ics.models.Consultant;
 import se.lu.ics.models.Project;
 
@@ -196,27 +197,43 @@ public class MainViewController implements Initializable {
         tableViewProjects.setItems(observableProjects);
     }
 
-    @FXML
-    void handleBtnViewConsultantDetails(ActionEvent event) {
-        // Get the selected project
-        Consultant selectedConsultant = tableViewConsultants.getSelectionModel().getSelectedItem();
+        @FXML
+        void handleBtnViewConsultantDetails(ActionEvent event) {
+            // Get the selected consultant
+            Consultant selectedConsultant = tableViewConsultants.getSelectionModel().getSelectedItem();
 
-        if (selectedConsultant == null) {
-            try {
-                ConsultantViewController consultantViewController = new ConsultantViewController();
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ConsultantView.fxml"));
-                consultantViewController.setConsultant(selectedConsultant);
+        if(selectedConsultant == null) {
+            System.err.println("please select a consultant");
+        }
+        
+        if (selectedConsultant != null) {
+                try {
+                    // Load the FXML and get the controller
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ConsultantView.fxml"));
+                    Pane consultantViewPane = loader.load(); // Load the FXML
+                
 
-                Stage modalStage = new Stage();
-                modalStage.setScene(new Scene(loader.load()));
-                modalStage.setTitle("Project Details");
-                modalStage.initModality(Modality.APPLICATION_MODAL);
-                modalStage.showAndWait();
-            } catch (Exception e) {
-                e.printStackTrace();
+                    // Get the controller from the loader
+                    ConsultantViewController consultantViewController = loader.getController();
+                    
+                  
+                    consultantViewController.setConsultant(selectedConsultant);
+                    System.err.println("Consultant: " + selectedConsultant.getEmployeeName());
+                
+
+        
+                    // Create a new stage for the modal dialog
+                    Stage modalStage = new Stage();
+                    modalStage.setScene(new Scene(consultantViewPane));
+                    modalStage.setTitle("Consultant Details"); // Change the title accordingly
+                    modalStage.initModality(Modality.APPLICATION_MODAL);
+                    modalStage.showAndWait();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
-    }
+        
 
     @FXML
     void handleBtnViewProjectDetails(ActionEvent event) {

@@ -80,28 +80,6 @@ public class ProjectViewController implements Initializable{
 
     private ObservableList<Consultant> consultantList;
     private ObservableList<Milestone> milestoneList;
-    
-    @FXML
-    public void initialize() {
-     // Initialize columns for Consultant data
-    tableColumnConsultants.setCellValueFactory(new PropertyValueFactory<>("employeeName"));
-    tableColumnTotalHours.setCellValueFactory(new PropertyValueFactory<>("totalHours"));
-    tableColumnWeeklyHours.setCellValueFactory(new PropertyValueFactory<>("weeklyHours"));
-
-    // Initialize columns for Milestone data
-    tableColumnMilestone.setCellValueFactory(new PropertyValueFactory<>("milestone"));
-    tableColumnDate.setCellValueFactory(new PropertyValueFactory<>("date"));
-    tableColumnDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
-
-    // Initialize and bind data to TableViews
-    consultantList = FXCollections.observableArrayList();
-    milestoneList = FXCollections.observableArrayList();
-
-    tableViewProjectInfo.setItems(consultantList);  // Link consultant data to the first TableView
-    tableViewMilestoneInfo.setItems(milestoneList); // Link milestone data to the second TableView
-
-    }
-
 
 
     @FXML

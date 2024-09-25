@@ -19,7 +19,6 @@ public class MilestoneDao {
         this.connectionHandler = new ConnectionHandler();
     }
     // METHOD: create milestone and save it to database
-
     public void createMilestone(Project project, String milstoneNo, String milestoneDescription, LocalDate milestoneDate) { 
         String query = "INSERT INTO Milestone (ProjectNo, MilestoneNo, MilestoneDate, MilestoneDescription) VALUES (?, ?, ?, ?)";
 

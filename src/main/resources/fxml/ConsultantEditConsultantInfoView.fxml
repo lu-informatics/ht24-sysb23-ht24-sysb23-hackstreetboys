@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="384.0" prefWidth="289.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="384.0" prefWidth="289.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se.lu.ics.controllers.ConsultantDetailsEditViewController">
    <children>
       <Text layoutX="103.0" layoutY="53.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Edit Consultant" />
       <Text layoutX="22.0" layoutY="110.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Consultant ID:" />

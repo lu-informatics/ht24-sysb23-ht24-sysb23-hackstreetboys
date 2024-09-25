@@ -111,6 +111,15 @@ public class MainViewController implements Initializable {
     private TableColumn<Project, LocalDate> tableColumnProjectEndDate;
 
     @FXML
+    private TableColumn<Project, String> tableColumnNoOfConsultants;
+
+    @FXML
+    private TableColumn<Project, String> tableColumnResources;
+
+    @FXML
+    private TableColumn<Project, String> tableColumnMilestones;
+
+    @FXML
     private TextField textFieldFindEmployeeById;
 
     @FXML
@@ -200,10 +209,21 @@ public class MainViewController implements Initializable {
 
     // Set up the projects table view
     private void setupProjectsTableView() {
+
+        // Set the cell value factories for the instance variables
         tableColumnProjectID.setCellValueFactory(new PropertyValueFactory<>("projectNo"));
         tableColumnProjectName.setCellValueFactory(new PropertyValueFactory<>("projectName"));
         tableColumnProjectStartDate.setCellValueFactory(new PropertyValueFactory<>("startDate"));
         tableColumnProjectEndDate.setCellValueFactory(new PropertyValueFactory<>("endDate"));
+
+        // Set cell value factory for no. of consultants
+        Map<String, Integer> noOfConsultantsMap = projectDao.findNoOfConsultantsForEachProject();
+        tableColumnNoOfConsultants.setCellValueFactory(cellData -> {
+            Project project = cellData.getValue();
+            int noOfConsultants = noOfConsultantsMap.getOrDefault(project.getProjectNo(), 0);
+            return new SimpleStringProperty(String.valueOf(noOfConsultants));
+            
+        });
 
         List<Project> projects = projectDao.findAllProjects();
         ObservableList<Project> observableProjects = FXCollections.observableArrayList(projects);
@@ -248,14 +268,21 @@ public class MainViewController implements Initializable {
         // Get the selected project
         Project selectedProject = tableViewProjects.getSelectionModel().getSelectedItem();
 
-        if (selectedProject == null) {
+        if (selectedProject != null) {
             try {
-                ProjectViewController projectViewController = new ProjectViewController();
+               
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ProjectView.fxml"));
+                Pane projectViewPane = loader.load(); 
+
+
+                // Get the controller from the loader
+                ProjectViewController projectViewController = loader.getController();
+
                 projectViewController.setProject(selectedProject);
+                System.err.println("Project: " + selectedProject.getProjectName());
 
                 Stage modalStage = new Stage();
-                modalStage.setScene(new Scene(loader.load()));
+                modalStage.setScene(new Scene(projectViewPane));
                 modalStage.setTitle("Project Details");
                 modalStage.initModality(Modality.APPLICATION_MODAL);
                 modalStage.showAndWait();
@@ -301,8 +328,7 @@ public class MainViewController implements Initializable {
             Parent root = loader.load();
 
             // Get the controller
-            ConsultantRegisterConsultantViewController consultantRegisterConsultantViewController = loader
-                    .getController();
+            ConsultantRegisterConsultantViewController consultantRegisterConsultantViewController = loader.getController();
             consultantRegisterConsultantViewController.setMainViewController(this);
 
             // Create a new stage
@@ -321,7 +347,6 @@ public class MainViewController implements Initializable {
 
     @FXML
     void handleBtnRegisterNewProject(ActionEvent event) {
-
     }
 
     @FXML

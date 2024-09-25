@@ -264,9 +264,21 @@ public class MainViewController implements Initializable {
             }
         }
     }
-
+     // Delete selected consultant from database using the consultantDao deleteConsultant, 
     @FXML
     void handleBtnDeleteConsultant(ActionEvent event) {
+        Consultant selectedConsultant = tableViewConsultants.getSelectionModel().getSelectedItem();
+        if (selectedConsultant == null) {
+            setWarning("Please select a consultant to delete");
+            return;
+        }
+        try {
+            consultantDao.deleteConsultant(selectedConsultant.getEmployeeNo());
+            updateConsultantsTableView();
+        } catch (Exception e) {
+            setWarning("Could not delete consultant, please contact the system administrator");
+            e.printStackTrace();
+        }
 
     }
 

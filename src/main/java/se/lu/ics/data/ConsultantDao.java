@@ -23,14 +23,14 @@ public class ConsultantDao {
     private Consultant mapToConsultant(ResultSet resultSet) throws SQLException {
         return new Consultant(
                 resultSet.getString("employeeNo"),
-                resultSet.getString("employeeName"),
                 resultSet.getString("employeeTitle"),
+                resultSet.getString("employeeName"),
                 new ArrayList<Project>());
     }
 
     // METHOD: Fetching all consultants from the database
     public List<Consultant> findAllConsultants() {
-        String query = "SELECT EmployeeNo, EmployeeName, EmployeeTitle FROM Consultant";
+        String query = "SELECT EmployeeNo, EmployeeTitle, EmployeeName FROM Consultant";
         List<Consultant> consultants = new ArrayList<>();
 
         try (Connection connection = connectionHandler.getConnection();

@@ -7,6 +7,7 @@ import java.time.LocalDate;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -84,6 +85,12 @@ public class MainViewController implements Initializable {
     private TableColumn<Consultant, String> tableColumnConsultantTitle;
 
     @FXML
+    private TableColumn<Consultant, String> tableColumnConsultantNoProjects;
+
+    @FXML
+    private TableColumn<Consultant, Integer> tableColumnConsultantTotalHours;
+
+    @FXML
     private TableView<Project> tableViewProjects;
 
     @FXML
@@ -129,6 +136,11 @@ public class MainViewController implements Initializable {
         tableColumnConsultantId.setCellValueFactory(new PropertyValueFactory<>("employeeNo"));
         tableColumnConsultantName.setCellValueFactory(new PropertyValueFactory<>("employeeName"));
         tableColumnConsultantTitle.setCellValueFactory(new PropertyValueFactory<>("employeeTitle"));
+        tableColumnConsultantNoProjects.setCellValueFactory(cellData -> {
+            Consultant consultant = cellData.getValue();                                                 // Get the Consultant object for the current row
+            int totalProjects = consultantDao.findTotalNumberOfProjectsForConsultant(consultant.getEmployeeNo());  // Call the method returning an int
+            return new SimpleStringProperty(String.valueOf(totalProjects));                              // Convert int to String
+        });
 
         List<Consultant> consultants = consultantDao.findAllConsultants();
 

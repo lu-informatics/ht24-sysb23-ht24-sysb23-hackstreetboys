@@ -1,24 +1,24 @@
 package se.lu.ics.controllers;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class ConsultantRegisterConsultantViewController {
 
-    //Buttons
-    //
+    @FXML
+    private Button btnCancelRegisterConsultant;
 
     @FXML
-    private Button handleBtnCancleConsultantRegister;
+    private Button btnSaveRegisteredConsultant;
 
-    @FXML
-    private Button handleBtnSaveConsultantEdit;
-
-    //TextFields
-    //
     @FXML
     private TextField textFieldEmployeeName;
 
@@ -28,24 +28,37 @@ public class ConsultantRegisterConsultantViewController {
     @FXML
     private TextField textFieldEmployeeTitle;
 
-    //WarningPane
-    //
     @FXML
-    private Pane warningPane;
+    private Pane paneWarning;
 
-    //methods
-    //
-    
     @FXML
-    void btnSaveConsultantEdit(ActionEvent event) {
+    public void handleBtnCancelRegisterConsultant(ActionEvent event) {
+        Stage stage = (Stage) btnCancelRegisterConsultant.getScene().getWindow();
+        stage.close();
+    }
+
+    // Save a new consultant
+    @FXML
+    void handleBtnSaveRegisteredConsultant(ActionEvent event) {
 
     }
 
-    @FXML
-    void handleBtnCancleConsultantRegister(ActionEvent event) {
+    // setWarning() method for error message handling
+    public void setWarning(String message) {
+        System.out.println("WARNING: " + message);
+        paneWarning.setVisible(true);
+        paneWarning.setVisible(true);
 
+        Timeline timeline = new Timeline(new KeyFrame(
+                Duration.seconds(5),
+                new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent event) {
+                        paneWarning.setVisible(false);
+                        paneWarning.setVisible(false);
+                    }
+                }));
+        timeline.play();
     }
 
 }
-
-

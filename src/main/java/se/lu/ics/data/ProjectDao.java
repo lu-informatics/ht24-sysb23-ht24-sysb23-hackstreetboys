@@ -213,6 +213,33 @@ public class ProjectDao {
         return projects;
     }
 
+    // METHOD: Find the percentage of resources allocated to a project
+    public Map<String, Double> findResourcesPercentageForEachProject() {
+
+        String query = "SELECT Project.ProjectNo, " +
+               "CAST((SUM(WeeklyHours) * 100.0 / (SELECT SUM(WeeklyHours) FROM Work)) AS DECIMAL(5,1)) AS HoursPercentage " +
+               "FROM Work " +
+               "JOIN Project ON Work.ProjectID = Project.ProjectID " +
+               "GROUP BY Project.ProjectNo";
+
+        Map<String, Double> resourceAllocationMap = new HashMap<>();
+
+        try (Connection connection = connectionHandler.getConnection();
+                PreparedStatement statement = connection.prepareStatement(query);
+                ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+                String projectNo = resultSet.getString("ProjectNo");
+                double hoursPercentage = resultSet.getDouble("HoursPercentage");
+                resourceAllocationMap.put(projectNo, hoursPercentage);
+            }
+        } catch (SQLException e) {
+            throw DaoException.couldNotFetchProjects(e);
+        }
+
+        return resourceAllocationMap;
+    }
+
 
     // METHOD mapToProject
     private Project mapToProject(ResultSet resultSet) throws SQLException {

@@ -32,7 +32,6 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import se.lu.ics.data.ConsultantDao;
 import se.lu.ics.data.ProjectDao;
-import se.lu.ics.data.WorkDao;
 import se.lu.ics.models.Consultant;
 import se.lu.ics.models.Project;
 
@@ -223,6 +222,14 @@ public class MainViewController implements Initializable {
             int noOfConsultants = noOfConsultantsMap.getOrDefault(project.getProjectNo(), 0);
             return new SimpleStringProperty(String.valueOf(noOfConsultants));
             
+        });
+
+        // Set cell value factory for resources
+        Map<String, Double> resourcesMap = projectDao.findResourcesPercentageForEachProject();
+        tableColumnResources.setCellValueFactory(cellData -> {
+            Project project = cellData.getValue();
+            double resources = resourcesMap.getOrDefault(project.getProjectNo(), 0.0);
+            return new SimpleStringProperty(String.valueOf(resources) + " %");
         });
 
         List<Project> projects = projectDao.findAllProjects();

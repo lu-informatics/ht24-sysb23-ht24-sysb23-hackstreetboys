@@ -240,6 +240,33 @@ public class ProjectDao {
         return resourceAllocationMap;
     }
 
+    // METHOD: Find no. of milestones for each project
+    public Map<String, Integer> findNoOfMilestonesForEachProject() {
+        String query = "SELECT " +
+               "Project.ProjectNo, " +
+               "COUNT(Milestone.MilestoneID) as NoOfMilestones " +
+               "FROM Project " +
+               "JOIN Milestone ON Project.ProjectID = Milestone.ProjectID " +
+               "GROUP BY Project.ProjectNo";
+
+        Map<String, Integer> noOfMilestonesMap = new HashMap<>();
+
+        try (Connection connection = connectionHandler.getConnection();
+                PreparedStatement statement = connection.prepareStatement(query);
+                ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+                String projectNo = resultSet.getString("ProjectNo");
+                int noOfMilestones = resultSet.getInt("NoOfMilestones");
+                noOfMilestonesMap.put(projectNo, noOfMilestones);
+            }
+        } catch (SQLException e) {
+            throw DaoException.couldNotFetchProjects(e);
+        }
+
+        return noOfMilestonesMap;
+    }
+
 
     // METHOD mapToProject
     private Project mapToProject(ResultSet resultSet) throws SQLException {

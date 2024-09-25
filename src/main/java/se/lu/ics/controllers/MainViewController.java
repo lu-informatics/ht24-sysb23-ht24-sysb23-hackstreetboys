@@ -2,6 +2,7 @@ package se.lu.ics.controllers;
 
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.time.LocalDate;
 
@@ -88,7 +89,10 @@ public class MainViewController implements Initializable {
     private TableColumn<Consultant, String> tableColumnConsultantNoProjects;
 
     @FXML
-    private TableColumn<Consultant, Integer> tableColumnConsultantTotalHours;
+    private TableColumn<Consultant, String> tableColumnConsultantWeeklyHours;
+
+    @FXML
+    private TableColumn<Consultant, String> tableColumnConsultantTotalHours;
 
     @FXML
     private TableView<Project> tableViewProjects;
@@ -125,36 +129,69 @@ public class MainViewController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        initializeDaos();
+        setupConsultantsTableView();
+        setupProjectsTableView();
+    }
+    
+    private void initializeDaos() {
         try {
             consultantDao = new ConsultantDao();
             projectDao = new ProjectDao();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    
+    // Set up the consultants table view
+    private void setupConsultantsTableView() {
 
-        // Set up the consultants table view
+        // Set the cell value factories for the instance variables
         tableColumnConsultantId.setCellValueFactory(new PropertyValueFactory<>("employeeNo"));
         tableColumnConsultantName.setCellValueFactory(new PropertyValueFactory<>("employeeName"));
         tableColumnConsultantTitle.setCellValueFactory(new PropertyValueFactory<>("employeeTitle"));
+
+        // Fetch the total number of projects for each consultant from the database (no. of projects is not an instance variable)
+        Map<String, Integer> consultantProjectsMap = consultantDao.findTotalProjectsForAllConsultants();
+
         tableColumnConsultantNoProjects.setCellValueFactory(cellData -> {
-            Consultant consultant = cellData.getValue();                                                 // Get the Consultant object for the current row
-            int totalProjects = consultantDao.findTotalNumberOfProjectsForConsultant(consultant.getEmployeeNo());  // Call the method returning an int
-            return new SimpleStringProperty(String.valueOf(totalProjects));                              // Convert int to String
+            Consultant consultant = cellData.getValue();
+            int totalProjects = consultantProjectsMap.getOrDefault(consultant.getEmployeeNo(), 0);
+            return new SimpleStringProperty(String.valueOf(totalProjects));
         });
 
-        List<Consultant> consultants = consultantDao.findAllConsultants();
+        // Fetch the weekly hours for each consultant from the database (weekly hours is not an instance variable)
+        Map<String, Integer> consultantWeeklyHoursMap = consultantDao.findWeeklyHoursForAllConsultants();
 
+        tableColumnConsultantWeeklyHours.setCellValueFactory(cellData -> {
+            Consultant consultant = cellData.getValue();
+            int weeklyHours = consultantWeeklyHoursMap.getOrDefault(consultant.getEmployeeNo(), 0);
+            return new SimpleStringProperty(String.valueOf(weeklyHours));
+        });
+        
+        // Fetch the total number of hours for each consultant from the database (total hours is not an instance variable)
+        Map<String, Integer> consultantTotalHoursMap = consultantDao.findTotalHoursForAllConsultants();
+
+        tableColumnConsultantTotalHours.setCellValueFactory(cellData -> {
+            Consultant consultant = cellData.getValue();
+            int totalHours = consultantTotalHoursMap.getOrDefault(consultant.getEmployeeNo(), 0);
+            return new SimpleStringProperty(String.valueOf(totalHours));
+        });
+
+        // Populate the table view with the data
+        List<Consultant> consultants = consultantDao.findAllConsultants();
         ObservableList<Consultant> observableConsultants = FXCollections.observableArrayList(consultants);
         tableViewConsultants.setItems(observableConsultants);
-
-        // Set up the projects table view
+    }
+    
+    // Set up the projects table view
+    private void setupProjectsTableView() {
         tableColumnProjectID.setCellValueFactory(new PropertyValueFactory<>("projectNo"));
         tableColumnProjectName.setCellValueFactory(new PropertyValueFactory<>("projectName"));
         tableColumnProjectStartDate.setCellValueFactory(new PropertyValueFactory<>("startDate"));
         tableColumnProjectEndDate.setCellValueFactory(new PropertyValueFactory<>("endDate"));
-
+    
         List<Project> projects = projectDao.findAllProjects();
-
         ObservableList<Project> observableProjects = FXCollections.observableArrayList(projects);
         tableViewProjects.setItems(observableProjects);
     }

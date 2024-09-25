@@ -9,7 +9,9 @@ import java.sql.SQLException;
 import se.lu.ics.models.Consultant;
 import se.lu.ics.models.Project;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ConsultantDao {
     private ConnectionHandler connectionHandler;
@@ -162,17 +164,91 @@ public class ConsultantDao {
         return consultants;
     }
 
-    // Convert consultantNo to ConsultantID
-    public int convertConsultantNoToConsultantId(String employeeNo) {
-        if (employeeNo == null) {
-            throw new IllegalArgumentException("ConsultantNo cannot be null");
+        public Map<String, Integer> findTotalProjectsForAllConsultants() {
+        String query = "SELECT Consultant.EmployeeNo, COUNT(Work.ProjectID) as totalProjects " +
+                       "FROM Work " +
+                       "JOIN Consultant ON Work.ConsultantID = Consultant.ConsultantID " +
+                       "GROUP BY Consultant.EmployeeNo";
+    
+        Map<String, Integer> consultantProjectsMap = new HashMap<>();
+    
+        try (Connection connection = connectionHandler.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet resultSet = statement.executeQuery()) {
+    
+            while (resultSet.next()) {
+                String employeeNo = resultSet.getString("employeeNo");
+                int totalProjects = resultSet.getInt("totalProjects");
+                consultantProjectsMap.put(employeeNo, totalProjects);
+            }
+        } catch (SQLException e) {
+            throw DaoException.couldNotFetchConsultants(e);
         }
+    
+        return consultantProjectsMap;
+    }
 
-        String query = "SELECT ConsultantID FROM Consultant WHERE EmployeeNo = ?";
-        int consultantID = 0;
+    // Fetch weekly hours for each consultant from the database
+    public Map<String, Integer> findWeeklyHoursForAllConsultants() {
+        String query = "SELECT Consultant.EmployeeNo, SUM(Work.WeeklyHours) as SumWeeklyHours " +
+                       "FROM Work " +
+                       "JOIN Consultant ON Work.ConsultantID = Consultant.ConsultantID " +
+                       "GROUP BY Consultant.EmployeeNo";
+    
+        Map<String, Integer> consultantWeeklyHoursMap = new HashMap<>();
+    
+        try (Connection connection = connectionHandler.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet resultSet = statement.executeQuery()) {
+    
+            while (resultSet.next()) {
+                String employeeNo = resultSet.getString("employeeNo");
+                int weeklyHours = resultSet.getInt("SumWeeklyHours");
+                consultantWeeklyHoursMap.put(employeeNo, weeklyHours);
+            }
+        } catch (SQLException e) {
+            throw DaoException.couldNotFetchConsultants(e);
+        }
+    
+        return consultantWeeklyHoursMap;
+    }
+
+    // Fetch total hours for each consultant from the database
+    public Map<String, Integer> findTotalHoursForAllConsultants() {
+        String query = "SELECT Consultant.EmployeeNo, SUM(Work.HoursWorked) as TotalHours " +
+                    "FROM Work " +
+                    "JOIN Consultant ON Work.ConsultantID = Consultant.ConsultantID " +
+                    "GROUP BY Consultant.EmployeeNo";
+
+        Map<String, Integer> consultantTotalHoursMap = new HashMap<>();
 
         try (Connection connection = connectionHandler.getConnection();
-                PreparedStatement statement = connection.prepareStatement(query)) {
+            PreparedStatement statement = connection.prepareStatement(query);
+            ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+                String employeeNo = resultSet.getString("EmployeeNo");
+                int totalHours = resultSet.getInt("TotalHours");
+                consultantTotalHoursMap.put(employeeNo, totalHours);
+            }
+        } catch (SQLException e) {
+            throw DaoException.couldNotFetchConsultants(e);
+        }
+
+        return consultantTotalHoursMap;
+    }
+
+    // Convert consultantNo to ConsultantID
+        public int convertConsultantNoToConsultantId(String employeeNo) {
+            if (employeeNo == null) {
+                throw new IllegalArgumentException("ConsultantNo cannot be null");
+            }
+
+            String query = "SELECT ConsultantID FROM Consultant WHERE EmployeeNo = ?";
+            int consultantID = 0;
+
+        try (Connection connection = connectionHandler.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setString(1, employeeNo);
             ResultSet resultSet = statement.executeQuery();
@@ -182,37 +258,10 @@ public class ConsultantDao {
             }
         } catch (SQLException e) {
             // Log the exception (assuming a logger is available)
-            // logger.error("Error fetching ConsultantID for ConsultantNo: " + consultantNo,
-            // e);
+            // logger.error("Error fetching ConsultantID for ConsultantNo: " + consultantNo, e);
             throw DaoException.couldNotFetchConsultants(e);
         }
 
         return consultantID;
     }
-
-    // Find total number of projects for a consultant
-    public int findTotalNumberOfProjectsForConsultant(String employeeNo) {
-
-        // Convert consultantNo to ConsultantID
-        int consultantId = convertConsultantNoToConsultantId(employeeNo);
-
-        // Find total number of projects
-        String query = "SELECT COUNT(ProjectID) FROM Work WHERE ConsultantID = ?";
-        int totalProjects = 0;
-
-        try (Connection connection = connectionHandler.getConnection();
-                PreparedStatement statement = connection.prepareStatement(query)) {
-
-            statement.setInt(1, consultantId);
-            ResultSet resultSet = statement.executeQuery();
-
-            if (resultSet.next()) {
-                totalProjects = resultSet.getInt(1);
-            }
-        } catch (SQLException e) {
-            throw DaoException.couldNotFetchConsultants(e);
-        }
-        return totalProjects;
-    }
-
 }

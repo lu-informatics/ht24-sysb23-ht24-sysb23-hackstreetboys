@@ -404,7 +404,7 @@ public class ProjectNewProjectViewController implements Initializable {
 
         for (Consultant consultant : selectedConsultants) {
             try {
-                workDao.addConsultantToProject(projectNo, consultant.getEmployeeNo(), consultant.getWeeklyHours(), 0);
+                workDao.addConsultantToProject(projectNo, consultant.getEmployeeNo(), consultant.getWeeklyHours());
             } catch (DaoException e) {
                 textErrorMessage.setText("Could not save consultant to project");
                 return;

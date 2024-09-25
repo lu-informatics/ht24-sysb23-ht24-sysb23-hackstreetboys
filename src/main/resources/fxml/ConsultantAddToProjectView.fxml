@@ -6,22 +6,26 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se.lu.ics.controllers.ConsultantAddToProjectView">
    <children>
-      <TableView layoutX="28.0" layoutY="122.0" prefHeight="200.0" prefWidth="530.0">
+      <TableView fx:id="tableViewProject" layoutX="25.0" layoutY="122.0" prefHeight="200.0" prefWidth="551.0">
         <columns>
-          <TableColumn prefWidth="68.800048828125" text="Project ID" />
-          <TableColumn prefWidth="53.5999755859375" text="Name" />
-            <TableColumn prefWidth="64.0" text="Start Date" />
-            <TableColumn prefWidth="64.79998779296875" text="End Date" />
-            <TableColumn prefWidth="109.60003662109375" text="No. of consultants" />
-            <TableColumn prefWidth="79.199951171875" text="Resources" />
-            <TableColumn prefWidth="88.79998779296875" text="Milestones" />
+          <TableColumn fx:id="tableColumnProjectID" prefWidth="68.800048828125" text="Project ID" />
+          <TableColumn fx:id="tableColumnProjectName" prefWidth="105.0" text="Project Name" />
+            <TableColumn fx:id="tableColumnStartDate" prefWidth="81.0" text="Start Date" />
+            <TableColumn fx:id="tableColumnEndDate" prefWidth="87.0" text="End Date" />
+            <TableColumn fx:id="tablecolumNoOfConsultant" prefWidth="124.0" text="No. of consultants" />
+            <TableColumn fx:id="tableColumnMilestones" prefWidth="84.0" text="Milestones" />
         </columns>
       </TableView>
-      <Text layoutX="28.0" layoutY="36.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Consultant [ID] [Name]" />
-      <Button layoutX="28.0" layoutY="342.0" mnemonicParsing="false" text="Add to project" />
-      <Button layoutX="491.0" layoutY="342.0" mnemonicParsing="false" text="Close" />
+      <Button fx:id="btnAddToProject" layoutX="28.0" layoutY="342.0" mnemonicParsing="false" onAction="#handleBtnAddToProject" text="Add to project" />
+      <Button fx:id="btncloseAddToProjectView" layoutX="491.0" layoutY="342.0" mnemonicParsing="false" onAction="#btncloseAddToProjectView" text="Close" />
+      <Text layoutX="40.0" layoutY="67.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Employee No:" />
+      <Text layoutX="40.0" layoutY="87.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name:" />
+      <Text layoutX="40.0" layoutY="108.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Title::" />
+      <Text fx:id="textEmployeeNO" layoutX="140.0" layoutY="67.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1234" />
+      <Text fx:id="textEmployeeName" layoutX="140.0" layoutY="87.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Berit Östergren" />
+      <Text fx:id="textEmployeeTitle" layoutX="140.0" layoutY="107.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Senior Blabbermouth" />
+      <Text layoutX="227.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Add Consultant to Project" wrappingWidth="146.3486328125" />
    </children>
 </AnchorPane>

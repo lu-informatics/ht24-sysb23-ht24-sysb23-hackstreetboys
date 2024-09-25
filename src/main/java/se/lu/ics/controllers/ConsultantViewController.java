@@ -115,7 +115,29 @@ import java.net.URL;
             }
         
             @FXML
-            void handleBtnRegisterConsultantToProject(ActionEvent event) {    
+            void handleBtnRegisterConsultantToProject(ActionEvent event) { 
+                try {
+                    // Load the FXML file
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ConsultantAddToProjectView.fxml"));
+                    Pane addToProjectPane = loader.load();
+        
+                    // Get the controller from the loader
+                    ConsultantAddToProjectView addToProjectController = loader.getController();
+        
+                    // Pass the consultant object to the controller
+                    addToProjectController.setConsultant(consultant);
+        
+                    // Create a new stage for the modal dialog
+                    Stage modalStage = new Stage();
+                    modalStage.setScene(new Scene(addToProjectPane));
+                    modalStage.setTitle("Add Consultant to Project");
+                    modalStage.initModality(Modality.APPLICATION_MODAL);
+                    modalStage.showAndWait();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }   
+
+
             }
         
             @FXML

@@ -43,10 +43,10 @@ public class ConsultantViewController implements Initializable {
         private TableColumn<Project, String> tableColumnProjectID;
     
         @FXML
-        private TableColumn<Work, Integer> tableColumnTotaltHours;
+        private TableColumn<Project, Integer> tableColumnTotaltHours;
     
         @FXML
-        private TableColumn<Work, Integer> tableColumnWeeklyHours;
+        private TableColumn<Project, Integer> tableColumnWeeklyHours;
     
         //textfields
         @FXML
@@ -64,22 +64,19 @@ public class ConsultantViewController implements Initializable {
         private Pane warningPane;
 
         @FXML
-        void handleBtnCloseConsultantDetails(ActionEvent event) {
-            System.out.println("Submit-knappen klickades");        }
+        void handleBtnCloseConsultantDetails(ActionEvent event) { 
+}
     
         @FXML
-        void handleBtnEditConsultant(ActionEvent event) {
-    
+        void handleBtnEditConsultant(ActionEvent event) {       
         }
     
         @FXML
-        void handleBtnRegisterToExistingProject(ActionEvent event) {
-    
+        void handleBtnRegisterConsultantToProject(ActionEvent event) {    
         }
     
         @FXML
-        void handleBtnRemoveFromProject(ActionEvent event) {
-    
+        void handleBtnRemoveFromProject(ActionEvent event) {    
         }
 
 

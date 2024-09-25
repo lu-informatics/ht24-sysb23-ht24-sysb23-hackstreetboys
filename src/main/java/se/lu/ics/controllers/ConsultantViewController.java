@@ -96,12 +96,14 @@
             @Override
             public void initialize(URL location, ResourceBundle resources) {
                 intitaizeDaos();
+        
         }
 
             public void setConsultant(Consultant consultant) {
                 this.consultant = consultant;
                 if (consultant !=null){
                     setupWorkTableView();
+                    setupConsultantTextDetails();
                 } else {
                     System.out.println("Consultant is null. Cannot setup work table view.");
                 }
@@ -120,9 +122,8 @@
 
             // setup worktable view method
                 private void setupWorkTableView() {
-                    
                 
-                            tableColumnProjectName.setCellValueFactory(cellData -> {
+                tableColumnProjectName.setCellValueFactory(cellData -> {
                     Work work = cellData.getValue();
                     return new SimpleStringProperty(work.getProject().getProjectName());
                 });
@@ -146,4 +147,20 @@
                     // Set the list of work to the tableview
                     tableViewConsultantProjects.setItems(workList);
                 }
+
+                //use consultantDao.findConsultantByEmployeeNo to get the consultant to textfields
+                private void setupConsultantTextDetails() {
+                    if (consultant != null) {
+                    String employeeNO = consultant.getEmployeeNo();
+                    consultant = consultantDao.findConsultantByEmployeeNo(employeeNO);
+
+                    textEmployeeNO.setText(consultant.getEmployeeNo());
+                    textEmployeeName.setText(consultant.getEmployeeName());
+                    textEmployeeTitle.setText(consultant.getEmployeeTitle());
+
+                } else {
+                    System.out.println("Consultant is null. Cannot set text details.");
                 }
+            
+                }
+            }

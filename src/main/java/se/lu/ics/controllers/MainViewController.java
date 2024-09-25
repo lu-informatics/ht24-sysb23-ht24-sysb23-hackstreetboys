@@ -268,14 +268,21 @@ public class MainViewController implements Initializable {
         // Get the selected project
         Project selectedProject = tableViewProjects.getSelectionModel().getSelectedItem();
 
-        if (selectedProject == null) {
+        if (selectedProject != null) {
             try {
-                ProjectViewController projectViewController = new ProjectViewController();
+               
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ProjectView.fxml"));
+                Pane projectViewPane = loader.load(); 
+
+
+                // Get the controller from the loader
+                ProjectViewController projectViewController = loader.getController();
+
                 projectViewController.setProject(selectedProject);
+                System.err.println("Project: " + selectedProject.getProjectName());
 
                 Stage modalStage = new Stage();
-                modalStage.setScene(new Scene(loader.load()));
+                modalStage.setScene(new Scene(projectViewPane));
                 modalStage.setTitle("Project Details");
                 modalStage.initModality(Modality.APPLICATION_MODAL);
                 modalStage.showAndWait();
@@ -284,9 +291,21 @@ public class MainViewController implements Initializable {
             }
         }
     }
-
+     // Delete selected consultant from database using the consultantDao deleteConsultant, 
     @FXML
     void handleBtnDeleteConsultant(ActionEvent event) {
+        Consultant selectedConsultant = tableViewConsultants.getSelectionModel().getSelectedItem();
+        if (selectedConsultant == null) {
+            setWarning("Please select a consultant to delete");
+            return;
+        }
+        try {
+            consultantDao.deleteConsultant(selectedConsultant.getEmployeeNo());
+            updateConsultantsTableView();
+        } catch (Exception e) {
+            setWarning("Could not delete consultant, please contact the system administrator");
+            e.printStackTrace();
+        }
 
     }
 

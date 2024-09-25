@@ -60,10 +60,10 @@ public class ProjectViewController {
     private TableColumn<Work, Integer> tableColumnWeeklyHours;
 
     @FXML
-    private TableView<?> tableViewMilestoneInfo;
+    private TableView<String> tableViewMilestoneInfo;
 
     @FXML
-    private TableView<?> tableViewProjectInfo;
+    private TableView<String> tableViewProjectInfo;
 
     @FXML
     private Text textForProjectID;
@@ -74,9 +74,21 @@ public class ProjectViewController {
     @FXML
     private Pane warningPaneProjectView;
 
-     private ObservableList<Consultant> consultantList;
+    private ObservableList<Consultant> consultantList;
     private ObservableList<Milestone> milestoneList;
+    
+    @FXML
+    public void initialize() {
+        // Initialize the TableView columns
+        tableColumnConsultants.setCellValueFactory(new PropertyValueFactory<>("employeeName"));
+        tableColumnDate.setCellValueFactory(new PropertyValueFactory<>("date"));
+        tableColumnDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
+        tableColumnMilestone.setCellValueFactory(new PropertyValueFactory<>("milestone"));
+        tableColumnTotalHours.setCellValueFactory(new PropertyValueFactory<>("totalHours"));
+        tableColumnWeeklyHours.setCellValueFactory(new PropertyValueFactory<>("weeklyHours"));
 
+        
+    }
 
 
 
@@ -109,6 +121,8 @@ public class ProjectViewController {
     void handleBtnRemoveMilestone(ActionEvent event) {
 
     }
+
+
 
     public void setProject(Project project) {
        this.project = project;

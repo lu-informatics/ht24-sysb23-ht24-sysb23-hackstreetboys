@@ -77,45 +77,33 @@ public class WorkDao {
     
 
     // METHOD: Find project ID by project number
-    public int findProjectIdByProjectNo(String projectNo) {
+    public int findProjectIdByProjectNo(String projectNo) throws SQLException {
         String query = "SELECT ProjectID FROM Project WHERE ProjectNo = ?";
-
         try (Connection connection = connectionHandler.getConnection();
-                PreparedStatement statement = connection.prepareStatement(query)) {
-
-            // Set project number into the prepared statement
+             PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, projectNo);
-
-            // Execute the select operation
-            statement.executeQuery();
-
-            // Return project ID
-            return statement.getResultSet().getInt("ProjectID");
-
-        } catch (SQLException e) {
-            throw DaoException.projectNotFound(projectNo);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt("ProjectID");
+                } else {
+                    throw new SQLException("Project with number " + projectNo + " not found.");
+                }
+            }
         }
-
     }
-
-    // METHOD: Find consultant ID by employee number
-    public int findConsultantIdByEmployeeNo(String employeeNo) {
+    
+    public int findConsultantIdByEmployeeNo(String employeeNo) throws SQLException {
         String query = "SELECT ConsultantID FROM Consultant WHERE EmployeeNo = ?";
-
         try (Connection connection = connectionHandler.getConnection();
-                PreparedStatement statement = connection.prepareStatement(query)) {
-
-            // Set employee number into the prepared statement
+             PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, employeeNo);
-
-            // Execute the select operation
-            statement.executeQuery();
-
-            // Return consultant ID
-            return statement.getResultSet().getInt("ConsultantID");
-
-        } catch (SQLException e) {
-            throw DaoException.couldNotFindConsultantIdByEmployeeNo(employeeNo, e);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt("ConsultantID");
+                } else {
+                    throw new SQLException("Consultant with number " + employeeNo + " not found.");
+                }
+            }
         }
     }
 //needs exception handling
@@ -133,5 +121,33 @@ public class WorkDao {
         // Create and return a Work object
         return new Work(hoursWorked, weeklyHours, project, consultant);
     }
+
+    // method to remove a consultant from a project and update the database 
+
+    public void removeConsultantFromProject(String projectNo, String employeeNo) {
+        String query = "DELETE FROM Work WHERE ProjectID = ? AND ConsultantID = ?";
+    
+        try (Connection connection = connectionHandler.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+    
+            // Convert projectNo to ProjectID
+            int projectId = this.findProjectIdByProjectNo(projectNo);
+    
+            // Convert employeeNo to ConsultantID
+            int consultantId = this.findConsultantIdByEmployeeNo(employeeNo);
+    
+            // Set project data into the prepared statement
+            statement.setInt(1, projectId);
+            statement.setInt(2, consultantId);
+    
+            // Execute the delete operation
+            statement.executeUpdate();
+    
+        } catch (SQLException e) {
+            throw DaoException.couldNotRemoveConsultantFromProject(projectNo, employeeNo, e);
+        }
+    }
+
+
 
 }

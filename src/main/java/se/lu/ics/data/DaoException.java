@@ -118,5 +118,10 @@ public class DaoException extends RuntimeException {
         return new DaoException("Could not count milestones for project with number: " + projectNo, cause);
     }
 
+    //could not delete consultant from project
+    public static DaoException couldNotRemoveConsultantFromProject(String projectNo, String employeeNo, Throwable cause) {
+        return new DaoException("Could not delete consultant with id " + employeeNo + " from project with number " + projectNo, cause);
+    }
+
 
 }

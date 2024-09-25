@@ -167,33 +167,6 @@ public class ConsultantDao {
         return consultants;
     }
 
-// Convert consultantNo to ConsultantID
-public int convertConsultantNoToConsultantId(String employeeNo) {
-    if (employeeNo == null) {
-        throw new IllegalArgumentException("consultantNo cannot be null");
-    }
-
-    String query = "SELECT ConsultantID FROM Consultant WHERE EmployeeNo = ?";
-    int consultantID = 0;
-
-    try (Connection connection = connectionHandler.getConnection();
-         PreparedStatement statement = connection.prepareStatement(query)) {
-
-        statement.setString(1, employeeNo);
-        ResultSet resultSet = statement.executeQuery();
-
-        if (resultSet.next()) {
-            consultantID = resultSet.getInt("ConsultantID");
-        }
-    } catch (SQLException e) {
-        // Log the exception (assuming a logger is available)
-        // logger.error("Error fetching ConsultantID for ConsultantNo: " + consultantNo, e);
-        throw DaoException.couldNotFetchConsultants(e);
-    }
-
-    return consultantID;
-}
-
     public Map<String, Integer> findTotalProjectsForAllConsultants() {
         String query = "SELECT Consultant.EmployeeNo, COUNT(Work.ProjectID) as totalProjects " +
                        "FROM Work " +
@@ -218,4 +191,80 @@ public int convertConsultantNoToConsultantId(String employeeNo) {
         return consultantProjectsMap;
     }
 
+    // Fetch weekly hours for each consultant from the database
+    public Map<String, Integer> findWeeklyHoursForAllConsultants() {
+        String query = "SELECT Consultant.EmployeeNo, SUM(Work.WeeklyHours) as SumWeeklyHours " +
+                       "FROM Work " +
+                       "JOIN Consultant ON Work.ConsultantID = Consultant.ConsultantID " +
+                       "GROUP BY Consultant.EmployeeNo";
+    
+        Map<String, Integer> consultantWeeklyHoursMap = new HashMap<>();
+    
+        try (Connection connection = connectionHandler.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet resultSet = statement.executeQuery()) {
+    
+            while (resultSet.next()) {
+                String employeeNo = resultSet.getString("employeeNo");
+                int weeklyHours = resultSet.getInt("SumWeeklyHours");
+                consultantWeeklyHoursMap.put(employeeNo, weeklyHours);
+            }
+        } catch (SQLException e) {
+            throw DaoException.couldNotFetchConsultants(e);
+        }
+    
+        return consultantWeeklyHoursMap;
+    }
+
+    // Fetch total hours for each consultant from the database
+    public Map<String, Integer> findTotalHoursForAllConsultants() {
+        String query = "SELECT Consultant.EmployeeNo, SUM(Work.HoursWorked) as TotalHours " +
+                    "FROM Work " +
+                    "JOIN Consultant ON Work.ConsultantID = Consultant.ConsultantID " +
+                    "GROUP BY Consultant.EmployeeNo";
+
+        Map<String, Integer> consultantTotalHoursMap = new HashMap<>();
+
+        try (Connection connection = connectionHandler.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+            ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+                String employeeNo = resultSet.getString("EmployeeNo");
+                int totalHours = resultSet.getInt("TotalHours");
+                consultantTotalHoursMap.put(employeeNo, totalHours);
+            }
+        } catch (SQLException e) {
+            throw DaoException.couldNotFetchConsultants(e);
+        }
+
+        return consultantTotalHoursMap;
+    }
+
+    // Convert consultantNo to ConsultantID
+    public int convertConsultantNoToConsultantId(String employeeNo) {
+        if (employeeNo == null) {
+            throw new IllegalArgumentException("consultantNo cannot be null");
+        }
+
+        String query = "SELECT ConsultantID FROM Consultant WHERE EmployeeNo = ?";
+        int consultantID = 0;
+
+        try (Connection connection = connectionHandler.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setString(1, employeeNo);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                consultantID = resultSet.getInt("ConsultantID");
+            }
+        } catch (SQLException e) {
+            // Log the exception (assuming a logger is available)
+            // logger.error("Error fetching ConsultantID for ConsultantNo: " + consultantNo, e);
+            throw DaoException.couldNotFetchConsultants(e);
+        }
+
+        return consultantID;
+    }
 }

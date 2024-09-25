@@ -232,6 +232,14 @@ public class MainViewController implements Initializable {
             return new SimpleStringProperty(String.valueOf(resources) + " %");
         });
 
+        // Set cell value factory for milestones
+        Map<String, Integer> milestonesMap = projectDao.findNoOfMilestonesForEachProject();
+        tableColumnMilestones.setCellValueFactory(cellData -> {
+            Project project = cellData.getValue();
+            int milestones = milestonesMap.getOrDefault(project.getProjectNo(), 0);
+            return new SimpleStringProperty(String.valueOf(milestones));
+        });
+
         List<Project> projects = projectDao.findAllProjects();
         ObservableList<Project> observableProjects = FXCollections.observableArrayList(projects);
         tableViewProjects.setItems(observableProjects);

@@ -1,21 +1,27 @@
 package se.lu.ics.controllers;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
+//import model classes
 import se.lu.ics.models.Consultant;
 import se.lu.ics.models.Milestone;
 import se.lu.ics.models.Project;
 import se.lu.ics.models.Work;
 
+import java.net.URL;
 import java.time.LocalDate;
+import java.util.ResourceBundle;
 
-public class ProjectViewController {
+public class ProjectViewController implements Initializable{
 
     private Project project;
 
@@ -56,10 +62,10 @@ public class ProjectViewController {
     private TableColumn<Work, Integer> tableColumnWeeklyHours;
 
     @FXML
-    private TableView<?> tableViewMilestoneInfo;
+    private TableView<Milestone> tableViewMilestoneInfo;
 
     @FXML
-    private TableView<?> tableViewProjectInfo;
+    private TableView<Consultant> tableViewProjectInfo;
 
     @FXML
     private Text textForProjectID;
@@ -70,9 +76,31 @@ public class ProjectViewController {
     @FXML
     private Pane warningPaneProjectView;
 
-     private ObservableList<Consultant> consultantList;
-    private ObservableList<Milestone> milestoneList;
+    
 
+    private ObservableList<Consultant> consultantList;
+    private ObservableList<Milestone> milestoneList;
+    
+    @FXML
+    public void initialize() {
+     // Initialize columns for Consultant data
+    tableColumnConsultants.setCellValueFactory(new PropertyValueFactory<>("employeeName"));
+    tableColumnTotalHours.setCellValueFactory(new PropertyValueFactory<>("totalHours"));
+    tableColumnWeeklyHours.setCellValueFactory(new PropertyValueFactory<>("weeklyHours"));
+
+    // Initialize columns for Milestone data
+    tableColumnMilestone.setCellValueFactory(new PropertyValueFactory<>("milestone"));
+    tableColumnDate.setCellValueFactory(new PropertyValueFactory<>("date"));
+    tableColumnDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
+
+    // Initialize and bind data to TableViews
+    consultantList = FXCollections.observableArrayList();
+    milestoneList = FXCollections.observableArrayList();
+
+    tableViewProjectInfo.setItems(consultantList);  // Link consultant data to the first TableView
+    tableViewMilestoneInfo.setItems(milestoneList); // Link milestone data to the second TableView
+
+    }
 
 
 
@@ -108,6 +136,11 @@ public class ProjectViewController {
 
     public void setProject(Project project) {
        this.project = project;
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        //Set up consultant table view
     }
 
 }

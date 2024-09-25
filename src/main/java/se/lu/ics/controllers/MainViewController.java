@@ -31,6 +31,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import se.lu.ics.data.ConsultantDao;
+import se.lu.ics.data.DaoException;
 import se.lu.ics.data.ProjectDao;
 import se.lu.ics.models.Consultant;
 import se.lu.ics.models.Project;
@@ -56,6 +57,9 @@ public class MainViewController implements Initializable {
     private Button btnSearch;
 
     @FXML
+    private Button btnClear;
+
+    @FXML
     private Button btnViewConsultantDetails;
 
     @FXML
@@ -65,7 +69,7 @@ public class MainViewController implements Initializable {
     private ComboBox<String> comboBoxTitleFilter;
 
     @FXML
-    private ComboBox<Integer> comboBoxNoProjectFilter;
+    private ComboBox<String> comboBoxNoProjectFilter;
 
     @FXML
     private Tab tabConsultants;
@@ -141,6 +145,8 @@ public class MainViewController implements Initializable {
         initializeDaos();
         setupConsultantsTableView();
         setupProjectsTableView();
+        populateTitleFilterComboBox();
+        populateNoProjectsFilterComboBox();
     }
 
     private void initializeDaos() {
@@ -170,8 +176,8 @@ public class MainViewController implements Initializable {
             return new SimpleStringProperty(String.valueOf(totalProjects));
         });
 
-        // Fetch the weekly hours for each consultant from the database (weekly hours is
-        // not an instance variable)
+        /*  Fetch the weekly hours for each consultant from the database (weekly hours is
+            not an instance variable) */
         Map<String, Integer> consultantWeeklyHoursMap = consultantDao.findWeeklyHoursForAllConsultants();
 
         tableColumnConsultantWeeklyHours.setCellValueFactory(cellData -> {
@@ -243,6 +249,33 @@ public class MainViewController implements Initializable {
         List<Project> projects = projectDao.findAllProjects();
         ObservableList<Project> observableProjects = FXCollections.observableArrayList(projects);
         tableViewProjects.setItems(observableProjects);
+    }
+
+    // Populate title filter combo box
+    public void populateTitleFilterComboBox() {
+        try {
+            List<String> titles = consultantDao.findUniqueTitlesForConsultants();
+            ObservableList<String> observableTitles = FXCollections.observableArrayList(titles);
+            comboBoxTitleFilter.setItems(observableTitles);
+        } catch (DaoException e) {
+            paneWarningConsultantTab.setVisible(true);
+            e.printStackTrace();
+        }
+    }
+
+    // Populate no. of projects filter combo box
+    public void populateNoProjectsFilterComboBox() {
+        
+        // Combobox displays actual values the consultants have from the database
+        try {
+        List<String> possibleNoProjects = consultantDao.findPossibleNoProjectsForConsultants();
+        ObservableList<String> observablePossibleNoProjects = FXCollections.observableArrayList(possibleNoProjects);
+
+        comboBoxNoProjectFilter.setItems(observablePossibleNoProjects);
+        } catch (DaoException e) {
+            paneWarningConsultantTab.setVisible(true);
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -355,7 +388,7 @@ public class MainViewController implements Initializable {
             stage.show();
         } catch (Exception e) {
             setWarning("Could not open the register consultant view, contact support");
-            e.printStackTrace(); // For debugging purposes
+            e.printStackTrace();
 
         }
     }
@@ -364,9 +397,28 @@ public class MainViewController implements Initializable {
     void handleBtnRegisterNewProject(ActionEvent event) {
     }
 
+    // Filter consultants by ID, title, and number of projects
     @FXML
     void handleBtnSearch(ActionEvent event) {
+        
+            String id = textFieldFindEmployeeById.getText();
+            String title = comboBoxTitleFilter.getValue();
+            String noProjects = comboBoxNoProjectFilter.getValue();
 
+
+        List<Consultant> consultants = consultantDao.filterConsultants(id, title, noProjects);
+        ObservableList<Consultant> observableConsultants = FXCollections.observableArrayList(consultants);
+        tableViewConsultants.setItems(observableConsultants);
+    }
+
+    // Clear the search filters, reset table view
+    @FXML
+    void handleBtnClear(ActionEvent event) {
+        textFieldFindEmployeeById.clear();
+        comboBoxTitleFilter.getSelectionModel().clearSelection();
+        comboBoxNoProjectFilter.getSelectionModel().clearSelection();
+        
+        setupConsultantsTableView();
     }
 
     @FXML

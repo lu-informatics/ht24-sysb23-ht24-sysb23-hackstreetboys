@@ -238,6 +238,97 @@ public class ConsultantDao {
         return consultantTotalHoursMap;
     }
 
+    // Fetch all unique titles for consultants from the database
+    public List<String> findUniqueTitlesForConsultants() {
+        String query = "SELECT DISTINCT EmployeeTitle FROM Consultant";
+        List<String> titles = new ArrayList<>();
+
+        try (Connection connection = connectionHandler.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+            ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+                titles.add(resultSet.getString("EmployeeTitle"));
+            }
+        } catch (SQLException e) {
+            throw DaoException.couldNotFetchConsultants(e);
+        }
+
+        return titles;
+    }
+
+    // Fetch unique number of projects for consultants from the database
+    public List<String> findPossibleNoProjectsForConsultants() {
+        String query = "SELECT DISTINCT project_count " +
+               "FROM ( " +
+               "    SELECT COUNT(DISTINCT ProjectID) AS project_count " +
+               "    FROM Work " +
+               "    GROUP BY ConsultantID " +
+               ") AS possible_number_of_projects;";
+
+        List<String> possibleNoProjects = new ArrayList<>();
+
+        try (Connection connection = connectionHandler.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+            ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+                possibleNoProjects.add(resultSet.getString("project_count"));
+            }
+        } catch (SQLException e) {
+            throw DaoException.couldNotFetchConsultants(e);
+        }
+
+        return possibleNoProjects;
+    }
+
+    // Filter consultants by id, title and no of projects
+
+    public List<Consultant> filterConsultants(String employeeNo, String title, String noOfProjects) {
+        String query = "SELECT " +
+               "EmployeeNo, " +
+               "EmployeeTitle, " +
+               "EmployeeName, " +
+               "COUNT(ProjectID) AS NumberOfProjects " +
+               "FROM Consultant " +
+               "LEFT JOIN Work ON Consultant.ConsultantID = Work.ConsultantID " +
+               "GROUP BY EmployeeNo, EmployeeTitle, EmployeeName " +
+               "HAVING " +
+               "(EmployeeNo LIKE ? OR ? IS NULL OR ? = '') " +
+               "AND (EmployeeTitle = ? OR ? IS NULL OR ? = '') " +
+               "AND (COUNT(ProjectID) = ? OR ? IS NULL OR ? = '');";
+    
+        List<Consultant> consultants = new ArrayList<>();
+    
+        try (Connection connection = connectionHandler.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query)) {
+    
+            // Allow for partial matches on employeeNo
+            String employeeNoPattern = employeeNo == null || employeeNo.isEmpty() ? "%" : "%" + employeeNo + "%";
+
+            // Set the parameters
+            statement.setString(1, employeeNoPattern);
+            statement.setString(2, employeeNo);
+            statement.setString(3, employeeNo);
+            statement.setString(4, title);
+            statement.setString(5, title);
+            statement.setString(6, title);
+            statement.setString(7, noOfProjects);
+            statement.setString(8, noOfProjects);
+            statement.setString(9, noOfProjects);
+    
+            ResultSet resultSet = statement.executeQuery();
+    
+            while (resultSet.next()) {
+                consultants.add(mapToConsultant(resultSet));
+            }
+        } catch (SQLException e) {
+            throw DaoException.couldNotFetchConsultants(e);
+        }
+    
+        return consultants;
+    }
+
     // Convert consultantNo to ConsultantID
         public int convertConsultantNoToConsultantId(String employeeNo) {
             if (employeeNo == null) {

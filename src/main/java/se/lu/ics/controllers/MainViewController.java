@@ -89,7 +89,10 @@ public class MainViewController implements Initializable {
     private TableColumn<Consultant, String> tableColumnConsultantNoProjects;
 
     @FXML
-    private TableColumn<Consultant, Integer> tableColumnConsultantTotalHours;
+    private TableColumn<Consultant, String> tableColumnConsultantWeeklyHours;
+
+    @FXML
+    private TableColumn<Consultant, String> tableColumnConsultantTotalHours;
 
     @FXML
     private TableView<Project> tableViewProjects;
@@ -155,6 +158,24 @@ public class MainViewController implements Initializable {
             Consultant consultant = cellData.getValue();
             int totalProjects = consultantProjectsMap.getOrDefault(consultant.getEmployeeNo(), 0);
             return new SimpleStringProperty(String.valueOf(totalProjects));
+        });
+
+        // Fetch the weekly hours for each consultant from the database (weekly hours is not an instance variable)
+        Map<String, Integer> consultantWeeklyHoursMap = consultantDao.findWeeklyHoursForAllConsultants();
+
+        tableColumnConsultantWeeklyHours.setCellValueFactory(cellData -> {
+            Consultant consultant = cellData.getValue();
+            int weeklyHours = consultantWeeklyHoursMap.getOrDefault(consultant.getEmployeeNo(), 0);
+            return new SimpleStringProperty(String.valueOf(weeklyHours));
+        });
+        
+        // Fetch the total number of hours for each consultant from the database (total hours is not an instance variable)
+        Map<String, Integer> consultantTotalHoursMap = consultantDao.findTotalHoursForAllConsultants();
+
+        tableColumnConsultantTotalHours.setCellValueFactory(cellData -> {
+            Consultant consultant = cellData.getValue();
+            int totalHours = consultantTotalHoursMap.getOrDefault(consultant.getEmployeeNo(), 0);
+            return new SimpleStringProperty(String.valueOf(totalHours));
         });
 
         // Populate the table view with the data

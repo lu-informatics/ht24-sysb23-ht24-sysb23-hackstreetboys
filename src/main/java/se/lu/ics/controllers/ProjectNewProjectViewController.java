@@ -1,7 +1,6 @@
 package se.lu.ics.controllers;
 
 
-import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -9,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+
+
 
 
 import javafx.beans.property.SimpleStringProperty;
@@ -38,412 +39,569 @@ import se.lu.ics.models.Consultant;
 
 
 
+
+
+
+
 public class ProjectNewProjectViewController implements Initializable {
 
 
-    @FXML
-    private Button btnAddConsultant;
 
 
-    @FXML
-    private Button btnCancel;
+   @FXML
+   private Button btnAddConsultant;
 
 
-    @FXML
-    private Button btnRemoveConsultant;
 
 
-    @FXML
-    private Button btnSaveProject;
+   @FXML
+   private Button btnCancel;
 
 
-    @FXML
-    private ComboBox<String> comboBoxTitleFilter;
 
 
-    @FXML
-    private DatePicker datePickerEndDate;
+   @FXML
+   private Button btnRemoveConsultant;
 
 
-    @FXML
-    private DatePicker datePickerStartDate;
 
 
-    @FXML
-    private Pane paneWarning;
+   @FXML
+   private Button btnSaveProject;
 
 
-    @FXML
-    private TableView<Consultant> tableViewSelectedConsultants;
-    private ObservableList<Consultant> selectedConsultants = FXCollections.observableArrayList();
 
 
-    @FXML
-    private TableColumn<Consultant, String> tableColumnAvailableConsultantAvailability;
+   @FXML
+   private ComboBox<String> comboBoxTitleFilter;
 
 
-    @FXML
-    private TableColumn<Consultant, String> tableColumnAvailableConsultantId;
 
 
-    @FXML
-    private TableColumn<Consultant, String> tableColumnAvailableConsultantName;
+   @FXML
+   private DatePicker datePickerEndDate;
 
 
-    @FXML
-    private TableColumn<Consultant, String> tableColumnAvailableConsultantTitle;
 
 
-    @FXML
-    private TableColumn<Consultant, String> tableColumnSelectedConsultantId;
+   @FXML
+   private DatePicker datePickerStartDate;
 
 
-    @FXML
-    private TableColumn<Consultant, String> tableColumnSelectedConsultantName;
 
 
-    @FXML
-    private TableColumn<Consultant, Integer> tableColumnSelectedConsultantWeeklyHours;
+   @FXML
+   private Pane paneWarning;
 
 
-    @FXML
-    private TableView<Consultant> tableViewAvailableConsultants;
 
 
-    @FXML
-    private MainViewController mainViewController;
+   @FXML
+   private TableView<Consultant> tableViewSelectedConsultants;
+   private ObservableList<Consultant> selectedConsultants = FXCollections.observableArrayList();
 
 
-    public void setMainViewController(MainViewController mainViewController) {
-        this.mainViewController = mainViewController;
-    }
 
 
-    @FXML
-    private Text textErrorMessage;
+   @FXML
+   private TableColumn<Consultant, String> tableColumnAvailableConsultantAvailability;
 
 
-    @FXML
-    private TextField textFieldFindEmployeeById;
 
 
-    @FXML
-    private TextField textFieldProjectId;
+   @FXML
+   private TableColumn<Consultant, String> tableColumnAvailableConsultantId;
 
 
-    @FXML
-    private TextField textFieldProjectName;
 
 
-    @FXML
-    private TextField textFieldWeeklyHours;
+   @FXML
+   private TableColumn<Consultant, String> tableColumnAvailableConsultantName;
 
 
-    private ConsultantDao consultantDao;
 
 
-    private ProjectDao projectDao;
+   @FXML
+   private TableColumn<Consultant, String> tableColumnAvailableConsultantTitle;
 
 
-    private WorkDao workDao;
 
 
-    public void initialize(URL location, ResourceBundle resources) {
-        initializeDaos();
-        setupTableViewAvailableConsultants();
-        setupTableViewSelectedConsultants();
-        populateComboBoxTitleFilter();
-    }
+   @FXML
+   private TableColumn<Consultant, String> tableColumnSelectedConsultantId;
 
 
-    private void initializeDaos() {
-        try {
-            consultantDao = new ConsultantDao();
-            projectDao = new ProjectDao();
-            workDao = new WorkDao();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
 
-    private void setupTableViewAvailableConsultants() {
-        tableColumnAvailableConsultantId.setCellValueFactory(new PropertyValueFactory<>("employeeNo"));
-        tableColumnAvailableConsultantName.setCellValueFactory(new PropertyValueFactory<>("employeeName"));
-        tableColumnAvailableConsultantTitle.setCellValueFactory(new PropertyValueFactory<>("employeeTitle"));
-       
-        // Fetch the weekly hours data
-    Map<String, Integer> consultantWeeklyHoursMap = consultantDao.findWeeklyHoursForAllConsultants();
+   @FXML
+   private TableColumn<Consultant, String> tableColumnSelectedConsultantName;
 
 
-    // Set the cell value factory for the availability column
-    tableColumnAvailableConsultantAvailability.setCellValueFactory(cellData -> {
-        Consultant consultant = cellData.getValue();
-        int weeklyHours = consultantWeeklyHoursMap.getOrDefault(consultant.getEmployeeNo(), 0);
-        return new SimpleStringProperty(String.valueOf(weeklyHours));
-    });
 
 
-        // Fetch the list of consultants from the database
-        List<Consultant> consultants = consultantDao.findAllConsultants();
-        System.out.println("Fetching consultants: " + consultants);
-        if (consultants.isEmpty()) {
-            System.out.println("No consultants found in the database.");
-        }
-        ObservableList<Consultant> observableConsultants = FXCollections.observableArrayList(consultants);
+   @FXML
+   private TableColumn<Consultant, Integer> tableColumnSelectedConsultantWeeklyHours;
 
 
-        // Set the items to the table view
-        tableViewAvailableConsultants.setItems(observableConsultants);
-    }
 
 
-    private void setupTableViewSelectedConsultants() {
-        tableColumnSelectedConsultantId.setCellValueFactory(new PropertyValueFactory<>("employeeNo"));
-        tableColumnSelectedConsultantName.setCellValueFactory(new PropertyValueFactory<>("employeeName"));
-        tableColumnSelectedConsultantWeeklyHours.setCellValueFactory(new PropertyValueFactory<>("weeklyHours"));
+   @FXML
+   private TableView<Consultant> tableViewAvailableConsultants;
 
 
-        tableViewSelectedConsultants.setItems(selectedConsultants);
-    }
 
 
-   
+   @FXML
+   private MainViewController mainViewController;
 
 
-    private void populateComboBoxTitleFilter() {
-        comboBoxTitleFilter.setItems(FXCollections.observableArrayList(
-            "All", "Consultant", "Senior Consultant", "Manager", "Senior Manager", "Director"
-        ));
-    }
 
 
+   public void setMainViewController(MainViewController mainViewController) {
+       this.mainViewController = mainViewController;
+   }
 
 
-    @FXML
-    private void comboBoxTitleFilter(ActionEvent event) {
-        textErrorMessage.setText("");
 
 
-        try {
-            filterAvailableConsultantsByTitle();
-        } catch (Exception e) {
-            textErrorMessage.setText("An error occurred while filtering consultants by title");
-            e.printStackTrace();
-        }
-    }
+   @FXML
+   private Text textErrorMessage;
 
 
-    private void filterAvailableConsultantsByTitle() {
-        textErrorMessage.setText("");
 
 
-        String title = comboBoxTitleFilter.getSelectionModel().getSelectedItem();
-        ObservableList<Consultant> consultants = FXCollections.observableArrayList();
+   @FXML
+   private TextField textFieldFindEmployeeById;
 
 
-        try {
-            if (title == null || title.trim().isEmpty()) {
-                consultants = FXCollections.observableArrayList(consultantDao.findAllConsultants());
-            } else {
-                consultants = FXCollections.observableArrayList(consultantDao.findConsultantsByTitle(title));
-            }
-        } catch (DaoException e) {
-            textErrorMessage.setText("Could not fetch consultants");
-            e.printStackTrace();
-            return;
-        }
 
 
-        tableViewAvailableConsultants.setItems(consultants);
-    }
+   @FXML
+   private TextField textFieldProjectId;
 
 
-    @FXML
-    private void handleTextFieldFindEmployeeById(ActionEvent event) {
-        textErrorMessage.setText("");
 
 
-        try {
-            filterAvailableConsultantsById();
-        } catch (Exception e) {
-            textErrorMessage.setText("An error occurred while filtering consultants by ID");
-            e.printStackTrace();
-        }
-    }
+   @FXML
+   private TextField textFieldProjectName;
 
 
-    private void filterAvailableConsultantsById() {
-        textErrorMessage.setText("");
 
 
-        String id = textFieldFindEmployeeById.getText();
-        ObservableList<Consultant> consultants = FXCollections.observableArrayList();
+   @FXML
+   private TextField textFieldWeeklyHours;
 
 
-        try {
-            if (id == null || id.trim().isEmpty()) {
-                consultants = FXCollections.observableArrayList(consultantDao.findAllConsultants());
-            } else {
-                consultants = FXCollections.observableArrayList(consultantDao.findConsultantByEmployeeNo(id));
-            }
-        } catch (DaoException e) {
-            textErrorMessage.setText("Could not fetch consultants");
-            e.printStackTrace();
-            return;
-        }
 
 
-        tableViewAvailableConsultants.setItems(consultants);
-    }
+   private ConsultantDao consultantDao;
 
 
-    @FXML
-    private void handleBtnAddConsultant(ActionEvent event) {
-        textErrorMessage.setText("");
 
 
-        Consultant consultant = tableViewAvailableConsultants.getSelectionModel().getSelectedItem();
+   private ProjectDao projectDao;
 
 
-        if (consultant == null) {
-            textErrorMessage.setText("Please select a consultant to add");
-            return;
-        }
 
 
-        if (textFieldWeeklyHours.getText().isEmpty()) {
-            textErrorMessage.setText("Please enter weekly hours");
-            return;
-        }
+   private WorkDao workDao;
 
 
-        if (!textFieldWeeklyHours.getText().matches("[0-9]+")) {
-            textErrorMessage.setText("Weekly hours must be a number");
-            return;
-        }
 
 
-        int weeklyHours = Integer.parseInt(textFieldWeeklyHours.getText());
+   public void initialize(URL location, ResourceBundle resources) {
+       initializeDaos();
+       setupTableViewAvailableConsultants();
+       setupTableViewSelectedConsultants();
+       populateComboBoxTitleFilter();
+   }
 
 
-        if (weeklyHours < 1 || weeklyHours > 40) {
-            textErrorMessage.setText("Weekly hours must be between 1 and 40");
-            return;
-        }
 
 
-        consultant.setWeeklyHours(weeklyHours);
+   private void initializeDaos() {
+       try {
+           consultantDao = new ConsultantDao();
+           projectDao = new ProjectDao();
+           workDao = new WorkDao();
+       } catch (Exception e) {
+           e.printStackTrace();
+       }
+   }
 
 
-        selectedConsultants.add(consultant);
 
 
-        tableViewSelectedConsultants.setItems(selectedConsultants);
+   private void setupTableViewAvailableConsultants() {
+       tableColumnAvailableConsultantId.setCellValueFactory(new PropertyValueFactory<>("employeeNo"));
+       tableColumnAvailableConsultantName.setCellValueFactory(new PropertyValueFactory<>("employeeName"));
+       tableColumnAvailableConsultantTitle.setCellValueFactory(new PropertyValueFactory<>("employeeTitle"));
+     
+       // Fetch the weekly hours data
+   Map<String, Integer> consultantWeeklyHoursMap = consultantDao.findWeeklyHoursForAllConsultants();
 
 
-        tableViewAvailableConsultants.getItems().remove(consultant);
 
 
-        textErrorMessage.setText("");
-    }
+   // Set the cell value factory for the availability column
+   tableColumnAvailableConsultantAvailability.setCellValueFactory(cellData -> {
+       Consultant consultant = cellData.getValue();
+       int weeklyHours = consultantWeeklyHoursMap.getOrDefault(consultant.getEmployeeNo(), 0);
+       return new SimpleStringProperty(String.valueOf(weeklyHours));
+   });
 
 
-    @FXML
-    void handleBtnRemoveConsultant(ActionEvent event) {
-        textErrorMessage.setText("");
 
 
-        Consultant consultant = tableViewSelectedConsultants.getSelectionModel().getSelectedItem();
+       // Fetch the list of consultants from the database
+       List<Consultant> consultants = consultantDao.findAllConsultants();
+       System.out.println("Fetching consultants: " + consultants);
+       if (consultants.isEmpty()) {
+           System.out.println("No consultants found in the database.");
+       }
+       ObservableList<Consultant> observableConsultants = FXCollections.observableArrayList(consultants);
 
 
-        if (consultant == null) {
-            textErrorMessage.setText("Please select a consultant to remove");
-            return;
-        }
 
 
-        selectedConsultants.remove(consultant);
+       // Set the items to the table view
+       tableViewAvailableConsultants.setItems(observableConsultants);
+   }
 
 
-        tableViewSelectedConsultants.setItems(selectedConsultants);
 
 
-        textErrorMessage.setText("");
-    }
+   private void setupTableViewSelectedConsultants() {
+       tableColumnSelectedConsultantId.setCellValueFactory(new PropertyValueFactory<>("employeeNo"));
+       tableColumnSelectedConsultantName.setCellValueFactory(new PropertyValueFactory<>("employeeName"));
+       tableColumnSelectedConsultantWeeklyHours.setCellValueFactory(new PropertyValueFactory<>("weeklyHours"));
 
 
-    @FXML
-    void handleBtnSaveProject(ActionEvent event) throws SQLException {
-        textErrorMessage.setText("");
 
 
-        if (textFieldProjectId.getText().isEmpty() || textFieldProjectName.getText().isEmpty() ||
-            datePickerStartDate.getEditor().getText().isEmpty() || datePickerEndDate.getEditor().getText().isEmpty()) {
-            textErrorMessage.setText("Please fill in all fields");
-            return;
-        }
+       tableViewSelectedConsultants.setItems(selectedConsultants);
+   }
 
 
-        String projectNo = textFieldProjectId.getText();
-        String projectName = textFieldProjectName.getText();
-        LocalDate startDate = datePickerStartDate.getValue();
-        LocalDate endDate = datePickerEndDate.getValue();
 
 
-        Project project = new Project(projectNo, projectName, startDate, endDate);
+ 
 
 
-        try {
-            projectDao.save(project);
-        } catch (DaoException e) {
-            textErrorMessage.setText("Could not save project");
-            return;
-        }
 
 
-        for (Consultant consultant : selectedConsultants) {
-            try {
-                workDao.addConsultantToProject(projectNo, consultant.getEmployeeNo(), consultant.getWeeklyHours());
-            } catch (DaoException e) {
-                textErrorMessage.setText("Could not save consultant to project");
-                return;
-            }
-        }
+   private void populateComboBoxTitleFilter() {
+       comboBoxTitleFilter.setItems(FXCollections.observableArrayList(
+           "All", "Consultant", "Senior Consultant", "Manager", "Senior Manager", "Director"
+       ));
+   }
 
 
-        clearFields();
 
 
-        textErrorMessage.setText("Project saved successfully!");
-    }
 
 
-    @FXML
-    void handleBtnCancel(ActionEvent event) {
-        clearFields();
-        Stage stage = (Stage) btnCancel.getScene().getWindow();
-        stage.close();
-    }
 
 
-    private void clearFields() {
-        textFieldProjectId.clear();
-        textFieldProjectName.clear();
-        datePickerStartDate.getEditor().clear();
-        datePickerEndDate.getEditor().clear();
-        textFieldFindEmployeeById.clear();
-        textFieldWeeklyHours.clear();
-        paneWarning.setVisible(false);
+   @FXML
+   private void comboBoxTitleFilter(ActionEvent event) {
+       textErrorMessage.setText("");
 
 
-        comboBoxTitleFilter.getSelectionModel().clearSelection();
 
 
-        tableViewAvailableConsultants.getItems().clear();
-        tableViewSelectedConsultants.getItems().clear();
+       try {
+           filterAvailableConsultantsByTitle();
+       } catch (Exception e) {
+           textErrorMessage.setText("An error occurred while filtering consultants by title");
+           e.printStackTrace();
+       }
+   }
 
 
-        textErrorMessage.setText("");
-    }
+
+
+   private void filterAvailableConsultantsByTitle() {
+       textErrorMessage.setText("");
+
+
+
+
+       String title = comboBoxTitleFilter.getSelectionModel().getSelectedItem();
+       ObservableList<Consultant> consultants = FXCollections.observableArrayList();
+
+
+
+
+       try {
+           if (title == null || title.trim().isEmpty()) {
+               consultants = FXCollections.observableArrayList(consultantDao.findAllConsultants());
+           } else {
+               consultants = FXCollections.observableArrayList(consultantDao.findConsultantsByTitle(title));
+           }
+       } catch (DaoException e) {
+           textErrorMessage.setText("Could not fetch consultants");
+           e.printStackTrace();
+           return;
+       }
+
+
+
+
+       tableViewAvailableConsultants.setItems(consultants);
+   }
+
+
+
+
+   @FXML
+   private void handleTextFieldFindEmployeeById(ActionEvent event) {
+       textErrorMessage.setText("");
+
+
+
+
+       try {
+           filterAvailableConsultantsById();
+       } catch (Exception e) {
+           textErrorMessage.setText("An error occurred while filtering consultants by ID");
+           e.printStackTrace();
+       }
+   }
+
+
+
+
+   private void filterAvailableConsultantsById() {
+       textErrorMessage.setText("");
+
+
+
+
+       String id = textFieldFindEmployeeById.getText();
+       ObservableList<Consultant> consultants = FXCollections.observableArrayList();
+
+
+
+
+       try {
+           if (id == null || id.trim().isEmpty()) {
+               consultants = FXCollections.observableArrayList(consultantDao.findAllConsultants());
+           } else {
+               consultants = FXCollections.observableArrayList(consultantDao.findConsultantByEmployeeNo(id));
+           }
+       } catch (DaoException e) {
+           textErrorMessage.setText("Could not fetch consultants");
+           e.printStackTrace();
+           return;
+       }
+
+
+
+
+       tableViewAvailableConsultants.setItems(consultants);
+   }
+
+
+
+
+   @FXML
+   private void handleBtnAddConsultant(ActionEvent event) {
+       textErrorMessage.setText("");
+
+
+       Consultant consultant = tableViewAvailableConsultants.getSelectionModel().getSelectedItem();
+
+
+
+
+       if (consultant == null) {
+           textErrorMessage.setText("Please select a consultant to add");
+           return;
+       }
+
+
+
+
+       if (textFieldWeeklyHours.getText().isEmpty()) {
+           textErrorMessage.setText("Please enter weekly hours");
+           return;
+       }
+
+
+
+
+       if (!textFieldWeeklyHours.getText().matches("[0-9]+")) {
+           textErrorMessage.setText("Weekly hours must be a number");
+           return;
+       }
+
+
+
+
+       int weeklyHours = Integer.parseInt(textFieldWeeklyHours.getText());
+
+
+
+
+       if (weeklyHours < 1 || weeklyHours > 40) {
+           textErrorMessage.setText("Weekly hours must be between 1 and 40");
+           return;
+       }
+
+
+
+
+       consultant.setWeeklyHours(weeklyHours);
+
+
+
+
+       selectedConsultants.add(consultant);
+
+
+
+
+       tableViewSelectedConsultants.setItems(selectedConsultants);
+
+
+
+
+       tableViewAvailableConsultants.getItems().remove(consultant);
+
+
+
+
+       textErrorMessage.setText("");
+   }
+
+
+
+
+   @FXML
+   void handleBtnRemoveConsultant(ActionEvent event) {
+       textErrorMessage.setText("");
+
+
+
+
+       Consultant consultant = tableViewSelectedConsultants.getSelectionModel().getSelectedItem();
+
+
+
+
+       if (consultant == null) {
+           textErrorMessage.setText("Please select a consultant to remove");
+           return;
+       }
+
+
+
+
+       selectedConsultants.remove(consultant);
+
+
+
+
+       tableViewSelectedConsultants.setItems(selectedConsultants);
+
+
+
+
+       textErrorMessage.setText("");
+   }
+
+
+
+
+   @FXML
+   void handleBtnSaveProject(ActionEvent event) throws SQLException {
+       textErrorMessage.setText("");
+
+
+
+
+       if (textFieldProjectId.getText().isEmpty() || textFieldProjectName.getText().isEmpty() ||
+           datePickerStartDate.getEditor().getText().isEmpty() || datePickerEndDate.getEditor().getText().isEmpty()) {
+           textErrorMessage.setText("Please fill in all fields");
+           return;
+       }
+
+
+
+
+       String projectNo = textFieldProjectId.getText();
+       String projectName = textFieldProjectName.getText();
+       LocalDate startDate = datePickerStartDate.getValue();
+       LocalDate endDate = datePickerEndDate.getValue();
+
+
+
+
+       Project project = new Project(projectNo, projectName, startDate, endDate);
+
+
+
+
+       try {
+           projectDao.save(project);
+       } catch (DaoException e) {
+           textErrorMessage.setText("Could not save project");
+           return;
+       }
+
+
+
+
+       for (Consultant consultant : selectedConsultants) {
+           try {
+               workDao.addConsultantToProject(projectNo, consultant.getEmployeeNo(), consultant.getWeeklyHours(), 0);
+           } catch (DaoException e) {
+               textErrorMessage.setText("Could not save consultant to project");
+               return;
+           }
+       }
+
+
+      textErrorMessage.setText("Project saved successfully!");
+   }
+
+
+
+
+   @FXML
+   void handleBtnCancel(ActionEvent event) {
+       clearFields();
+       Stage stage = (Stage) btnCancel.getScene().getWindow();
+       stage.close();
+   }
+
+
+
+
+   private void clearFields() {
+       textFieldProjectId.clear();
+       textFieldProjectName.clear();
+       datePickerStartDate.getEditor().clear();
+       datePickerEndDate.getEditor().clear();
+       textFieldFindEmployeeById.clear();
+       textFieldWeeklyHours.clear();
+       paneWarning.setVisible(false);
+
+
+
+
+       comboBoxTitleFilter.getSelectionModel().clearSelection();
+
+
+
+
+       tableViewAvailableConsultants.getItems().clear();
+       tableViewSelectedConsultants.getItems().clear();
+
+
+
+
+       textErrorMessage.setText("");
+   }
 }

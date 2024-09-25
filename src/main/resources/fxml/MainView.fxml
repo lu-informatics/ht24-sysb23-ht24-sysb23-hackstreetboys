@@ -22,12 +22,16 @@
                    <children>
                       <TableView fx:id="tableViewConsultants" layoutX="16.0" layoutY="56.0" prefHeight="282.0" prefWidth="783.0">
                         <columns>
-                          <TableColumn fx:id="tableColumnConsultantId" prefWidth="100.0" text="Employee ID" />
-                          <TableColumn fx:id="tableColumnConsultantName" prefWidth="69.5999755859375" text="Name" />
-                            <TableColumn fx:id="tableColumnConsultantTitle" prefWidth="69.5999755859375" text="Title" />
-                            <TableColumn fx:id="tableColumnConsultantNoProjects" prefWidth="126.39996337890625" text="No. of projects" />
-                            <TableColumn fx:id="tableColumnConsultantTotalHours" prefWidth="126.39996337890625" text="Total hours" />
+                          <TableColumn fx:id="tableColumnConsultantId" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="Employee ID" />
+                          <TableColumn fx:id="tableColumnConsultantName" prefWidth="190.0" text="Name" />
+                            <TableColumn fx:id="tableColumnConsultantTitle" prefWidth="190.0" text="Title" />
+                            <TableColumn fx:id="tableColumnConsultantNoProjects" maxWidth="100.0" prefWidth="100.0" text="No. of projects" />
+                            <TableColumn fx:id="tableColumnConsultantWeeklyHours" maxWidth="100.0" prefWidth="100.0" text="Weekly hours" />
+                              <TableColumn fx:id="tableColumnConsultantTotalHours" maxWidth="100.0" prefWidth="100.0" text="Total hours" />
                         </columns>
+                           <columnResizePolicy>
+                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
                       </TableView>
                       <Button fx:id="btnRegisterNewConsultant" layoutX="15.0" layoutY="348.0" mnemonicParsing="false" onAction="#handleBtnRegisterNewConsultant" text="Register new consultant" />
                       <Button fx:id="btnDeleteConsultant" layoutX="204.0" layoutY="348.0" mnemonicParsing="false" onAction="#handleBtnDeleteConsultant" text="Delete consultant" />

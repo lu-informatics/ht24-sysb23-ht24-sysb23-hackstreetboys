@@ -11,6 +11,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
+//import model classes
 import se.lu.ics.models.Consultant;
 import se.lu.ics.models.Milestone;
 import se.lu.ics.models.Project;
@@ -96,7 +97,7 @@ public class ProjectViewController implements Initializable{
     projectList = FXCollections.observableArrayList();
     milestoneList = FXCollections.observableArrayList();
 
-    tableViewProjectInfo.setItems(projectList);  // Link consultant data to the first TableView
+    tableViewProjectInfo.setItems(projectList);  // Link project data to the first TableView
     tableViewMilestoneInfo.setItems(milestoneList); // Link milestone data to the second TableView
 
     }

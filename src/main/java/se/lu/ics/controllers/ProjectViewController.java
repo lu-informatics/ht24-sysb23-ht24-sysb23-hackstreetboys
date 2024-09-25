@@ -65,7 +65,7 @@ public class ProjectViewController implements Initializable{
     private TableView<Milestone> tableViewMilestoneInfo;
 
     @FXML
-    private TableView<Project> tableViewProjectInfo;
+    private TableView<Consultant> tableViewProjectInfo;
 
     @FXML
     private Text textForProjectID;
@@ -78,7 +78,7 @@ public class ProjectViewController implements Initializable{
 
     
 
-    private ObservableList<Project> projectList;
+    private ObservableList<Consultant> consultantList;
     private ObservableList<Milestone> milestoneList;
     
     @FXML
@@ -94,10 +94,10 @@ public class ProjectViewController implements Initializable{
     tableColumnDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
 
     // Initialize and bind data to TableViews
-    projectList = FXCollections.observableArrayList();
+    consultantList = FXCollections.observableArrayList();
     milestoneList = FXCollections.observableArrayList();
 
-    tableViewProjectInfo.setItems(projectList);  // Link project data to the first TableView
+    tableViewProjectInfo.setItems(consultantList);  // Link consultant data to the first TableView
     tableViewMilestoneInfo.setItems(milestoneList); // Link milestone data to the second TableView
 
     }
@@ -134,18 +134,13 @@ public class ProjectViewController implements Initializable{
 
     }
 
-
-
     public void setProject(Project project) {
        this.project = project;
     }
 
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         //Set up consultant table view
-        
-
     }
 
 }

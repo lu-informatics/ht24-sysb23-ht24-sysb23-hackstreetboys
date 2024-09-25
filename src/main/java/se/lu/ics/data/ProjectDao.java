@@ -6,7 +6,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import se.lu.ics.models.Consultant;
 import se.lu.ics.models.Project;
 public class ProjectDao {
@@ -82,11 +85,12 @@ public class ProjectDao {
             throw DaoException.couldNotFetchProjects(e);
         }
     }
+
     // METHOD: Find all consultants in the project from the List of Consultants
     public List<Consultant> findAllConsultantsInProject(Project project) {
-        String query = "SELECT Consultant.EmployeeNo, Consultant.Title, Consultant.EmployeeName " +
+        String query = "SELECT Consultant.EmployeeNo, Consultant.EmployeeTitle, Consultant.EmployeeName " +
                 "FROM Work " +
-                "JOIN Consultant ON Work.ConsultantEmployeeNo = Consultant.EmployeeNo " +
+                "JOIN Consultant ON Work.ConsultantID = Consultant.ConsultantID " +
                 "WHERE Work.ProjectNo = ?";
         List<Consultant> consultants = new ArrayList<>();
 
@@ -113,76 +117,101 @@ public class ProjectDao {
         return consultants; // Return the list of consultants
     }
 
+    // METHOD: Find no of consultants for a project
+    public Map<String, Integer> findNoOfConsultantsForEachProject() {
+        String query = "SELECT Project.ProjectNo, COUNT(Work.ConsultantID) as NoOfConsultants " +
+                    "FROM Work " +
+                    "JOIN Project ON Work.ProjectID = Project.ProjectID " +
+                    "GROUP BY Project.ProjectNo";
 
-   // METHOD: Delete a project by project number
-public void deleteProject(String projectNo) throws SQLException {
-    String query = "DELETE FROM Project WHERE ProjectNo = ?";
+        Map<String, Integer> noOfConsultantsMap = new HashMap<>();
 
-    try (Connection connection = connectionHandler.getConnection();
+        try (Connection connection = connectionHandler.getConnection();
+        PreparedStatement statement = connection.prepareStatement(query);
+        ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+                String projectNo = resultSet.getString("ProjectNo");
+                int noOfConsultants = resultSet.getInt("NoOfConsultants");
+                noOfConsultantsMap.put(projectNo, noOfConsultants);
+            }
+        } catch (SQLException e) {
+            throw DaoException.couldNotFetchConsultants(e);
+        }
+
+        return noOfConsultantsMap;
+    }
+
+
+    // METHOD: Delete a project by project number
+    public void deleteProject(String projectNo) throws SQLException {
+        String query = "DELETE FROM Project WHERE ProjectNo = ?";
+
+        try (Connection connection = connectionHandler.getConnection();
+                PreparedStatement statement = connection.prepareStatement(query)) {
+
+            // Set the project number in the prepared statement
+            statement.setString(1, projectNo);
+
+            // Execute the delete operation and check if any rows were affected
+            int rowsAffected = statement.executeUpdate();
+
+            // If no rows were deleted, the project was not found
+            if (rowsAffected == 0) {
+                throw DaoException.projectNotFound(projectNo);
+            }
+
+        } catch (SQLException e) {
+            throw DaoException.couldNotDeleteProject(projectNo, e);
+        }
+    }
+    // METHOD: Update an existing project
+    public void updateProject(Project project) throws Exception {
+        String query = "UPDATE Project SET ProjectName = ?, StartDate = ?, EndDate = ? WHERE ProjectNo = ?";
+
+        try (Connection connection = connectionHandler.getConnection();
             PreparedStatement statement = connection.prepareStatement(query)) {
 
-        // Set the project number in the prepared statement
-        statement.setString(1, projectNo);
+            // Set the updated project data into the prepared statement
+            statement.setString(1, project.getProjectName());
+            statement.setDate(2, java.sql.Date.valueOf(project.getStartDate()));
+            statement.setDate(3, project.getEndDate() != null ? java.sql.Date.valueOf(project.getEndDate()) : null);
+            statement.setString(4, project.getProjectNo());
 
-        // Execute the delete operation and check if any rows were affected
-        int rowsAffected = statement.executeUpdate();
+            // Execute the update operation
+            int rowsUpdated = statement.executeUpdate();
+            if (rowsUpdated == 0) {
+                throw DaoException.projectNotFound(project.getProjectNo());
+            }
 
-        // If no rows were deleted, the project was not found
-        if (rowsAffected == 0) {
-            throw DaoException.projectNotFound(projectNo);
+        } catch (SQLException e) {
+            throw DaoException.couldNotUpdateProject(project.getProjectName(), e);
         }
-
-    } catch (SQLException e) {
-        throw DaoException.couldNotDeleteProject(projectNo, e);
-    }
-}
-// METHOD: Update an existing project
-public void updateProject(Project project) throws Exception {
-    String query = "UPDATE Project SET ProjectName = ?, StartDate = ?, EndDate = ? WHERE ProjectNo = ?";
-
-    try (Connection connection = connectionHandler.getConnection();
-         PreparedStatement statement = connection.prepareStatement(query)) {
-
-        // Set the updated project data into the prepared statement
-        statement.setString(1, project.getProjectName());
-        statement.setDate(2, java.sql.Date.valueOf(project.getStartDate()));
-        statement.setDate(3, project.getEndDate() != null ? java.sql.Date.valueOf(project.getEndDate()) : null);
-        statement.setString(4, project.getProjectNo());
-
-        // Execute the update operation
-        int rowsUpdated = statement.executeUpdate();
-        if (rowsUpdated == 0) {
-            throw DaoException.projectNotFound(project.getProjectNo());
-        }
-
-    } catch (SQLException e) {
-        throw DaoException.couldNotUpdateProject(project.getProjectName(), e);
-    }
-}
-
-public List<Project> findProjectsInvolvingAllConsultants() {
-    String query = "SELECT p.ProjectNo, p.ProjectName, p.StartDate, p.EndDate " +
-            "FROM Project p " +
-            "JOIN Work w ON p.ProjectID = w.ProjectID " +
-            "JOIN Consultant c ON w.EmployeeID = c.ConsultantID " +
-            "GROUP BY p.ProjectNo, p.ProjectName, p.StartDate, p.EndDate " +
-            "HAVING COUNT(DISTINCT w.EmployeeID) = (SELECT COUNT(*) FROM Consultant)";
-    
-    List<Project> projects = new ArrayList<>();
-
-    try (Connection connection = connectionHandler.getConnection();
-            PreparedStatement statement = connection.prepareStatement(query);
-            ResultSet resultSet = statement.executeQuery()) {
-
-        while (resultSet.next()) {
-            projects.add(mapToProject(resultSet));
-        }
-    } catch (SQLException e) {
-        throw DaoException.couldNotFetchProjects(e);
     }
 
-    return projects;
-}
+    public List<Project> findProjectsInvolvingAllConsultants() {
+        String query = "SELECT p.ProjectNo, p.ProjectName, p.StartDate, p.EndDate " +
+                "FROM Project p " +
+                "JOIN Work w ON p.ProjectID = w.ProjectID " +
+                "JOIN Consultant c ON w.EmployeeID = c.ConsultantID " +
+                "GROUP BY p.ProjectNo, p.ProjectName, p.StartDate, p.EndDate " +
+                "HAVING COUNT(DISTINCT w.EmployeeID) = (SELECT COUNT(*) FROM Consultant)";
+        
+        List<Project> projects = new ArrayList<>();
+
+        try (Connection connection = connectionHandler.getConnection();
+                PreparedStatement statement = connection.prepareStatement(query);
+                ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+                projects.add(mapToProject(resultSet));
+            }
+        } catch (SQLException e) {
+            throw DaoException.couldNotFetchProjects(e);
+        }
+
+        return projects;
+    }
 
 
     // METHOD mapToProject

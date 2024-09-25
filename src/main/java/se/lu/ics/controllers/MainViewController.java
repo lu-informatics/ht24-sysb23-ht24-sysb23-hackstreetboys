@@ -134,7 +134,7 @@ public class MainViewController implements Initializable {
         setupConsultantsTableView();
         setupProjectsTableView();
     }
-    
+
     private void initializeDaos() {
         try {
             consultantDao = new ConsultantDao();
@@ -143,7 +143,7 @@ public class MainViewController implements Initializable {
             e.printStackTrace();
         }
     }
-    
+
     // Set up the consultants table view
     private void setupConsultantsTableView() {
 
@@ -152,7 +152,8 @@ public class MainViewController implements Initializable {
         tableColumnConsultantName.setCellValueFactory(new PropertyValueFactory<>("employeeName"));
         tableColumnConsultantTitle.setCellValueFactory(new PropertyValueFactory<>("employeeTitle"));
 
-        // Fetch the total number of projects for each consultant from the database (no. of projects is not an instance variable)
+        // Fetch the total number of projects for each consultant from the database (no.
+        // of projects is not an instance variable)
         Map<String, Integer> consultantProjectsMap = consultantDao.findTotalProjectsForAllConsultants();
 
         tableColumnConsultantNoProjects.setCellValueFactory(cellData -> {
@@ -161,7 +162,8 @@ public class MainViewController implements Initializable {
             return new SimpleStringProperty(String.valueOf(totalProjects));
         });
 
-        // Fetch the weekly hours for each consultant from the database (weekly hours is not an instance variable)
+        // Fetch the weekly hours for each consultant from the database (weekly hours is
+        // not an instance variable)
         Map<String, Integer> consultantWeeklyHoursMap = consultantDao.findWeeklyHoursForAllConsultants();
 
         tableColumnConsultantWeeklyHours.setCellValueFactory(cellData -> {
@@ -169,8 +171,9 @@ public class MainViewController implements Initializable {
             int weeklyHours = consultantWeeklyHoursMap.getOrDefault(consultant.getEmployeeNo(), 0);
             return new SimpleStringProperty(String.valueOf(weeklyHours));
         });
-        
-        // Fetch the total number of hours for each consultant from the database (total hours is not an instance variable)
+
+        // Fetch the total number of hours for each consultant from the database (total
+        // hours is not an instance variable)
         Map<String, Integer> consultantTotalHoursMap = consultantDao.findTotalHoursForAllConsultants();
 
         tableColumnConsultantTotalHours.setCellValueFactory(cellData -> {
@@ -184,56 +187,61 @@ public class MainViewController implements Initializable {
         ObservableList<Consultant> observableConsultants = FXCollections.observableArrayList(consultants);
         tableViewConsultants.setItems(observableConsultants);
     }
-    
+
+    // Update consultant table view
+    public void updateConsultantsTableView() {
+
+        List<Consultant> consultants = consultantDao.findAllConsultants();
+        ObservableList<Consultant> observableConsultants = FXCollections.observableArrayList(consultants);
+        tableViewConsultants.setItems(observableConsultants);
+
+        setupConsultantsTableView();
+    }
+
     // Set up the projects table view
     private void setupProjectsTableView() {
         tableColumnProjectID.setCellValueFactory(new PropertyValueFactory<>("projectNo"));
         tableColumnProjectName.setCellValueFactory(new PropertyValueFactory<>("projectName"));
         tableColumnProjectStartDate.setCellValueFactory(new PropertyValueFactory<>("startDate"));
         tableColumnProjectEndDate.setCellValueFactory(new PropertyValueFactory<>("endDate"));
-    
+
         List<Project> projects = projectDao.findAllProjects();
         ObservableList<Project> observableProjects = FXCollections.observableArrayList(projects);
         tableViewProjects.setItems(observableProjects);
     }
 
-        @FXML
-        void handleBtnViewConsultantDetails(ActionEvent event) {
-            // Get the selected consultant
-            Consultant selectedConsultant = tableViewConsultants.getSelectionModel().getSelectedItem();
+    @FXML
+    void handleBtnViewConsultantDetails(ActionEvent event) {
+        // Get the selected consultant
+        Consultant selectedConsultant = tableViewConsultants.getSelectionModel().getSelectedItem();
 
-        if(selectedConsultant == null) {
+        if (selectedConsultant == null) {
             System.err.println("please select a consultant");
         }
-        
+
         if (selectedConsultant != null) {
-                try {
-                    // Load the FXML and get the controller
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ConsultantView.fxml"));
-                    Pane consultantViewPane = loader.load(); // Load the FXML
-                
+            try {
+                // Load the FXML and get the controller
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ConsultantView.fxml"));
+                Pane consultantViewPane = loader.load(); // Load the FXML
 
-                    // Get the controller from the loader
-                    ConsultantViewController consultantViewController = loader.getController();
-                    
-                  
-                    consultantViewController.setConsultant(selectedConsultant);
-                    System.err.println("Consultant: " + selectedConsultant.getEmployeeName());
-                
+                // Get the controller from the loader
+                ConsultantViewController consultantViewController = loader.getController();
 
-        
-                    // Create a new stage for the modal dialog
-                    Stage modalStage = new Stage();
-                    modalStage.setScene(new Scene(consultantViewPane));
-                    modalStage.setTitle("Consultant Details"); // Change the title accordingly
-                    modalStage.initModality(Modality.APPLICATION_MODAL);
-                    modalStage.showAndWait();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                consultantViewController.setConsultant(selectedConsultant);
+                System.err.println("Consultant: " + selectedConsultant.getEmployeeName());
+
+                // Create a new stage for the modal dialog
+                Stage modalStage = new Stage();
+                modalStage.setScene(new Scene(consultantViewPane));
+                modalStage.setTitle("Consultant Details"); // Change the title accordingly
+                modalStage.initModality(Modality.APPLICATION_MODAL);
+                modalStage.showAndWait();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
-        
+    }
 
     @FXML
     void handleBtnViewProjectDetails(ActionEvent event) {
@@ -279,6 +287,11 @@ public class MainViewController implements Initializable {
             // Load FXML file
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ConsultantRegisterConsultantView.fxml"));
             Parent root = loader.load();
+
+            // Get the controller
+            ConsultantRegisterConsultantViewController consultantRegisterConsultantViewController = loader
+                    .getController();
+            consultantRegisterConsultantViewController.setMainViewController(this);
 
             // Create a new stage
             Stage stage = new Stage();

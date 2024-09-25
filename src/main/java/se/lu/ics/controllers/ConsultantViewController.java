@@ -5,22 +5,28 @@
     import javafx.collections.ObservableList;
     import javafx.event.ActionEvent;
     import javafx.fxml.FXML;
-    import javafx.fxml.Initializable;
-    import javafx.scene.control.Button;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
     import javafx.scene.control.TableColumn;
     import javafx.scene.control.TableView;
     import javafx.scene.control.cell.PropertyValueFactory;
     import javafx.scene.layout.Pane;
     import javafx.scene.text.Text;
-    import se.lu.ics.data.ConsultantDao;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import se.lu.ics.data.ConsultantDao;
     import se.lu.ics.data.ProjectDao;
     import se.lu.ics.data.WorkDao;
     import se.lu.ics.models.Consultant;
     import se.lu.ics.models.Project;
     import se.lu.ics.models.Work;
 
-    import java.net.URL;
+import java.io.IOException;
+import java.net.URL;
     import java.util.ResourceBundle;
+    import java.util.Set;
 
 
     public class ConsultantViewController implements Initializable {
@@ -78,10 +84,34 @@
 
             @FXML
             void handleBtnCloseConsultantDetails(ActionEvent event) { 
+                  // Get the current stage and close it
+        Stage stage = (Stage) btnCloseConsultantDetails.getScene().getWindow();
+        stage.close();
     }
         
             @FXML
-            void handleBtnEditConsultant(ActionEvent event) {       
+            void handleBtnEditConsultant(ActionEvent event) {   
+                try {
+                    // Load the FXML file
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ConsultantEditConsultantInfoView.fxml"));
+                    Pane editConsultantPane = loader.load();
+        
+                    // Get the controller from the loader
+                    ConsultantDetailsEditViewController editConsultantController = loader.getController();
+        
+                    // Pass the consultant object to the controller
+                    editConsultantController.setConsultant(consultant);
+        
+                    // Create a new stage for the modal dialog
+                    Stage modalStage = new Stage();
+                    modalStage.setScene(new Scene(editConsultantPane));
+                    modalStage.setTitle("Edit Consultant Details");
+                    modalStage.initModality(Modality.APPLICATION_MODAL);
+                    modalStage.showAndWait();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+       
             }
         
             @FXML

@@ -21,6 +21,7 @@ import se.lu.ics.models.Consultant;
 
 public class ConsultantRegisterConsultantViewController {
     private ConsultantDao consultantDao;
+    private MainViewController mainViewController;
 
     // Constructor
     public ConsultantRegisterConsultantViewController() {
@@ -29,6 +30,10 @@ public class ConsultantRegisterConsultantViewController {
         } catch (IOException e) {
             setWarning("Could not connect to the database, Please contact the system administrator" + e.getMessage());
         }
+    }
+
+    public void setMainViewController(MainViewController mainViewController) {
+        this.mainViewController = mainViewController;
     }
 
     @FXML
@@ -91,11 +96,17 @@ public class ConsultantRegisterConsultantViewController {
             if (existingConsultant != null) {
                 throw DaoException.consultantAlreadyExists(employeeNo, null);
             }
-            // Save the consultant and close the window
-            Consultant consultant = new Consultant(employeeNo, employeeName, employeeTitle, new ArrayList<>());
+            // Save the consultant
+            Consultant consultant = new Consultant(employeeNo, employeeTitle, employeeName, new ArrayList<>());
             consultantDao.saveConsultant(consultant);
+
+            // Close the window
             Stage stage = (Stage) btnSaveRegisteredConsultant.getScene().getWindow();
             stage.close();
+
+            // Update the table view in MainViewController
+            mainViewController.updateConsultantsTableView();
+
         } catch (DaoException e) {
             setWarning(e.getMessage());
         } catch (SQLException e) {

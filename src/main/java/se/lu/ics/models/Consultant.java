@@ -60,4 +60,14 @@ public class Consultant {
     public void setWork(Work work) {
         this.work = work;
     }
+
+    public int getWeeklyHours() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getWeeklyHours'");
+    }
+
+    public void setWeeklyHours(int weeklyHours) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setWeeklyHours'");
+    }
 }

@@ -16,6 +16,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import se.lu.ics.data.ConsultantDao;
+import se.lu.ics.data.DaoException;
 import se.lu.ics.data.ProjectDao;
 import se.lu.ics.data.WorkDao;
 import se.lu.ics.models.Consultant;
@@ -135,6 +136,39 @@ public class ConsultantViewController implements Initializable {
 
     @FXML
     void handleBtnRemoveFromProject(ActionEvent event) {
+           // Get the selected Work (project assignment) from the TableView
+    Work selectedWork = tableViewConsultantProjects.getSelectionModel().getSelectedItem();
+
+    if (selectedWork != null) {
+        // Get the project number from the selected project
+        String projectNo = selectedWork.getProject().getProjectNo();
+        String employeeNo = consultant.getEmployeeNo();
+
+        // Ensure both projectNo and employeeNo are valid before proceeding
+        if (projectNo != null && employeeNo != null) {
+            try {
+                // Call the DAO method to remove the consultant from the project
+                workDao.removeConsultantFromProject(projectNo, employeeNo);
+
+                // Show a success message (optional)
+                System.out.println("Consultant removed from project successfully.");
+
+                // Refresh the TableView to reflect changes
+                updateWorkTableView();
+
+            } catch (DaoException e) {
+                // Handle exception, show error message or log the error
+                System.err.println("Error occurred while removing consultant from project: " + e.getMessage());
+            }
+        } else {
+            System.out.println("Project or Consultant is not selected properly.");
+        }
+    } else {
+        // If no project is selected, show an error message
+        System.out.println("Please select a project to remove the consultant from.");
+    }
+
+
     }
 
 

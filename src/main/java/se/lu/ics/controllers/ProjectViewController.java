@@ -4,7 +4,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Labeled;
 import javafx.scene.control.TableColumn;
@@ -12,6 +15,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import se.lu.ics.data.ConsultantDao;
 import se.lu.ics.data.ProjectDao;
 import se.lu.ics.data.MilestoneDao;
@@ -98,7 +103,28 @@ public class ProjectViewController implements Initializable{
 
 
     @FXML
-    void handleBtnAddConsultant(ActionEvent event) {
+    void handleBtnAddConsultant(ActionEvent event) {       try {
+            // Load the FXML file for the ProjectAddConsultantView
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ProjectAddConsultantView.fxml"));
+            Pane ProjectAddConsultantViewPane = loader.load();
+
+            // Get the controller for the loaded FXML
+            ProjectAddConsultantViewController ProjectAddConsultantcontroller = loader.getController();
+
+            // Create a new stage for the window
+            Stage modalStage = new Stage();
+            modalStage.setScene(new Scene(ProjectAddConsultantViewPane));
+            modalStage.setTitle("Add Consultant to Project");
+
+            // Set the stage to be modal
+            modalStage.initModality(Modality.APPLICATION_MODAL);
+
+            // Show the stage
+            modalStage.showAndWait();
+        } catch (IOException e) {
+            displayErrorMessage("Could not open the add consultant view, contact support");
+            e.printStackTrace();
+        }
 
     }
 

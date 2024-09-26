@@ -29,10 +29,10 @@
       <DatePicker fx:id="datePickerProjectStartDate" layoutX="135.0" layoutY="180.0" prefHeight="25.0" prefWidth="171.0" />
       <Text layoutX="32.0" layoutY="197.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Start Date:" wrappingWidth="65.40234375" />
       <Text layoutX="32.0" layoutY="99.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ProjectNo:" wrappingWidth="79.40234375" />
-      <TextField fx:id="textFieldProjectNo" layoutX="135.0" layoutY="81.0" prefHeight="26.0" prefWidth="147.0" />
       <DatePicker fx:id="datePickerProjectEndDate" layoutX="135.0" layoutY="224.0" prefHeight="25.0" prefWidth="171.0" />
       <Text layoutX="32.0" layoutY="241.0" strokeType="OUTSIDE" strokeWidth="0.0" text="End Date:" wrappingWidth="65.40234375" />
       <Text layoutX="32.0" layoutY="147.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Project Name:" wrappingWidth="79.40234375" />
       <TextField fx:id="textFieldProjectName" layoutX="135.0" layoutY="129.0" prefHeight="26.0" prefWidth="147.0" />
+      <Text fx:id="textForProjectNo" layoutX="135.0" layoutY="99.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="79.40234375" />
    </children>
 </AnchorPane>

@@ -187,6 +187,34 @@ public void handleBtnAddMilestone(ActionEvent event) {
 
     @FXML
     void handleBtnEditProjectInfo(ActionEvent event) {
+        try {
+            // Load the FXML file for the ProjectViewEditProjectInfo view
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ProjectViewEditProjectInfo.fxml"));
+            Parent root = loader.load();
+    
+            // Get the controller for the loaded FXML
+            ProjectViewEditProjectInfoController editProjectInfoController = loader.getController();
+    
+            // Set the selected project in the ProjectViewEditProjectInfoController
+            editProjectInfoController.setProject(project);  // Assuming you have a setProject method in the controller
+    
+            // Create a new stage for the window
+            Stage modalStage = new Stage();
+            modalStage.setScene(new Scene(root));
+            modalStage.setTitle("Edit Project Information");
+    
+            // Set the stage to be modal
+            modalStage.initModality(Modality.APPLICATION_MODAL);
+    
+            // Show the stage and wait for it to close
+            modalStage.showAndWait();
+        } catch (IOException e) {
+            displayErrorMessage("Could not open the edit project info view, contact support");
+            e.printStackTrace();
+        }
+
+
+
 
     }
 

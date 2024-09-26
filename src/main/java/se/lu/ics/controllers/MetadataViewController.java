@@ -18,8 +18,6 @@ import se.lu.ics.data.MetadataDao;
 
 public class MetadataViewController {
     private MetadataDao metadataDao;
-    private MainViewController mainViewController;
-
     // Constructor
     public MetadataViewController() {
         try {
@@ -30,7 +28,6 @@ public class MetadataViewController {
     }
 
     public void setMainViewController(MainViewController mainViewController) {
-        this.mainViewController = mainViewController;
     }
 
     @FXML

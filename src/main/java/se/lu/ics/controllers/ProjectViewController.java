@@ -111,6 +111,13 @@ public class ProjectViewController implements Initializable {
             // Get the controller for the loaded FXML
             ProjectAddConsultantViewController ProjectAddConsultantcontroller = loader.getController();
 
+
+            //Passes the projectobject to ProjectAddConsultantViewController
+            ProjectAddConsultantcontroller.setProject(this.project);
+            ProjectAddConsultantcontroller.setProjectViewController(this);
+            ProjectAddConsultantcontroller.setMainViewController(mainViewController);
+            
+
             // Create a new stage for the window
             Stage modalStage = new Stage();
             modalStage.setScene(new Scene(ProjectAddConsultantViewPane));
@@ -209,8 +216,38 @@ public void handleBtnAddMilestone(ActionEvent event) {
         }
     }
 
-    @FXML
-    void handleBtnRemoveMilestone(ActionEvent event) {
+    //Method for removing a milestone from a project
+        @FXML
+        void handleBtnRemoveMilestone(ActionEvent event) {
+            // Get the selected milestone from the TableView
+            Milestone selectedMilestone = tableViewMilestoneInfo.getSelectionModel().getSelectedItem();
+    
+            if (selectedMilestone != null) {
+                try {
+                    // Call the DAO method to remove the milestone from the project
+                    milestoneDao.deleteMilestone(selectedMilestone, project);
+    
+                    // Show a success message (optional)
+                    System.out.println("Milestone removed from project successfully.");
+    
+                    // Refresh the ProjectView to reflect changes
+                    loadConsultant();
+                    loadMilestones();
+    
+                    // Update the projects table view in MainViewController
+                    if (mainViewController != null) {
+                        mainViewController.updateProjectsTableView();
+                    }
+    
+                } catch (Exception e) {
+                    // Handle exception, show error message or log the error
+                    displayErrorMessage("Error occurred while removing milestone from project: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            } else {
+                // If no milestone is selected, show an error message
+                displayErrorMessage("Please select a milestone to remove.");
+            }
 
     }
 
@@ -306,6 +343,12 @@ public void handleBtnAddMilestone(ActionEvent event) {
         }
     }
 
+
+    //update the table view
+    public void updateTableView() {
+        setProject(project);
+    }
+
     private void clearErrorMessage() {
         warningPaneProjectView.setVisible(false);
         textForProjectID.setText("");
@@ -315,5 +358,15 @@ public void handleBtnAddMilestone(ActionEvent event) {
         warningPaneProjectView.setVisible(true);
         textForProjectID.setText(message);
     }
+
+    public String getProjectNo() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getProjectNo'");
+    }
+    
+   public void setmainViewController(MainViewController mainViewController) {
+       this.mainViewController = mainViewController;
+   }
+
 
 }

@@ -28,7 +28,6 @@ import java.util.ResourceBundle;
 
 public class ConsultantViewController implements Initializable {
 
-    private ProjectDao projectDao;
     private ConsultantDao consultantDao;
     private WorkDao workDao;
     private Consultant consultant;
@@ -205,7 +204,7 @@ public class ConsultantViewController implements Initializable {
     private void intitaizeDaos() {
         try {
             consultantDao = new ConsultantDao();
-            projectDao = new ProjectDao();
+            new ProjectDao();
             workDao = new WorkDao();
 
         } catch (Exception e) {

@@ -473,5 +473,9 @@ public class ConsultantDao {
             return projectID;
     
         }
-
-    }
+// Overloaded method with two arguments
+public List<Consultant> filterConsultants(String id, String title) {
+    return filterConsultants(id, title, ""); // Call the three-argument method with a default value
+}
+}
+    

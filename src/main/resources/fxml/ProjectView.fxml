@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:controller="se.lu.ics.controllers.ProjectViewController" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se.lu.ics.controllers.ProjectViewController">
    <children>
       <TableView fx:id="tableViewProjectInfo" layoutX="51.0" layoutY="93.0" prefHeight="200.0" prefWidth="266.0">
         <columns>
@@ -33,6 +34,9 @@
       <Button fx:id="btnEditProjectInfo" layoutX="345.0" layoutY="38.0" mnemonicParsing="false" onAction="#handleBtnEditProjectInfo" text="Edit project info ..." />
       <Text fx:id="textForProjectName" layoutX="94.0" layoutY="81.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="195.0" />
       <Text fx:id="textForProjectID" layoutX="113.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="170.0" />
-      <Pane fx:id="warningPaneProjectView" layoutY="366.0" prefHeight="35.0" prefWidth="600.0" />
+      <Pane fx:id="warningPaneProjectView" layoutY="366.0" prefHeight="35.0" prefWidth="600.0">
+         <children>
+            <Label fx:id="labelWarning" layoutX="23.0" layoutY="6.0" />
+         </children></Pane>
    </children>
 </AnchorPane>

@@ -17,7 +17,6 @@ import se.lu.ics.models.Consultant;
 
 public class ConsultantDetailsEditViewController {
     private ConsultantDao consultantDao;
-    private Consultant consultant;
     private MainViewController mainViewController;
 
     // Constructor
@@ -104,14 +103,9 @@ public class ConsultantDetailsEditViewController {
             existingConsultant.setTitle(employeeTitle);
             consultantDao.updateConsultant(existingConsultant);
 
-            // Update counts in the maivilViewController
-            mainViewController.displayTotalHoursForAllConsultants();
-            mainViewController.displayTotalNumberOfConsultants();
-
             // Close the window
             Stage stage = (Stage) btnSaveConsultantEdit.getScene().getWindow();
             stage.close();
-
 
         } catch (DaoException e) {
             setWarning(e.getMessage());
@@ -120,7 +114,6 @@ public class ConsultantDetailsEditViewController {
 
     public void setConsultant(Consultant consultant) {
         if (consultant != null) {
-            this.consultant = consultant; // Store the consultant being edited
             textFieldEmployeeId.setText(consultant.getEmployeeNo());
             textFieldEmployeeName.setText(consultant.getEmployeeName());
             textFieldEmployeeTitle.setText(consultant.getEmployeeTitle());

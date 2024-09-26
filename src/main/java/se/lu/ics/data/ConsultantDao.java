@@ -520,4 +520,50 @@ public class ConsultantDao {
     public List<Consultant> filterConsultants(String id, String title) {
         return filterConsultants(id, title, ""); // Call the three-argument method with a default value
     }
+    
+    // Method to count all consultants
+    public int countConsultants() {
+        String query = "SELECT COUNT(*) AS TotalConsultants FROM Consultant";
+
+        int totalConsultants = 0; // Initialize totalConsultants
+
+        try (Connection connection = connectionHandler.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet resultSet = statement.executeQuery()) {
+
+            // Check if the result set has any rows
+            if (resultSet.next()) {
+                totalConsultants = resultSet.getInt("TotalConsultants"); // Get the total consultants
+            }
+        } catch (SQLException e) {
+            throw DaoException.couldNotFetchConsultants(e); 
+        }
+
+        return totalConsultants; // Return the total consultants
+    }
+
+    // Method findproject with all consultants
+    public int findProjectWithAllConsultants() {
+        String query = "SELECT Work.ProjectID, COUNT(DISTINCT Work.ConsultantID) as ConsultantCount " +
+                "FROM Work " +
+                "GROUP BY Work.ProjectID " +
+                "HAVING COUNT(DISTINCT Work.ConsultantID) = (SELECT COUNT(*) FROM Consultant)";
+    
+        int projectId = -1;
+    
+        try (Connection connection = connectionHandler.getConnection();
+                PreparedStatement statement = connection.prepareStatement(query);
+                ResultSet resultSet = statement.executeQuery()) {
+    
+            if (resultSet.next()) {
+                projectId = resultSet.getInt("ProjectID");
+            }
+        } catch (SQLException e) {
+            throw new DaoException("Could not fetch project", e);
+        }
+    
+        return projectId;
+    }
+
 }
+

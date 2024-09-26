@@ -1,5 +1,6 @@
 package se.lu.ics.controllers;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
@@ -10,7 +11,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -18,12 +21,20 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import se.lu.ics.data.ConsultantDao;
+import se.lu.ics.data.WorkDao;
 import se.lu.ics.models.Consultant;
+import se.lu.ics.models.Project;
+
 
 public class ProjectAddConsultantViewController implements Initializable {
 
     private ConsultantDao consultantDao;
+    private ProjectViewController projectViewController;
+    private WorkDao workDao;
+    private Project project;
 
     @FXML
     private Button btnAddToProject;
@@ -66,23 +77,57 @@ public class ProjectAddConsultantViewController implements Initializable {
 
     @FXML
     void handleBtnAddToProject(ActionEvent event) {
-
+        Consultant consultant = tableViewConsultants.getSelectionModel().getSelectedItem();
+        if (consultant == null) {
+            showWarningMessage("No consultant selected!");
+            return;
+        }
+    
+        if (project == null) {
+            showWarningMessage("Project is not initialized!");
+            return;
+        }
+    
+        String projectNo = project.getProjectNo(); // Use the project object to get the project number
+        String employeeNo = consultant.getEmployeeNo();
+        int hoursWorked = 0; // Set appropriate value
+        int weeklyHours = 0; // Set appropriate value
+    
+        WorkDao workDao;
+        try {
+            workDao = new WorkDao();
+            workDao.addConsultantToProject(projectNo, employeeNo, hoursWorked, weeklyHours);
+            showSuccessMessage("Consultant added to project successfully!");
+        } catch (Exception e) {
+            showWarningMessage("Could not add consultant to project!");
+            e.printStackTrace();
+        
+        }
+        projectViewController.updateTableView();
+        
     }
+
+
+
+    
 
     @FXML
     void handleBtnClose(ActionEvent event) {
+           // Get the current stage and close it
 
+        Stage stage = (Stage) btnClose.getScene().getWindow();
+        stage.close();
     }
 
     @FXML
     void handlePaneWarning(MouseEvent event) {
-
+        paneWarning.setVisible(false);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         initializeDaos();
-        setupConsultantsTableView();
+        setupConsultantsTableView();  
         ;
     }
 
@@ -147,6 +192,42 @@ public class ProjectAddConsultantViewController implements Initializable {
         tableViewConsultants.setItems(observableConsultants);
 
         setupConsultantsTableView();
+    }
+
+    public void setProjectViewController(ProjectViewController projectViewController) {
+        this.projectViewController = projectViewController;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
+    private void showSuccessMessage(String message) {
+        paneWarning.setStyle("-fx-background-color: green;");
+        paneWarning.setVisible(true);
+        textEmployeeNO.setText(message);
+        new Thread(() -> {
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            paneWarning.setVisible(false);
+        }).start();
+    }
+
+    private void showWarningMessage(String message) {
+        paneWarning.setStyle("-fx-background-color: red;");
+        paneWarning.setVisible(true);
+        textEmployeeNO.setText(message);
+        new Thread(() -> {
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            paneWarning.setVisible(false);
+        }).start();
     }
 
 }

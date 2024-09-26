@@ -23,8 +23,6 @@ import se.lu.ics.data.WorkDao;
 import se.lu.ics.data.MilestoneDao;
 import javafx.beans.property.SimpleIntegerProperty;
 
-
-
 //import model classes
 import se.lu.ics.models.Consultant;
 import se.lu.ics.models.Milestone;
@@ -39,14 +37,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-public class ProjectViewController implements Initializable{
+public class ProjectViewController implements Initializable {
 
     private Project project;
     private ConsultantDao consultantDao;
     private ProjectDao projectDao;
     private MilestoneDao milestoneDao;
     private MainViewController mainViewController;
-
 
     // A setter method for MainViewController
     public void setMainViewController(MainViewController mainViewController) {
@@ -70,8 +67,6 @@ public class ProjectViewController implements Initializable{
 
     @FXML
     private Button btnRemoveMilestone;
-
-   
 
     @FXML
     private TableColumn<Milestone, LocalDate> tableColumnDate;
@@ -106,11 +101,9 @@ public class ProjectViewController implements Initializable{
     @FXML
     private Pane warningPaneProjectView;
 
-
-
-
     @FXML
-    void handleBtnAddConsultant(ActionEvent event) {       try {
+    void handleBtnAddConsultant(ActionEvent event) {
+        try {
             // Load the FXML file for the ProjectAddConsultantView
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ProjectAddConsultantView.fxml"));
             Pane ProjectAddConsultantViewPane = loader.load();
@@ -134,11 +127,37 @@ public class ProjectViewController implements Initializable{
         }
 
     }
+// Opens MilestoneAdd.fxml
+@FXML
+public void handleBtnAddMilestone(ActionEvent event) {
+    try {
+        // Load the FXML file for the MilestoneAdd view
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MilestoneAdd.fxml"));
+        Parent root = loader.load();
 
-    @FXML
-    void handleBtnAddMilestone(ActionEvent event) {
+        // Get the controller for the loaded FXML
+        MilestoneAddController milestoneAddController = loader.getController();
 
+        // Set the selected project in the MilestoneAddController
+        milestoneAddController.setProject(project);  // 'project' är det aktuella projektet
+
+        // Create a new stage for the window
+        Stage modalStage = new Stage();
+        modalStage.setScene(new Scene(root));
+        modalStage.setTitle("Add Milestone");
+
+        // Set the stage to be modal
+        modalStage.initModality(Modality.APPLICATION_MODAL);
+
+        // Show the stage and wait for it to close
+        modalStage.showAndWait();
+    } catch (IOException e) {
+        displayErrorMessage("Could not open the add milestone view, contact support");
+        e.printStackTrace();
     }
+}
+
+
 
     @FXML
     void handleBtnClose(ActionEvent event) {
@@ -152,6 +171,7 @@ public class ProjectViewController implements Initializable{
     void handleBtnEditProjectInfo(ActionEvent event) {
 
     }
+
     @FXML
     void handleBtnRemoveConsultant(ActionEvent event) {
         // Get the selected consultant from the TableView
@@ -173,10 +193,10 @@ public class ProjectViewController implements Initializable{
                 loadConsultant();
                 loadMilestones();
 
-               // Update the projects table view in MainViewController
-               if (mainViewController != null) {
-                mainViewController.updateProjectsTableView();
-            }
+                // Update the projects table view in MainViewController
+                if (mainViewController != null) {
+                    mainViewController.updateProjectsTableView();
+                }
 
             } catch (Exception e) {
                 // Handle exception, show error message or log the error
@@ -195,9 +215,9 @@ public class ProjectViewController implements Initializable{
     }
 
     public void setProject(Project project) {
-       this.project = project;
-       loadConsultant();
-       loadMilestones();
+        this.project = project;
+        loadConsultant();
+        loadMilestones();
     }
 
     @Override
@@ -238,8 +258,7 @@ public class ProjectViewController implements Initializable{
         tableColumnDescription.setCellValueFactory(new PropertyValueFactory<>("milestoneDescription"));
     }
 
-
-    //LOAD CONSULTANT
+    // LOAD CONSULTANT
     private void loadConsultant() {
         clearErrorMessage();
         project = ProjectViewController.this.project;
@@ -268,7 +287,7 @@ public class ProjectViewController implements Initializable{
         }
     }
 
-    //LOAD MILESTONES
+    // LOAD MILESTONES
     private void loadMilestones() {
         clearErrorMessage();
         project = ProjectViewController.this.project;
@@ -287,8 +306,6 @@ public class ProjectViewController implements Initializable{
         }
     }
 
-
-
     private void clearErrorMessage() {
         warningPaneProjectView.setVisible(false);
         textForProjectID.setText("");
@@ -298,6 +315,5 @@ public class ProjectViewController implements Initializable{
         warningPaneProjectView.setVisible(true);
         textForProjectID.setText(message);
     }
-    
 
 }

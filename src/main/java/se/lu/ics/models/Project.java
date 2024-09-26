@@ -1,6 +1,7 @@
 package se.lu.ics.models;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Project {
@@ -8,6 +9,7 @@ public class Project {
     private String projectName;
     private LocalDate startDate;
     private LocalDate endDate;
+    private List<Milestone> milestones;
 
     // Constructor
     public Project(String projectNo, String projectName, LocalDate startDate, LocalDate endDate) {
@@ -15,6 +17,8 @@ public class Project {
         this.projectName = projectName;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.milestones = new ArrayList<>();
+
       
     }
     //Constructor for findMilestonesByProjectNo in milestoneDao
@@ -43,6 +47,10 @@ public class Project {
         return endDate;
     }
 
+    public List<Milestone> getMilestones() {
+        return milestones;
+    }
+
     // Setters
 
     public void setProjectNo(String projectNo) {
@@ -61,9 +69,8 @@ public class Project {
         this.endDate = endDate;
     }
 
-    public List<Milestone> getMilestones() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getMilestones'");
+    public void addMilestone(Milestone milestone) {
+        milestones.add(milestone);
     }
 
 }

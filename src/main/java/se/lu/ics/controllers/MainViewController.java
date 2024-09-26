@@ -269,6 +269,18 @@ public class MainViewController implements Initializable {
         tableViewProjects.setItems(observableProjects);
     }
 
+   // Update project table view
+    public void updateProjectsTableView() {
+    List<Project> projects = projectDao.findAllProjects();
+    ObservableList<Project> observableProjects = FXCollections.observableArrayList(projects);
+    tableViewProjects.setItems(observableProjects);
+
+    setupProjectsTableView();
+}
+
+
+
+
     // Populate title filter combo box
     public void populateTitleFilterComboBox() {
         try {
@@ -345,6 +357,7 @@ public class MainViewController implements Initializable {
                 ProjectViewController projectViewController = loader.getController();
 
                 projectViewController.setProject(selectedProject);
+                projectViewController.setMainViewController(this); // Pass the reference
                 System.err.println("Project: " + selectedProject.getProjectName());
 
                 Stage modalStage = new Stage();

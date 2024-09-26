@@ -1,5 +1,6 @@
 package se.lu.ics.controllers;
 
+import java.io.File;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
@@ -35,11 +36,17 @@ import se.lu.ics.data.DaoException;
 import se.lu.ics.data.ProjectDao;
 import se.lu.ics.models.Consultant;
 import se.lu.ics.models.Project;
+import javafx.application.HostServices;
 
 public class MainViewController implements Initializable {
 
     private ProjectDao projectDao;
     private ConsultantDao consultantDao;
+    private HostServices hostServices;
+
+    public void setHostServices(HostServices hostServices) {
+        this.hostServices = hostServices;
+    }
 
     @FXML
     private Button btnAddNewConsultant;
@@ -176,8 +183,10 @@ public class MainViewController implements Initializable {
             return new SimpleStringProperty(String.valueOf(totalProjects));
         });
 
-        /*  Fetch the weekly hours for each consultant from the database (weekly hours is
-            not an instance variable) */
+        /*
+         * Fetch the weekly hours for each consultant from the database (weekly hours is
+         * not an instance variable)
+         */
         Map<String, Integer> consultantWeeklyHoursMap = consultantDao.findWeeklyHoursForAllConsultants();
 
         tableColumnConsultantWeeklyHours.setCellValueFactory(cellData -> {
@@ -227,7 +236,7 @@ public class MainViewController implements Initializable {
             Project project = cellData.getValue();
             int noOfConsultants = noOfConsultantsMap.getOrDefault(project.getProjectNo(), 0);
             return new SimpleStringProperty(String.valueOf(noOfConsultants));
-            
+
         });
 
         // Set cell value factory for resources
@@ -265,13 +274,13 @@ public class MainViewController implements Initializable {
 
     // Populate no. of projects filter combo box
     public void populateNoProjectsFilterComboBox() {
-        
+
         // Combobox displays actual values the consultants have from the database
         try {
-        List<String> possibleNoProjects = consultantDao.findPossibleNoProjectsForConsultants();
-        ObservableList<String> observablePossibleNoProjects = FXCollections.observableArrayList(possibleNoProjects);
+            List<String> possibleNoProjects = consultantDao.findPossibleNoProjectsForConsultants();
+            ObservableList<String> observablePossibleNoProjects = FXCollections.observableArrayList(possibleNoProjects);
 
-        comboBoxNoProjectFilter.setItems(observablePossibleNoProjects);
+            comboBoxNoProjectFilter.setItems(observablePossibleNoProjects);
         } catch (DaoException e) {
             paneWarningConsultantTab.setVisible(true);
             e.printStackTrace();
@@ -319,10 +328,9 @@ public class MainViewController implements Initializable {
 
         if (selectedProject != null) {
             try {
-               
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ProjectView.fxml"));
-                Pane projectViewPane = loader.load(); 
 
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ProjectView.fxml"));
+                Pane projectViewPane = loader.load();
 
                 // Get the controller from the loader
                 ProjectViewController projectViewController = loader.getController();
@@ -340,7 +348,9 @@ public class MainViewController implements Initializable {
             }
         }
     }
-     // Delete selected consultant from database using the consultantDao deleteConsultant, 
+
+    // Delete selected consultant from database using the consultantDao
+    // deleteConsultant,
     @FXML
     void handleBtnDeleteConsultant(ActionEvent event) {
         Consultant selectedConsultant = tableViewConsultants.getSelectionModel().getSelectedItem();
@@ -365,7 +375,25 @@ public class MainViewController implements Initializable {
 
     @FXML
     void handleBtnOpenExcelFile(ActionEvent event) {
+        // Get the resource URL
+        URL resourceUrl = getClass().getClassLoader().getResource("ExcelFileArcticByte.xlsx");
 
+        // Check that the resource URL is not null
+        if (resourceUrl != null) {
+            // Create a file object from the resource URL
+            File file = new File(resourceUrl.getPath());
+
+            // Check if file exists
+            if (file.exists()) {
+                // If the file exists, open the file using the host services
+                hostServices.showDocument(file.getAbsolutePath());
+                // Set the warning message if file does not exist
+            } else {
+                setWarning("The file does not exist");
+            }
+        } else {
+            setWarning("Something is wrong, contact support");
+        }
     }
 
     // Opens ConsultantRegisterConsultantView.fxml
@@ -377,7 +405,8 @@ public class MainViewController implements Initializable {
             Parent root = loader.load();
 
             // Get the controller
-            ConsultantRegisterConsultantViewController consultantRegisterConsultantViewController = loader.getController();
+            ConsultantRegisterConsultantViewController consultantRegisterConsultantViewController = loader
+                    .getController();
             consultantRegisterConsultantViewController.setMainViewController(this);
 
             // Create a new stage
@@ -424,11 +453,10 @@ public class MainViewController implements Initializable {
     // Filter consultants by ID, title, and number of projects
     @FXML
     void handleBtnSearch(ActionEvent event) {
-        
-            String id = textFieldFindEmployeeById.getText();
-            String title = comboBoxTitleFilter.getValue();
-            String noProjects = comboBoxNoProjectFilter.getValue();
 
+        String id = textFieldFindEmployeeById.getText();
+        String title = comboBoxTitleFilter.getValue();
+        String noProjects = comboBoxNoProjectFilter.getValue();
 
         List<Consultant> consultants = consultantDao.filterConsultants(id, title, noProjects);
         ObservableList<Consultant> observableConsultants = FXCollections.observableArrayList(consultants);
@@ -441,7 +469,7 @@ public class MainViewController implements Initializable {
         textFieldFindEmployeeById.clear();
         comboBoxTitleFilter.getSelectionModel().clearSelection();
         comboBoxNoProjectFilter.getSelectionModel().clearSelection();
-        
+
         setupConsultantsTableView();
     }
 

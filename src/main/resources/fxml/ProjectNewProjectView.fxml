@@ -12,7 +12,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller= "se.lu.ics.controllers.ProjectNewProjectViewController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se.lu.ics.controllers.ProjectNewProjectViewController">
    <children>
       <Text layoutX="50.0" layoutY="25.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Create new project">
          <font>
@@ -55,12 +55,14 @@
       <Text layoutX="50.0" layoutY="416.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Selected consultants" />
       <Text fx:id="textErrorMessage" layoutX="50.0" layoutY="575.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="350.0" />
       <Pane fx:id="paneWarning" layoutX="7.0" layoutY="481.0" prefHeight="55.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-      <TextField fx:id="textFieldFindEmployeeById" layoutX="338.0" layoutY="133.0" prefHeight="25.0" prefWidth="150.0" text="Find Employee by ID ..." AnchorPane.rightAnchor="112.0" />
+      <TextField fx:id="textFieldFindEmployeeById" layoutX="350.0" layoutY="133.0" prefHeight="26.0" prefWidth="115.0" promptText="Find Employee by Id.." AnchorPane.rightAnchor="135.0" />
       <ComboBox fx:id="comboBoxTitleFilter" layoutX="175.0" layoutY="133.0" prefHeight="26.0" prefWidth="150.0" promptText="Title: All" />
       <Line layoutY="115.0" startX="600.0" stroke="#00000040" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="25.0" />
       <Line layoutY="390.0" startX="600.0" stroke="#00000040" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="25.0" />
       <Button fx:id="btnCancel" layoutX="502.0" layoutY="628.0" mnemonicParsing="false" onAction="#handleBtnCancel" text="Cancel" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="50.0" />
       <Button fx:id="btnSaveProject" layoutX="407.0" layoutY="635.0" mnemonicParsing="false" onAction="#handleBtnSaveProject" text="Save project" AnchorPane.bottomAnchor="15.0" />
       <Line layoutY="640.0" startX="600.0" stroke="#00000040" AnchorPane.bottomAnchor="55.0" />
+      <Button fx:id="btnSearchConsultant" layoutX="489.0" layoutY="133.0" mnemonicParsing="false" onAction="#handleBtnSearchConsultant" text="Search" />
+      <Button fx:id="btnClearConsultant" layoutX="45.0" layoutY="338.0" mnemonicParsing="false" onAction="#handleBtnClearConsultant" text="Clear" />
    </children>
 </AnchorPane>

@@ -73,37 +73,39 @@ public class MilestoneDao {
    
     // METHOD: find milestones by projectNo method
     
-public List<Milestone> findMilestonesByProjectNo(String projectNo) {
-    String query = "SELECT MilestoneNo, Milestone, MilestoneDate, ProjectNo FROM Milestone WHERE ProjectNo = ?";
-    List<Milestone> milestones = new ArrayList<>();
-
-    try (Connection connection = connectionHandler.getConnection();
-         PreparedStatement statement = connection.prepareStatement(query)) {
-
-        // Set the project number parameter
-        statement.setString(1, projectNo);
-
-        // Execute the query
-        try (ResultSet resultSet = statement.executeQuery()) {
-            while (resultSet.next()) {
-                // Create a new Milestone object and set its properties
-                Milestone milestone = new Milestone();
-                milestone.setMilestoneNo(resultSet.getString("MilestoneNo"));
-                milestone.setMilestoneDescription(resultSet.getString("Milestone"));
-                milestone.setMilestoneDate(resultSet.getDate("MilestoneDate").toLocalDate());
-                milestone.setProject(new Project(resultSet.getString("ProjectNo"))); // Assuming Project has a constructor that takes projectNo
-
-                // Add the milestone to the list
-                milestones.add(milestone);
+    public List<Milestone> findMilestonesByProjectNo(String projectNo) {
+        String query = "SELECT MilestoneNo, MilestoneDescription, MilestoneDate, ProjectID FROM Milestone WHERE ProjectID = ?";
+        List<Milestone> milestones = new ArrayList<>();
+    
+        try (Connection connection = connectionHandler.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+    
+            // Convert ProjectNo to ProjectID
+            int projectID = findProjectIDByProjectNo(projectNo);
+    
+            // Set the project ID parameter
+            statement.setInt(1, projectID);
+    
+            // Execute the query
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    // Create a new Milestone object and set its properties
+                    Milestone milestone = new Milestone();
+                    milestone.setMilestoneNo(resultSet.getString("MilestoneNo"));
+                    milestone.setMilestoneDescription(resultSet.getString("MilestoneDescription"));
+                    milestone.setMilestoneDate(resultSet.getDate("MilestoneDate").toLocalDate());
+                    milestone.setProject(new Project(resultSet.getString("ProjectID"))); // Assuming Project has a constructor that takes projectID
+    
+                    // Add the milestone to the list
+                    milestones.add(milestone);
+                }
             }
+        } catch (SQLException e) {
+            throw DaoException.couldNotFindMilestonesByProjectNo(projectNo, e);
         }
-    } catch (SQLException e) {
-        throw DaoException.couldNotFindMilestonesByProjectNo(projectNo, e);
+    
+        return milestones;
     }
-
-    return milestones;
-}
-
     // METHOD: update milestone method
     public void updateMilestone(Milestone milestone) {
         String query = "UPDATE Milestone SET Milestone = ?, MilestoneDate = ? WHERE MilestoneNo = ? AND ProjectNo = ?";
@@ -145,7 +147,29 @@ public List<Milestone> findMilestonesByProjectNo(String projectNo) {
     }
 
     //
+     // Convert ProjectNo to ProjectID
+     public int findProjectIDByProjectNo(String projectNo) {
+        String query = "SELECT ProjectID FROM Project WHERE ProjectNo = ?";
+        int projectID = 0;
 
+        try (Connection connection = connectionHandler.getConnection();
+                PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setString(1, projectNo);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                projectID = resultSet.getInt("ProjectID");
+            } else {
+                throw DaoException.projectNotFound(projectNo);
+            }
+        } catch (SQLException e) {
+            throw DaoException.couldNotFetchProjects(e);
+        }
+
+        return projectID;
+
+    }
 
 
 }

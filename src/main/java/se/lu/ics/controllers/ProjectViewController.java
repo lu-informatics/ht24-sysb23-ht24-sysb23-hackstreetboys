@@ -14,6 +14,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import se.lu.ics.data.ConsultantDao;
 import se.lu.ics.data.ProjectDao;
+import se.lu.ics.data.MilestoneDao;
 import javafx.beans.property.SimpleIntegerProperty;
 
 
@@ -29,6 +30,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class ProjectViewController implements Initializable{
@@ -36,6 +38,7 @@ public class ProjectViewController implements Initializable{
     private Project project;
     private ConsultantDao consultantDao;
     private ProjectDao projectDao;
+    private MilestoneDao milestoneDao;
 
 
     @FXML
@@ -127,29 +130,49 @@ public class ProjectViewController implements Initializable{
     public void setProject(Project project) {
        this.project = project;
        loadConsultant();
+       loadMilestones();
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-          try {
+        try {
             this.consultantDao = new ConsultantDao();
+            this.milestoneDao = new MilestoneDao();
         } catch (IOException e) {
-            displayErrorMessage("Error initializing ProjectDao: " + e.getMessage());
+            displayErrorMessage("Error initializing DAOs: " + e.getMessage());
             e.printStackTrace();
         }
 
+        tableColumnConsultants.setCellValueFactory(new PropertyValueFactory<>("employeeName"));
 
-        tableColumnConsultants.setCellValueFactory(new PropertyValueFactory<>("EmployeeName"));
+        // For Total Hours Column
         tableColumnTotalHours.setCellValueFactory(cellData -> {
             Work work = cellData.getValue().getWork();
-            return new SimpleIntegerProperty(work != null ? work.getHoursWorked() : 0).asObject();
+            if (work == null) {
+                displayErrorMessage("Error: Work data is missing for " + cellData.getValue().getEmployeeName());
+                return new SimpleIntegerProperty(0).asObject(); // Optionally return 0 in case of error
+            }
+            return new SimpleIntegerProperty(work.getHoursWorked()).asObject();
         });
+
+        // For Weekly Hours Column
         tableColumnWeeklyHours.setCellValueFactory(cellData -> {
             Work work = cellData.getValue().getWork();
-            return new SimpleIntegerProperty(work != null ? work.getWeeklyHours() : 0).asObject();
+            if (work == null) {
+                displayErrorMessage("Error: Work data is missing for " + cellData.getValue().getEmployeeName());
+                return new SimpleIntegerProperty(0).asObject(); // Optionally return 0 in case of error
+            }
+            return new SimpleIntegerProperty(work.getWeeklyHours()).asObject();
         });
+
+        // Initialize Milestone Table Columns
+        tableColumnMilestone.setCellValueFactory(new PropertyValueFactory<>("milestoneNo"));
+        tableColumnDate.setCellValueFactory(new PropertyValueFactory<>("milestoneDate"));
+        tableColumnDescription.setCellValueFactory(new PropertyValueFactory<>("milestoneDescription"));
     }
 
+
+    //LOAD CONSULTANT
     private void loadConsultant() {
         clearErrorMessage();
         project = ProjectViewController.this.project;
@@ -158,15 +181,46 @@ public class ProjectViewController implements Initializable{
             return;
         }
         try {
-        List<Consultant> employeeList = consultantDao.findAllConsultantsInProject(project);
-        ObservableList<Consultant> consultantObservableList =
-        FXCollections.observableArrayList(employeeList);
-        tableViewProjectInfo.setItems(consultantObservableList);
-        } catch  (Exception e) {
-        displayErrorMessage("Error: " + e.getMessage());
-        e.printStackTrace();
+            List<Consultant> employeeList = consultantDao.findAllConsultantsInProject(project);
+            Map<String, Integer> weeklyHoursMap = consultantDao.findWeeklyHoursForAllConsultantsInProject(project);
+            Map<String, Integer> totalHoursMap = consultantDao.findTotalHoursForAllConsultantsInProject(project);
+
+            for (Consultant consultant : employeeList) {
+                String employeeNo = consultant.getEmployeeNo();
+                int weeklyHours = weeklyHoursMap.getOrDefault(employeeNo, 0);
+                int totalHours = totalHoursMap.getOrDefault(employeeNo, 0);
+                Work work = new Work(totalHours, weeklyHours, project, consultant);
+                consultant.setWork(work);
+            }
+
+            ObservableList<Consultant> consultantObservableList = FXCollections.observableArrayList(employeeList);
+            tableViewProjectInfo.setItems(consultantObservableList);
+        } catch (Exception e) {
+            displayErrorMessage("Error: " + e.getMessage());
+            e.printStackTrace();
         }
     }
+
+    //LOAD MILESTONES
+    private void loadMilestones() {
+        clearErrorMessage();
+        project = ProjectViewController.this.project;
+        if (project == null) {
+            displayErrorMessage("Project is not set.");
+            return;
+        }
+        try {
+
+            List<Milestone> milestoneList = milestoneDao.findMilestonesByProjectNo(project.getProjectNo());
+            ObservableList<Milestone> milestoneObservableList = FXCollections.observableArrayList(milestoneList);
+            tableViewMilestoneInfo.setItems(milestoneObservableList);
+        } catch (Exception e) {
+            displayErrorMessage("Error: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+
 
     private void clearErrorMessage() {
         warningPaneProjectView.setVisible(false);

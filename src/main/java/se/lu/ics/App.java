@@ -22,6 +22,10 @@ public class App extends Application {
         loader.setController(new MainViewController());
         Parent root = loader.load();
 
+        // Set host services for controller and create instance of main view controller
+        MainViewController controller = loader.getController();
+        controller.setHostServices(getHostServices());
+
         // Create a scene with the loaded FXML root node
         Scene scene = new Scene(root);
 

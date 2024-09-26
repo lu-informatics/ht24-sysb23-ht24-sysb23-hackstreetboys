@@ -110,6 +110,8 @@ public class ProjectNewProjectViewController implements Initializable {
        this.mainViewController = mainViewController;
    }
 
+   @FXML
+    private Pane paneWarningConsultantTab;
 
    @FXML
    private Text textErrorMessage;
@@ -195,10 +197,15 @@ public class ProjectNewProjectViewController implements Initializable {
 
 
    private void populateComboBoxTitleFilter() {
-       comboBoxTitleFilter.setItems(FXCollections.observableArrayList(
-           "All", "Consultant", "Senior Consultant", "Manager", "Senior Manager", "Director"
-       ));
-   }
+    try {
+        List<String> titles = consultantDao.findUniqueTitlesForConsultants();
+        ObservableList<String> observableTitles = FXCollections.observableArrayList(titles);
+        comboBoxTitleFilter.setItems(observableTitles);
+    } catch (DaoException e) {
+        paneWarningConsultantTab.setVisible(true);
+        e.printStackTrace();
+    }
+}
 
 
 

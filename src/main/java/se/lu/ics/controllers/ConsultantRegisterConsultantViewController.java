@@ -100,6 +100,10 @@ public class ConsultantRegisterConsultantViewController {
             Consultant consultant = new Consultant(employeeNo, employeeTitle, employeeName, new ArrayList<>());
             consultantDao.saveConsultant(consultant);
 
+            // Update counts in the maivilViewController
+            mainViewController.displayTotalHoursForAllConsultants();
+            mainViewController.displayTotalNumberOfConsultants();
+
             // Close the window
             Stage stage = (Stage) btnSaveRegisteredConsultant.getScene().getWindow();
             stage.close();

@@ -17,7 +17,6 @@ import se.lu.ics.models.Consultant;
 
 public class ConsultantDetailsEditViewController {
     private ConsultantDao consultantDao;
-    private Consultant consultant;
     private MainViewController mainViewController;
 
     // Constructor
@@ -120,7 +119,6 @@ public class ConsultantDetailsEditViewController {
 
     public void setConsultant(Consultant consultant) {
         if (consultant != null) {
-            this.consultant = consultant; // Store the consultant being edited
             textFieldEmployeeId.setText(consultant.getEmployeeNo());
             textFieldEmployeeName.setText(consultant.getEmployeeName());
             textFieldEmployeeTitle.setText(consultant.getEmployeeTitle());

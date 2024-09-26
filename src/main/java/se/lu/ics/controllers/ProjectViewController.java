@@ -9,7 +9,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Labeled;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -18,7 +17,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import se.lu.ics.data.ConsultantDao;
-import se.lu.ics.data.ProjectDao;
 import se.lu.ics.data.WorkDao;
 import se.lu.ics.data.MilestoneDao;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -31,7 +29,6 @@ import se.lu.ics.models.Work;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +38,6 @@ public class ProjectViewController implements Initializable {
 
     private Project project;
     private ConsultantDao consultantDao;
-    private ProjectDao projectDao;
     private MilestoneDao milestoneDao;
     private MainViewController mainViewController;
 

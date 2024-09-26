@@ -364,20 +364,18 @@ public class MainViewController implements Initializable {
     void handleBtnViewProjectDetails(ActionEvent event) {
         // Get the selected project
         Project selectedProject = tableViewProjects.getSelectionModel().getSelectedItem();
-
+    
         if (selectedProject != null) {
             try {
-
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ProjectView.fxml"));
                 Pane projectViewPane = loader.load();
-
+    
                 // Get the controller from the loader
                 ProjectViewController projectViewController = loader.getController();
-
+    
                 projectViewController.setProject(selectedProject);
                 projectViewController.setMainViewController(this); // Pass the reference
-                System.err.println("Project: " + selectedProject.getProjectName());
-
+    
                 Stage modalStage = new Stage();
                 modalStage.setScene(new Scene(projectViewPane));
                 modalStage.setTitle("Project Details");

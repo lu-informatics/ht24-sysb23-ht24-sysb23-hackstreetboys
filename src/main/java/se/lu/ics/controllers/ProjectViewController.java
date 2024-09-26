@@ -4,14 +4,22 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Labeled;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import se.lu.ics.data.ConsultantDao;
+import se.lu.ics.data.ProjectDao;
+import se.lu.ics.data.WorkDao;
 import se.lu.ics.data.MilestoneDao;
 import javafx.beans.property.SimpleIntegerProperty;
 
@@ -25,6 +33,7 @@ import se.lu.ics.models.Work;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -34,8 +43,15 @@ public class ProjectViewController implements Initializable{
 
     private Project project;
     private ConsultantDao consultantDao;
+    private ProjectDao projectDao;
     private MilestoneDao milestoneDao;
+    private MainViewController mainViewController;
 
+
+    // A setter method for MainViewController
+    public void setMainViewController(MainViewController mainViewController) {
+        this.mainViewController = mainViewController;
+    }
 
     @FXML
     private Button btnAddConsultant;
@@ -94,7 +110,34 @@ public class ProjectViewController implements Initializable{
 
 
     @FXML
-    void handleBtnAddConsultant(ActionEvent event) {
+    void handleBtnAddConsultant(ActionEvent event) {       try {
+            // Load the FXML file for the ProjectAddConsultantView
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ProjectAddConsultantView.fxml"));
+            Pane ProjectAddConsultantViewPane = loader.load();
+
+            // Get the controller for the loaded FXML
+            ProjectAddConsultantViewController ProjectAddConsultantcontroller = loader.getController();
+
+
+            //Passes the projectobject to ProjectAddConsultantViewController
+            ProjectAddConsultantcontroller.setProject(this.project);
+            ProjectAddConsultantcontroller.setProjectViewController(this);
+            
+
+            // Create a new stage for the window
+            Stage modalStage = new Stage();
+            modalStage.setScene(new Scene(ProjectAddConsultantViewPane));
+            modalStage.setTitle("Add Consultant to Project");
+
+            // Set the stage to be modal
+            modalStage.initModality(Modality.APPLICATION_MODAL);
+
+            // Show the stage
+            modalStage.showAndWait();
+        } catch (IOException e) {
+            displayErrorMessage("Could not open the add consultant view, contact support");
+            e.printStackTrace();
+        }
 
     }
 
@@ -105,6 +148,9 @@ public class ProjectViewController implements Initializable{
 
     @FXML
     void handleBtnClose(ActionEvent event) {
+        // Get the current stage and close it
+        Stage stage = (Stage) btnClose.getScene().getWindow();
+        stage.close();
 
     }
 
@@ -112,10 +158,41 @@ public class ProjectViewController implements Initializable{
     void handleBtnEditProjectInfo(ActionEvent event) {
 
     }
-
     @FXML
     void handleBtnRemoveConsultant(ActionEvent event) {
+        // Get the selected consultant from the TableView
+        Consultant selectedConsultant = tableViewProjectInfo.getSelectionModel().getSelectedItem();
 
+        if (selectedConsultant != null) {
+            String projectNo = project.getProjectNo();
+            String employeeNo = selectedConsultant.getEmployeeNo();
+
+            try {
+                // Call the DAO method to remove the consultant from the project
+                WorkDao workDao = new WorkDao();
+                workDao.removeConsultantFromProject(projectNo, employeeNo);
+
+                // Show a success message (optional)
+                System.out.println("Consultant removed from project successfully.");
+
+                // Refresh the ProjectView to reflect changes
+                loadConsultant();
+                loadMilestones();
+
+               // Update the projects table view in MainViewController
+               if (mainViewController != null) {
+                mainViewController.updateProjectsTableView();
+            }
+
+            } catch (Exception e) {
+                // Handle exception, show error message or log the error
+                displayErrorMessage("Error occurred while removing consultant from project: " + e.getMessage());
+                e.printStackTrace();
+            }
+        } else {
+            // If no consultant is selected, show an error message
+            displayErrorMessage("Please select a consultant to remove.");
+        }
     }
 
     @FXML
@@ -217,6 +294,10 @@ public class ProjectViewController implements Initializable{
     }
 
 
+    //update the table view
+    public void updateTableView() {
+        setProject(project);
+    }
 
     private void clearErrorMessage() {
         warningPaneProjectView.setVisible(false);
@@ -226,6 +307,11 @@ public class ProjectViewController implements Initializable{
     private void displayErrorMessage(String message) {
         warningPaneProjectView.setVisible(true);
         textForProjectID.setText(message);
+    }
+
+    public String getProjectNo() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getProjectNo'");
     }
     
 

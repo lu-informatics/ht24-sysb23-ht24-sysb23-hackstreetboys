@@ -261,6 +261,50 @@ public class ProjectDao {
 
     }
 
+    // filter project by id
+
+    public List<Project> filterProjectById(String projectNo) throws SQLException {
+        String query = "SELECT ProjectNo, ProjectName, StartDate, EndDate FROM Project WHERE ProjectNo = ?";
+        List<Project> projects = new ArrayList<>();
+
+        try (Connection connection = connectionHandler.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setString(1, projectNo);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                projects.add(mapToProject(resultSet));
+            } else {
+                throw DaoException.projectNotFound(projectNo);
+            }
+        } catch (SQLException e) {
+            throw DaoException.couldNotFetchProjects(e);
+        }
+
+        return projects;
+    }
+
+
+
+
+
+    // convet projectNo to projectID
+
+    public int findProjectIdByProjectNo(String projectNo) throws SQLException {
+        String query = "SELECT ProjectID FROM Project WHERE ProjectNo = ?";
+        try (Connection connection = connectionHandler.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, projectNo);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt("ProjectID");
+                } else {
+                    throw new SQLException("Project with number " + projectNo + " not found.");
+                }
+            }
+        }
+    }
 
     // METHOD mapToProject
     private Project mapToProject(ResultSet resultSet) throws SQLException {

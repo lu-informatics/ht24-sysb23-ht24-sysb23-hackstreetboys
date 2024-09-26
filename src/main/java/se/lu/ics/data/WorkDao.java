@@ -30,7 +30,7 @@ public class WorkDao {
                 PreparedStatement statement = connection.prepareStatement(query)) {
 
             //Convert projectNo to ProjectID
-            int projectId = this.findProjectIdByProjectNo(projectNo);
+            Integer projectId = this.findProjectIdByProjectNo(projectNo);
 
             //Convert employeeNo to ConsultantID
             int consultantId = this.findConsultantIdByEmployeeNo(employeeNo);
@@ -107,6 +107,9 @@ public class WorkDao {
             }
         }
     }
+
+
+
 //needs exception handling
     private static Work mapToWork(ResultSet resultSet, String employeeNo) throws SQLException {
         // Extract fields from the result set

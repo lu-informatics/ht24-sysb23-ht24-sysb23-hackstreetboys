@@ -27,6 +27,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import se.lu.ics.data.ConsultantDao;
+import se.lu.ics.data.ProjectDao;
 import se.lu.ics.data.WorkDao;
 import se.lu.ics.models.Consultant;
 import se.lu.ics.models.Project;
@@ -36,6 +37,7 @@ public class ProjectAddConsultantViewController implements Initializable {
     private ConsultantDao consultantDao;
     private ProjectViewController projectViewController;
     private MainViewController mainViewController;
+    private ProjectDao projectDao;
     private Project project;
 
     // Buttons
@@ -69,13 +71,10 @@ public class ProjectAddConsultantViewController implements Initializable {
 
     // Text
     @FXML
-    private Text textEmployeeNO;
+    private Text textProjectNO;
 
     @FXML
-    private Text textEmployeeName;
-
-    @FXML
-    private Text textEmployeeTitle;
+    private Text textProjectName;
 
     // Pane
     @FXML
@@ -90,12 +89,12 @@ public class ProjectAddConsultantViewController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         initializeDaos();
         setupConsultantsTableView();
-        ;
     }
 
     private void initializeDaos() {
         try {
             consultantDao = new ConsultantDao();
+            projectDao = new ProjectDao();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -144,6 +143,8 @@ public class ProjectAddConsultantViewController implements Initializable {
         List<Consultant> consultants = consultantDao.findAllConsultants();
         ObservableList<Consultant> observableConsultants = FXCollections.observableArrayList(consultants);
         tableViewConsultants.setItems(observableConsultants);
+
+        
     }
 
     // Update consultant table view
@@ -155,6 +156,18 @@ public class ProjectAddConsultantViewController implements Initializable {
 
         setupConsultantsTableView();
     }
+
+        // Populate project details in Text fields
+        private void populateProjectDetails(String projectNo) {
+            project = projectDao.findByProjectNo(projectNo);
+            if (project != null) {
+                textProjectNO.setText(project.getProjectNo());
+                textProjectName.setText(project.getProjectName());
+            } else {
+                setWarning("Project not found!");
+            }
+        }
+
 
 
     // BUTTON HANDLERS
@@ -222,6 +235,9 @@ public class ProjectAddConsultantViewController implements Initializable {
 
     public void setProject(Project project) {
         this.project = project;
+        if (project != null) {
+            populateProjectDetails(project.getProjectNo());
+        }
     }
 
     // SUCCESS AND WARNING MESSAGES

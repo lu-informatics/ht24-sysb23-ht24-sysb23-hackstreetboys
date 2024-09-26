@@ -29,14 +29,14 @@ public class WorkDao {
                 PreparedStatement statement = connection.prepareStatement(query)) {
 
             //Convert projectNo to ProjectID
-            this.findProjectIdByProjectNo(projectNo);
+            Integer projectId = this.findProjectIdByProjectNo(projectNo);
 
             //Convert employeeNo to ConsultantID
-            this.findConsultantIdByEmployeeNo(employeeNo);
+            Integer employeeId = this.findConsultantIdByEmployeeNo(employeeNo);
 
             // Set project data into the prepared statement
-            statement.setString(1, projectNo);
-            statement.setString(2, employeeNo);
+            statement.setInt(1, projectId);
+            statement.setInt(2, employeeId);
             statement.setInt(3, hoursWorked);
             statement.setInt(4, weeklyHours);
 
@@ -106,6 +106,9 @@ public class WorkDao {
             }
         }
     }
+
+
+
 //needs exception handling
     private static Work mapToWork(ResultSet resultSet, String employeeNo) throws SQLException {
         // Extract fields from the result set

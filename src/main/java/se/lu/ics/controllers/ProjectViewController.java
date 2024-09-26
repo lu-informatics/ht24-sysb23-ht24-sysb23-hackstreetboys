@@ -111,6 +111,12 @@ public class ProjectViewController implements Initializable{
             // Get the controller for the loaded FXML
             ProjectAddConsultantViewController ProjectAddConsultantcontroller = loader.getController();
 
+
+            //Passes the projectobject to ProjectAddConsultantViewController
+            ProjectAddConsultantcontroller.setProject(this.project);
+            ProjectAddConsultantcontroller.setProjectViewController(this);
+            
+
             // Create a new stage for the window
             Stage modalStage = new Stage();
             modalStage.setScene(new Scene(ProjectAddConsultantViewPane));
@@ -247,6 +253,10 @@ public class ProjectViewController implements Initializable{
     }
 
 
+    //update the table view
+    public void updateTableView() {
+        setProject(project);
+    }
 
     private void clearErrorMessage() {
         warningPaneProjectView.setVisible(false);
@@ -256,6 +266,11 @@ public class ProjectViewController implements Initializable{
     private void displayErrorMessage(String message) {
         warningPaneProjectView.setVisible(true);
         textForProjectID.setText(message);
+    }
+
+    public String getProjectNo() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getProjectNo'");
     }
     
 

@@ -9,6 +9,7 @@ import java.util.ResourceBundle;
 import java.time.LocalDate;
 
 import javafx.animation.KeyFrame;
+import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -38,6 +39,7 @@ import se.lu.ics.data.ProjectDao;
 import se.lu.ics.models.Consultant;
 import se.lu.ics.models.Project;
 import javafx.application.HostServices;
+import java.io.IOException;
 
 public class MainViewController implements Initializable {
 
@@ -48,6 +50,12 @@ public class MainViewController implements Initializable {
     public void setHostServices(HostServices hostServices) {
         this.hostServices = hostServices;
     }
+
+    @FXML
+    private Button btnEmpOfMonth;
+
+    @FXML
+    private Button btnProjectAllConsultants;
 
     @FXML
     private Button btnAddNewConsultant;
@@ -141,6 +149,12 @@ public class MainViewController implements Initializable {
 
     @FXML
     private Text textTotalNoOfConsultants;
+
+    @FXML
+    private Text textEmployeeOfMonth;
+
+    @FXML
+    private Text textProjectsAllConsultants;
 
     @FXML
     private Pane paneWarningConsultantTab;
@@ -597,6 +611,66 @@ public class MainViewController implements Initializable {
                     }
                 }));
         timeline.play();
+    }
+
+    @FXML
+void handleBtnEmpOfMonth(ActionEvent event) {
+    try {
+        ConsultantDao consultantDao = new ConsultantDao();
+        Map<String, Integer> consultantWeeklyHoursMap = consultantDao.findWeeklyHoursForAllConsultants();
+
+        Map.Entry<String, Integer> maxEntry = null;
+        for (Map.Entry<String, Integer> entry : consultantWeeklyHoursMap.entrySet()) {
+            if (maxEntry == null || entry.getValue().compareTo(maxEntry.getValue()) > 0) {
+                maxEntry = entry;
+            }
+        }
+
+        if (maxEntry != null) {
+            textEmployeeOfMonth
+                    .setText("Employee of the month: " + maxEntry.getKey() + " with " + maxEntry.getValue()
+                            + " hours");
+        } else {
+            textEmployeeOfMonth.setText("No data available");
+        }
+
+        PauseTransition pause = new PauseTransition(Duration.seconds(10));
+        pause.setOnFinished(e -> textEmployeeOfMonth.setText(""));
+        pause.play();
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}
+
+    @FXML
+    void handleBtnProjectAllConsultants(ActionEvent event) {
+        try {
+            ConsultantDao consultantDao = new ConsultantDao();
+            ProjectDao projectDao = new ProjectDao(); // Assuming you have a ProjectDao
+            int totalConsultants = consultantDao.countConsultants();
+            List<Project> allProjects = projectDao.findAllProjects(); // Assuming you have a findAllProjects method
+
+            for (Project project : allProjects) {
+                List<Consultant> consultantsInProject = consultantDao.findAllConsultantsInProject(project);
+                if (totalConsultants == consultantsInProject.size()) {
+                    textProjectsAllConsultants.setText(
+                            "Project: " + project.getProjectName() + ", Consultants: " + consultantsInProject.size());
+                    clearTextAfterDelay();
+                    return;
+                }
+            }
+
+            textProjectsAllConsultants.setText("There are no projects including all consultants!");
+            clearTextAfterDelay();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void clearTextAfterDelay() {
+        PauseTransition pause = new PauseTransition(Duration.seconds(10));
+        pause.setOnFinished(e -> textProjectsAllConsultants.setText(""));
+        pause.play();
     }
 
 }

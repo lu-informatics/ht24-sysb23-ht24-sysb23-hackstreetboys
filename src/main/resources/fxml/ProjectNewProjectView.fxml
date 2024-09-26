@@ -12,7 +12,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller= "se.lu.ics.controllers.ProjectNewProjectViewController">
    <children>
       <Text layoutX="50.0" layoutY="25.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Create new project">
          <font>
@@ -33,11 +33,11 @@
       <Text layoutX="50.0" layoutY="86.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name:" />
       <TextField fx:id="textFieldProjectId" layoutX="117.0" layoutY="41.0" prefWidth="150.0" />
       <TextField fx:id="textFieldProjectName" layoutX="117.0" layoutY="69.0" prefWidth="150.0" />
-      <TableView fx:id="tabelViewSelectedConsultants" layoutX="50.0" layoutY="428.0" prefHeight="150.0" prefWidth="500.0" AnchorPane.bottomAnchor="122.0">
+      <TableView fx:id="tableViewSelectedConsultants" layoutX="50.0" layoutY="428.0" prefHeight="150.0" prefWidth="500.0" AnchorPane.bottomAnchor="122.0">
          <columns>
-            <TableColumn fx:id="tableColumnSelectedConsultanId" prefWidth="100.79998779296875" text="Consultant ID" />
-            <TableColumn fx:id="tableColumnSelectedConsultanName" prefWidth="73.60003662109375" text="Name" />
-            <TableColumn fx:id="tableColumnSelectedConsultantWeekyHours" prefWidth="91.20001220703125" text="Weekly Hours" />
+            <TableColumn fx:id="tableColumnSelectedConsultantId" prefWidth="100.79998779296875" text="Consultant ID" />
+            <TableColumn fx:id="tableColumnSelectedConsultantName" prefWidth="73.60003662109375" text="Name" />
+            <TableColumn fx:id="tableColumnSelectedConsultantWeeklyHours" prefWidth="91.20001220703125" text="Weekly Hours" />
          </columns>
          <columnResizePolicy>
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

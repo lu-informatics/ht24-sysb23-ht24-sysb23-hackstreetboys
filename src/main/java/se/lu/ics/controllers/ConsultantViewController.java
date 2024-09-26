@@ -1,6 +1,7 @@
 package se.lu.ics.controllers;
 
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -24,6 +25,7 @@ import se.lu.ics.models.Work;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class ConsultantViewController implements Initializable {
@@ -44,12 +46,6 @@ public class ConsultantViewController implements Initializable {
 
     @FXML
     private Button btnEditConsultant;
-
-    @FXML
-    private Button btnRegisterConsultantToProject;
-
-    @FXML
-    private Button btnRemoveConsultantFromProject;
 
     // tableview
     @FXML
@@ -121,68 +117,10 @@ public class ConsultantViewController implements Initializable {
 
     @FXML
     void handleBtnRegisterConsultantToProject(ActionEvent event) {
-        try {
-            // Load the FXML file
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ConsultantAddToProjectView.fxml"));
-            Pane addToProjectPane = loader.load();
-
-            // Get the controller from the loader
-            ConsultantAddToProjectView addToProjectController = loader.getController();
-
-            // Pass the consultant object to the controller
-            addToProjectController.setConsultant(consultant);
-
-            // Create a new stage for the modal dialog
-            Stage modalStage = new Stage();
-            modalStage.setScene(new Scene(addToProjectPane));
-            modalStage.setTitle("Add Consultant to Project");
-            modalStage.initModality(Modality.APPLICATION_MODAL);
-            modalStage.showAndWait();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
     }
 
-    @FXML
-    void handleBtnRemoveFromProject(ActionEvent event) {
-        // Get the selected Work (project assignment) from the TableView
-        Work selectedWork = tableViewConsultantProjects.getSelectionModel().getSelectedItem();
 
-        if (selectedWork != null) {
-            // Get the project number from the selected project
-            String projectNo = selectedWork.getProject().getProjectNo();
-            String employeeNo = consultant.getEmployeeNo();
-
-            // Ensure both projectNo and employeeNo are valid before proceeding
-            if (projectNo != null && employeeNo != null) {
-                try {
-                    // Call the DAO method to remove the consultant from the project
-                    workDao.removeConsultantFromProject(projectNo, employeeNo);
-
-                    // Show a success message (optional)
-                    System.out.println("Consultant removed from project successfully.");
-
-                    // Refresh the TableView to reflect changes
-                    updateWorkTableView();
-
-                    // Update the consultants table view in MainViewController
-                    if (mainViewController != null) {
-                        mainViewController.updateConsultantsTableView();
-                    }
-
-                } catch (DaoException e) {
-                    // Handle exception, show error message or log the error
-                    System.err.println("Error occurred while removing consultant from project: " + e.getMessage());
-                }
-            } else {
-                System.out.println("Project or Consultant is not selected properly.");
-            }
-        } else {
-            // If no project is selected, show an error message
-            System.out.println("Please select a project to remove the consultant from.");
-        }
-    }
 
     // Initalize ProjectViewController
     @Override
@@ -257,12 +195,17 @@ public class ConsultantViewController implements Initializable {
     }
 
     // Update method for workTableView
-    private void updateWorkTableView() {
+    private void updatetableViewConsultantProjects() {
         if (consultant != null) {
             // Fetch the updated list of works for the consultant
-            ObservableList<Work> updatedWorkList = workDao.findWorksByConsultantId(consultant.getEmployeeNo());
-            // Update the TableView with the new data
-            tableViewConsultantProjects.setItems(updatedWorkList);
+            List<Work> works = workDao.findWorkByConsultantId(consultant.getEmployeeNo());
+            
+            // Debug statement to check fetched works
+            System.out.println("Fetched works: " + works);
+            
+            ObservableList<Work> observableWorks = FXCollections.observableArrayList(works);
+            tableViewConsultantProjects.setItems(observableWorks);
+            tableViewConsultantProjects.refresh();
         } else {
             System.out.println("Consultant is null. Cannot update work table view.");
         }

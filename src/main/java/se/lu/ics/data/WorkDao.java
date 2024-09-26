@@ -151,7 +151,7 @@ public class WorkDao {
             throw DaoException.couldNotRemoveConsultantFromProject(projectNo, employeeNo, e);
         }
     }
-    public ObservableList<Work> findWorksByConsultantId(String employeeNo) {
+    public ObservableList<Work> findWorkByConsultantId(String employeeNo) {
         String query = "SELECT * FROM Work WHERE ConsultantID = (SELECT ConsultantID FROM Consultant WHERE EmployeeNo = ?)";
         ObservableList<Work> workList = FXCollections.observableArrayList();
     

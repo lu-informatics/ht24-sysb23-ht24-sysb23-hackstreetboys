@@ -22,8 +22,6 @@
       <Text fx:id="textEmployeeTitle" layoutX="30.0" layoutY="100.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Title:" />
       <Button fx:id="btnCloseConsultantDetails" layoutX="514.0" layoutY="356.0" mnemonicParsing="false" onAction="#handleBtnCloseConsultantDetails" text="Close" />
       <Button fx:id="btnEditConsultant" layoutX="444.0" layoutY="66.0" mnemonicParsing="false" onAction="#handleBtnEditConsultant" prefHeight="26.0" prefWidth="148.0" text="Edit consultant info ..." />
-      <Button fx:id="btnRemoveConsultantFromProject" layoutX="29.0" layoutY="356.0" mnemonicParsing="false" onAction="#handleBtnRemoveFromProject" text="Remove from project" />
-      <Button fx:id="btnRegisterConsultantToProject" layoutX="29.0" layoutY="322.0" mnemonicParsing="false" onAction="#handleBtnRegisterConsultantToProject" text="Register to Project" />
       <Text fx:id="textEmployeeNO" layoutX="130.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1234" />
       <Text fx:id="textEmployeeName" layoutX="130.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Berit Östergren" />
       <Text fx:id="textEmployeeTitle" layoutX="130.0" layoutY="100.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Senior Blabbermouth" />

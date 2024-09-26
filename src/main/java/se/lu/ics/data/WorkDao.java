@@ -147,7 +147,26 @@ public class WorkDao {
             throw DaoException.couldNotRemoveConsultantFromProject(projectNo, employeeNo, e);
         }
     }
-
-
-
+    public ObservableList<Work> findWorksByConsultantId(String employeeNo) {
+        String query = "SELECT * FROM Work WHERE ConsultantID = (SELECT ConsultantID FROM Consultant WHERE EmployeeNo = ?)";
+        ObservableList<Work> workList = FXCollections.observableArrayList();
+    
+        try (Connection connection = connectionHandler.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            
+            statement.setString(1, employeeNo);
+            
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    // Use the mapToWork method that takes two parameters
+                    Work work = mapToWork(resultSet, employeeNo);
+                    workList.add(work);
+                }
+            }
+        } catch (SQLException e) {
+            throw new DaoException("Could not find works for consultant with employee number " + employeeNo, e);
+        }
+    
+        return workList;
+    }
 }

@@ -7,6 +7,7 @@ import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -20,7 +21,6 @@ import se.lu.ics.data.DaoException;
 import se.lu.ics.data.ProjectDao;
 import se.lu.ics.data.MilestoneDao;
 import se.lu.ics.models.Project;
-
 
 public class MilestoneAddController {
     private ProjectViewController projectViewController;
@@ -72,9 +72,8 @@ public class MilestoneAddController {
     @FXML
     private TextField textFieldMilestoneDescription;
 
-
     @FXML
-   private Text textProjectNo;
+    private Text textProjectNo;
 
     @FXML
     void handleBtnCancelMilestoneAdd(ActionEvent event) {
@@ -90,8 +89,8 @@ public class MilestoneAddController {
         String milestoneDescription = textFieldMilestoneDescription.getText();
 
         if (milestoneNo == null || milestoneNo.isEmpty() ||
-            milestoneDate == null ||
-            milestoneDescription == null || milestoneDescription.isEmpty()) {
+                milestoneDate == null ||
+                milestoneDescription == null || milestoneDescription.isEmpty()) {
             // Display error message
             projectViewController.setWarning("All fields must be filled out.");
             return;
@@ -102,19 +101,18 @@ public class MilestoneAddController {
             projectViewController.updateTableView();
             mainViewController.updateProjectsTableView();
             projectViewController.showSuccessMessage("Milestone added successfully.");
+            // Close the window
+            Node source = (Node) event.getSource();
+            Stage stage = (Stage) source.getScene().getWindow();
+            stage.close();
         } catch (Exception e) {
             projectViewController.setWarning("Error adding milestone: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
-
- 
-
-
-
-   //WARNING methods
-       public void showSuccessMessage(String message) {
+    // WARNING methods
+    public void showSuccessMessage(String message) {
         paneWarning.setStyle("-fx-background-color: green;");
         paneWarning.setVisible(true);
         labelWarning.setText(message);

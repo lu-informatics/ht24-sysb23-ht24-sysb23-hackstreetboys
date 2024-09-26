@@ -419,6 +419,8 @@ public class MainViewController implements Initializable {
             setWarning("Could not delete project, please contact the system administrator");
             e.printStackTrace();
         }
+        updateConsultantsTableView();
+
 
     }
 

@@ -34,7 +34,8 @@ public class ProjectAddConsultantViewController implements Initializable {
 
     private ConsultantDao consultantDao;
     private ProjectViewController projectViewController;
-
+    private MainViewController mainViewController;
+    private ProjectDao projectDao;
     private Project project;
 
     // Buttons

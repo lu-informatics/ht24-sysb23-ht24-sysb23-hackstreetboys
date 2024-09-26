@@ -23,20 +23,21 @@ public class WorkDao {
 
     // METHOD: Add a consultant to a project (and vice versa)
     public void addConsultantToProject(String projectNo, String employeeNo, int hoursWorked, int weeklyHours) {
+        System.out.println("Adding consultant to project: " + projectNo + ", EmployeeNo: " + employeeNo + ", WeeklyHours: " + weeklyHours);
         String query = "INSERT INTO Work (ProjectID, ConsultantID, HoursWorked, WeeklyHours) VALUES (?, ?, ?, ?)";
 
         try (Connection connection = connectionHandler.getConnection();
                 PreparedStatement statement = connection.prepareStatement(query)) {
 
             //Convert projectNo to ProjectID
-            this.findProjectIdByProjectNo(projectNo);
+            int projectId = this.findProjectIdByProjectNo(projectNo);
 
             //Convert employeeNo to ConsultantID
-            this.findConsultantIdByEmployeeNo(employeeNo);
+            int consultantId = this.findConsultantIdByEmployeeNo(employeeNo);
 
             // Set project data into the prepared statement
-            statement.setString(1, projectNo);
-            statement.setString(2, employeeNo);
+            statement.setInt(1, projectId);
+            statement.setInt(2, consultantId);
             statement.setInt(3, hoursWorked);
             statement.setInt(4, weeklyHours);
 

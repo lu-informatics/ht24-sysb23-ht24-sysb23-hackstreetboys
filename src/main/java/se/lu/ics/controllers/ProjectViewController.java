@@ -196,7 +196,9 @@ public void handleBtnAddMilestone(ActionEvent event) {
             ProjectViewEditProjectInfoController editProjectInfoController = loader.getController();
     
             // Set the selected project in the ProjectViewEditProjectInfoController
-            editProjectInfoController.setProject(project);  // Assuming you have a setProject method in the controller
+            editProjectInfoController.setProject(project);
+            editProjectInfoController.setProjectViewController(this); // Set the ProjectViewController
+            editProjectInfoController.setMainViewController(mainViewController); // Set the MainViewController
     
             // Create a new stage for the window
             Stage modalStage = new Stage();
@@ -212,10 +214,6 @@ public void handleBtnAddMilestone(ActionEvent event) {
             displayErrorMessage("Could not open the edit project info view, contact support");
             e.printStackTrace();
         }
-
-
-
-
     }
 
     @FXML

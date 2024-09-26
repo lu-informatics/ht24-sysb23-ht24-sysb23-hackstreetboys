@@ -17,7 +17,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import se.lu.ics.data.ConsultantDao;
-import se.lu.ics.data.DaoException;
 import se.lu.ics.data.ProjectDao;
 import se.lu.ics.data.WorkDao;
 import se.lu.ics.models.Consultant;
@@ -120,8 +119,6 @@ public class ConsultantViewController implements Initializable {
 
     }
 
-
-
     // Initalize ProjectViewController
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -135,7 +132,6 @@ public class ConsultantViewController implements Initializable {
             setupWorkTableView();
             setupConsultantTextDetails();
         } else {
-            System.out.println("Consultant is null. Cannot setup work table view.");
         }
     }
 
@@ -165,14 +161,8 @@ public class ConsultantViewController implements Initializable {
         tableColumnTotaltHours.setCellValueFactory(new PropertyValueFactory<>("hoursWorked"));
         tableColumnWeeklyHours.setCellValueFactory(new PropertyValueFactory<>("weeklyHours"));
 
-        // Debug statement to check consultant
-        System.out.println("Consultant: " + consultant);
-
         // Use workdao method findConsultantByEmployeeNo to get the list of work
         ObservableList<Work> workList = workDao.findConsultantByEmployeeNo(consultant.getEmployeeNo());
-
-        // Debug statement to check workList
-        System.out.println("Work List: " + workList);
 
         // Set the list of work to the tableview
         tableViewConsultantProjects.setItems(workList);
@@ -189,7 +179,6 @@ public class ConsultantViewController implements Initializable {
             textEmployeeTitle.setText(consultant.getEmployeeTitle());
 
         } else {
-            System.out.println("Consultant is null. Cannot set text details.");
         }
 
     }
@@ -199,15 +188,11 @@ public class ConsultantViewController implements Initializable {
         if (consultant != null) {
             // Fetch the updated list of works for the consultant
             List<Work> works = workDao.findWorkByConsultantId(consultant.getEmployeeNo());
-            
-            // Debug statement to check fetched works
-            System.out.println("Fetched works: " + works);
-            
+
             ObservableList<Work> observableWorks = FXCollections.observableArrayList(works);
             tableViewConsultantProjects.setItems(observableWorks);
             tableViewConsultantProjects.refresh();
         } else {
-            System.out.println("Consultant is null. Cannot update work table view.");
         }
     }
 }

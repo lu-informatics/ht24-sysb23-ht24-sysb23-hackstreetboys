@@ -23,6 +23,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -161,6 +162,12 @@ public class MainViewController implements Initializable {
 
     @FXML
     private Pane paneWarningProjectsTab;
+
+    @FXML
+    private Label labelWarningConsultantTab;
+
+    @FXML
+    private Label labelWarningProjectTab;
 
     @FXML
     private Button btnclearProjects;
@@ -385,7 +392,7 @@ public class MainViewController implements Initializable {
     void handleBtnDeleteConsultant(ActionEvent event) {
         Consultant selectedConsultant = tableViewConsultants.getSelectionModel().getSelectedItem();
         if (selectedConsultant == null) {
-            setWarning("Please select a consultant to delete");
+            setWarning("Please select a consultant to delete", "consultant");
             return;
         }
         try {
@@ -396,8 +403,12 @@ public class MainViewController implements Initializable {
             displayTotalNumberOfConsultants();
 
             updateConsultantsTableView();
+
+            // Set a success warning message
+            setWarning("Consultant " + selectedConsultant.getEmployeeNo() + " has been successfully deleted.", "consultant");
+
         } catch (Exception e) {
-            setWarning("Could not delete consultant, please contact the system administrator");
+            setWarning("Could not delete consultant, please contact the system administrator", "consultant");
             e.printStackTrace();
         }
 
@@ -407,20 +418,19 @@ public class MainViewController implements Initializable {
     void handleBtnDeleteProject(ActionEvent event) {
         Project selectedProject = tableViewProjects.getSelectionModel().getSelectedItem();
         if (selectedProject == null) {
-            setWarning("Please select a project to delete");
+            setWarning("Please select a project to delete", "project");
             return;
         }
         try {
             projectDao.deleteProject(selectedProject.getProjectNo());
             updateProjectsTableView();
-            setWarning("Project deleted successfully");
+            setWarning("Project deleted successfully", "project");
 
         } catch (Exception e) {
-            setWarning("Could not delete project, please contact the system administrator");
+            setWarning("Could not delete project, please contact the system administrator", "project");
             e.printStackTrace();
         }
         updateConsultantsTableView();
-
 
     }
 
@@ -440,10 +450,10 @@ public class MainViewController implements Initializable {
                 hostServices.showDocument(file.getAbsolutePath());
                 // Set the warning message if file does not exist
             } else {
-                setWarning("The file does not exist");
+                setWarning("The file does not exist", "consultant");
             }
         } else {
-            setWarning("Something is wrong, contact support");
+            setWarning("Something is wrong, contact support", "consultant");
         }
     }
 
@@ -468,7 +478,7 @@ public class MainViewController implements Initializable {
             // Show the stage
             stage.show();
         } catch (Exception e) {
-            setWarning("Could not open the register consultant view, contact support");
+            setWarning("Could not open the register consultant view, contact support", "consultant");
             e.printStackTrace();
 
         }
@@ -494,7 +504,7 @@ public class MainViewController implements Initializable {
             // Show the stage
             stage.show();
         } catch (Exception e) { // Catch any exceptions
-            setWarning("Could not open the register project view, contact support");
+            setWarning("Could not open the register project view, contact support", "project");
             e.printStackTrace(); // For debugging purposes
         }
     }
@@ -557,7 +567,7 @@ public class MainViewController implements Initializable {
             // Show the stage
             stage.show();
         } catch (Exception e) {
-            setWarning("Could not open the metadata view, contact support");
+            setWarning("Could not open the metadata view, contact support", "consultant");
             e.printStackTrace(); // For debugging purposes
         }
 
@@ -591,56 +601,38 @@ public class MainViewController implements Initializable {
             // Set the total count to the text element
             textTotalNoOfConsultants.setText(String.valueOf(totalConsultants)); // Convert int to String
         } catch (DaoException e) {
-            setWarning("Could not fetch total number of consultants: " + e.getMessage());
+            setWarning("Could not fetch total number of consultants: " + e.getMessage(), "consultant"); 
         }
-    }
-
-    // setWarning() method for error message handling
-    public void setWarning(String message) {
-        System.out.println("WARNING: " + message);
-        paneWarningConsultantTab.setVisible(true);
-        paneWarningProjectsTab.setVisible(true);
-
-        Timeline timeline = new Timeline(new KeyFrame(
-                Duration.seconds(5),
-                new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent event) {
-                        paneWarningConsultantTab.setVisible(false);
-                        paneWarningProjectsTab.setVisible(false);
-                    }
-                }));
-        timeline.play();
     }
 
     @FXML
-void handleBtnEmpOfMonth(ActionEvent event) {
-    try {
-        ConsultantDao consultantDao = new ConsultantDao();
-        Map<String, Integer> consultantWeeklyHoursMap = consultantDao.findWeeklyHoursForAllConsultants();
+    void handleBtnEmpOfMonth(ActionEvent event) {
+        try {
+            ConsultantDao consultantDao = new ConsultantDao();
+            Map<String, Integer> consultantWeeklyHoursMap = consultantDao.findWeeklyHoursForAllConsultants();
 
-        Map.Entry<String, Integer> maxEntry = null;
-        for (Map.Entry<String, Integer> entry : consultantWeeklyHoursMap.entrySet()) {
-            if (maxEntry == null || entry.getValue().compareTo(maxEntry.getValue()) > 0) {
-                maxEntry = entry;
+            Map.Entry<String, Integer> maxEntry = null;
+            for (Map.Entry<String, Integer> entry : consultantWeeklyHoursMap.entrySet()) {
+                if (maxEntry == null || entry.getValue().compareTo(maxEntry.getValue()) > 0) {
+                    maxEntry = entry;
+                }
             }
-        }
 
-        if (maxEntry != null) {
-            textEmployeeOfMonth
-                    .setText("Employee of the month: " + maxEntry.getKey() + " with " + maxEntry.getValue()
-                            + " hours");
-        } else {
-            textEmployeeOfMonth.setText("No data available");
-        }
+            if (maxEntry != null) {
+                textEmployeeOfMonth
+                        .setText("Employee of the month: " + maxEntry.getKey() + " with " + maxEntry.getValue()
+                                + " hours");
+            } else {
+                textEmployeeOfMonth.setText("No data available");
+            }
 
-        PauseTransition pause = new PauseTransition(Duration.seconds(10));
-        pause.setOnFinished(e -> textEmployeeOfMonth.setText(""));
-        pause.play();
-    } catch (IOException e) {
-        e.printStackTrace();
+            PauseTransition pause = new PauseTransition(Duration.seconds(10));
+            pause.setOnFinished(e -> textEmployeeOfMonth.setText(""));
+            pause.play();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-}
 
     @FXML
     void handleBtnProjectAllConsultants(ActionEvent event) {
@@ -671,6 +663,31 @@ void handleBtnEmpOfMonth(ActionEvent event) {
         PauseTransition pause = new PauseTransition(Duration.seconds(10));
         pause.setOnFinished(e -> textProjectsAllConsultants.setText(""));
         pause.play();
+    }
+
+    // setWarning() method for error message handling
+    public void setWarning(String message, String tab) {
+        if ("consultant".equalsIgnoreCase(tab)) {
+            labelWarningConsultantTab.setText(message);
+            paneWarningConsultantTab.setVisible(true);
+            paneWarningProjectsTab.setVisible(false); // Hide project tab warning pane
+        } else if ("project".equalsIgnoreCase(tab)) {
+            labelWarningProjectTab.setText(message);
+            paneWarningProjectsTab.setVisible(true);
+            paneWarningConsultantTab.setVisible(false); // Hide consultant tab warning pane
+        }
+
+        // Set a timer to hide the warning panes after a few seconds
+        Timeline timeline = new Timeline(new KeyFrame(
+                Duration.seconds(5),
+                new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent event) {
+                        paneWarningConsultantTab.setVisible(false);
+                        paneWarningProjectsTab.setVisible(false);
+                    }
+                }));
+        timeline.play();
     }
 
 }

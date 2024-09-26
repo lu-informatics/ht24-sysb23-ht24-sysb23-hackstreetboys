@@ -195,8 +195,38 @@ public class ProjectViewController implements Initializable{
         }
     }
 
-    @FXML
-    void handleBtnRemoveMilestone(ActionEvent event) {
+    //Method for removing a milestone from a project
+        @FXML
+        void handleBtnRemoveMilestone(ActionEvent event) {
+            // Get the selected milestone from the TableView
+            Milestone selectedMilestone = tableViewMilestoneInfo.getSelectionModel().getSelectedItem();
+    
+            if (selectedMilestone != null) {
+                try {
+                    // Call the DAO method to remove the milestone from the project
+                    milestoneDao.deleteMilestone(selectedMilestone, project);
+    
+                    // Show a success message (optional)
+                    System.out.println("Milestone removed from project successfully.");
+    
+                    // Refresh the ProjectView to reflect changes
+                    loadConsultant();
+                    loadMilestones();
+    
+                    // Update the projects table view in MainViewController
+                    if (mainViewController != null) {
+                        mainViewController.updateProjectsTableView();
+                    }
+    
+                } catch (Exception e) {
+                    // Handle exception, show error message or log the error
+                    displayErrorMessage("Error occurred while removing milestone from project: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            } else {
+                // If no milestone is selected, show an error message
+                displayErrorMessage("Please select a milestone to remove.");
+            }
 
     }
 

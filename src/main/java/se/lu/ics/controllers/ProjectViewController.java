@@ -122,6 +122,7 @@ public class ProjectViewController implements Initializable{
             //Passes the projectobject to ProjectAddConsultantViewController
             ProjectAddConsultantcontroller.setProject(this.project);
             ProjectAddConsultantcontroller.setProjectViewController(this);
+            ProjectAddConsultantcontroller.setMainViewController(mainViewController);
             
 
             // Create a new stage for the window
@@ -344,5 +345,9 @@ public class ProjectViewController implements Initializable{
         throw new UnsupportedOperationException("Unimplemented method 'getProjectNo'");
     }
     
+   public void setmainViewController(MainViewController mainViewController) {
+       this.mainViewController = mainViewController;
+   }
+
 
 }

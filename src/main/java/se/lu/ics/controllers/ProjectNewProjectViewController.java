@@ -57,6 +57,12 @@ public class ProjectNewProjectViewController implements Initializable {
    private Button btnSaveProject;
 
    @FXML
+   private Button btnSearchConsultant;
+
+   @FXML
+   private Button btnClearConsultant;
+
+   @FXML
    private ComboBox<String> comboBoxTitleFilter;
 
    @FXML
@@ -252,7 +258,8 @@ public class ProjectNewProjectViewController implements Initializable {
 
 
    private void filterAvailableConsultantsById() {
-       textErrorMessage.setText("");
+         textErrorMessage.setText("");
+
 
 
        String id = textFieldFindEmployeeById.getText();
@@ -275,6 +282,23 @@ public class ProjectNewProjectViewController implements Initializable {
        tableViewAvailableConsultants.setItems(consultants);
    }
 
+   @FXML 
+    private void handleBtnSearchConsultant(ActionEvent event) {
+
+        String id = textFieldFindEmployeeById.getText();
+        String title = comboBoxTitleFilter.getValue();
+        
+        List<Consultant> consultants = consultantDao.filterConsultants(id, title);
+        ObservableList<Consultant> observableConsultants = FXCollections.observableArrayList(consultants);
+        tableViewAvailableConsultants.setItems(observableConsultants);
+    }
+    
+    @FXML
+    private void handleBtnClearConsultant(ActionEvent event) {
+        textFieldFindEmployeeById.clear();
+        comboBoxTitleFilter.getSelectionModel().clearSelection();
+        tableViewAvailableConsultants.setItems(FXCollections.observableArrayList(consultantDao.findAllConsultants()));
+    }
 
    @FXML
    private void handleBtnAddConsultant(ActionEvent event) {

@@ -164,18 +164,18 @@ public class ConsultantDao {
         return consultants;
     }
 
-        public Map<String, Integer> findTotalProjectsForAllConsultants() {
+    public Map<String, Integer> findTotalProjectsForAllConsultants() {
         String query = "SELECT Consultant.EmployeeNo, COUNT(Work.ProjectID) as totalProjects " +
-                       "FROM Work " +
-                       "JOIN Consultant ON Work.ConsultantID = Consultant.ConsultantID " +
-                       "GROUP BY Consultant.EmployeeNo";
-    
+                "FROM Work " +
+                "JOIN Consultant ON Work.ConsultantID = Consultant.ConsultantID " +
+                "GROUP BY Consultant.EmployeeNo";
+
         Map<String, Integer> consultantProjectsMap = new HashMap<>();
-    
+
         try (Connection connection = connectionHandler.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query);
-             ResultSet resultSet = statement.executeQuery()) {
-    
+                PreparedStatement statement = connection.prepareStatement(query);
+                ResultSet resultSet = statement.executeQuery()) {
+
             while (resultSet.next()) {
                 String employeeNo = resultSet.getString("employeeNo");
                 int totalProjects = resultSet.getInt("totalProjects");
@@ -184,23 +184,23 @@ public class ConsultantDao {
         } catch (SQLException e) {
             throw DaoException.couldNotFetchConsultants(e);
         }
-    
+
         return consultantProjectsMap;
     }
 
     // Fetch weekly hours for each consultant from the database
     public Map<String, Integer> findWeeklyHoursForAllConsultants() {
         String query = "SELECT Consultant.EmployeeNo, SUM(Work.WeeklyHours) as SumWeeklyHours " +
-                       "FROM Work " +
-                       "JOIN Consultant ON Work.ConsultantID = Consultant.ConsultantID " +
-                       "GROUP BY Consultant.EmployeeNo";
-    
+                "FROM Work " +
+                "JOIN Consultant ON Work.ConsultantID = Consultant.ConsultantID " +
+                "GROUP BY Consultant.EmployeeNo";
+
         Map<String, Integer> consultantWeeklyHoursMap = new HashMap<>();
-    
+
         try (Connection connection = connectionHandler.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query);
-             ResultSet resultSet = statement.executeQuery()) {
-    
+                PreparedStatement statement = connection.prepareStatement(query);
+                ResultSet resultSet = statement.executeQuery()) {
+
             while (resultSet.next()) {
                 String employeeNo = resultSet.getString("employeeNo");
                 int weeklyHours = resultSet.getInt("SumWeeklyHours");
@@ -209,22 +209,22 @@ public class ConsultantDao {
         } catch (SQLException e) {
             throw DaoException.couldNotFetchConsultants(e);
         }
-    
+
         return consultantWeeklyHoursMap;
     }
 
     // Fetch total hours for each consultant from the database
     public Map<String, Integer> findTotalHoursForAllConsultants() {
         String query = "SELECT Consultant.EmployeeNo, SUM(Work.HoursWorked) as TotalHours " +
-                    "FROM Work " +
-                    "JOIN Consultant ON Work.ConsultantID = Consultant.ConsultantID " +
-                    "GROUP BY Consultant.EmployeeNo";
+                "FROM Work " +
+                "JOIN Consultant ON Work.ConsultantID = Consultant.ConsultantID " +
+                "GROUP BY Consultant.EmployeeNo";
 
         Map<String, Integer> consultantTotalHoursMap = new HashMap<>();
 
         try (Connection connection = connectionHandler.getConnection();
-            PreparedStatement statement = connection.prepareStatement(query);
-            ResultSet resultSet = statement.executeQuery()) {
+                PreparedStatement statement = connection.prepareStatement(query);
+                ResultSet resultSet = statement.executeQuery()) {
 
             while (resultSet.next()) {
                 String employeeNo = resultSet.getString("EmployeeNo");
@@ -238,57 +238,60 @@ public class ConsultantDao {
         return consultantTotalHoursMap;
     }
 
-     // Fetch total hours for each consultant from the database where projectNo is given
-        public Map<String, Integer> findTotalHoursForAllConsultantsInProject(Project project) {
-            String query = "SELECT Consultant.EmployeeNo, SUM(Work.HoursWorked) as TotalHours " +
-                        "FROM Work " +
-                        "JOIN Consultant ON Work.ConsultantID = Consultant.ConsultantID " +
-                        "WHERE Work.ProjectID = ? " +
-                        "GROUP BY Consultant.EmployeeNo";
-        
-            Map<String, Integer> consultantTotalHoursMap = new HashMap<>();
-        
-            try (Connection connection = connectionHandler.getConnection();
-                PreparedStatement statement = connection.prepareStatement(query)) {
-        
-                // Convert ProjectNo to ProjectID
-                int projectID = findProjectIDByProjectNo(project.getProjectNo());
-        
-                // Set project data into the prepared statement
-                statement.setInt(1, projectID);
-                ResultSet resultSet = statement.executeQuery();
-        
-                while (resultSet.next()) {
-                    String employeeNo = resultSet.getString("EmployeeNo");
-                    int totalHours = resultSet.getInt("TotalHours");
-                    consultantTotalHoursMap.put(employeeNo, totalHours);
-                }
-            } catch (SQLException e) {
-                throw DaoException.couldNotFetchConsultants(e);
-            }
-        
-            return consultantTotalHoursMap;}
+    // Fetch total hours for each consultant from the database where projectNo is
+    // given
+    public Map<String, Integer> findTotalHoursForAllConsultantsInProject(Project project) {
+        String query = "SELECT Consultant.EmployeeNo, SUM(Work.HoursWorked) as TotalHours " +
+                "FROM Work " +
+                "JOIN Consultant ON Work.ConsultantID = Consultant.ConsultantID " +
+                "WHERE Work.ProjectID = ? " +
+                "GROUP BY Consultant.EmployeeNo";
 
-    //Fetch weekly hours for each consultant from the database where projectNo is given
-    public Map<String, Integer> findWeeklyHoursForAllConsultantsInProject(Project project) {
-        String query = "SELECT Consultant.EmployeeNo, SUM(Work.WeeklyHours) as SumWeeklyHours " +
-                       "FROM Work " +
-                       "JOIN Consultant ON Work.ConsultantID = Consultant.ConsultantID " +
-                       "WHERE Work.ProjectID = ? " +
-                       "GROUP BY Consultant.EmployeeNo";
-    
-        Map<String, Integer> consultantWeeklyHoursMap = new HashMap<>();
-    
+        Map<String, Integer> consultantTotalHoursMap = new HashMap<>();
+
         try (Connection connection = connectionHandler.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-    
+                PreparedStatement statement = connection.prepareStatement(query)) {
+
             // Convert ProjectNo to ProjectID
             int projectID = findProjectIDByProjectNo(project.getProjectNo());
-    
+
             // Set project data into the prepared statement
             statement.setInt(1, projectID);
             ResultSet resultSet = statement.executeQuery();
-    
+
+            while (resultSet.next()) {
+                String employeeNo = resultSet.getString("EmployeeNo");
+                int totalHours = resultSet.getInt("TotalHours");
+                consultantTotalHoursMap.put(employeeNo, totalHours);
+            }
+        } catch (SQLException e) {
+            throw DaoException.couldNotFetchConsultants(e);
+        }
+
+        return consultantTotalHoursMap;
+    }
+
+    // Fetch weekly hours for each consultant from the database where projectNo is
+    // given
+    public Map<String, Integer> findWeeklyHoursForAllConsultantsInProject(Project project) {
+        String query = "SELECT Consultant.EmployeeNo, SUM(Work.WeeklyHours) as SumWeeklyHours " +
+                "FROM Work " +
+                "JOIN Consultant ON Work.ConsultantID = Consultant.ConsultantID " +
+                "WHERE Work.ProjectID = ? " +
+                "GROUP BY Consultant.EmployeeNo";
+
+        Map<String, Integer> consultantWeeklyHoursMap = new HashMap<>();
+
+        try (Connection connection = connectionHandler.getConnection();
+                PreparedStatement statement = connection.prepareStatement(query)) {
+
+            // Convert ProjectNo to ProjectID
+            int projectID = findProjectIDByProjectNo(project.getProjectNo());
+
+            // Set project data into the prepared statement
+            statement.setInt(1, projectID);
+            ResultSet resultSet = statement.executeQuery();
+
             while (resultSet.next()) {
                 String employeeNo = resultSet.getString("EmployeeNo");
                 int weeklyHours = resultSet.getInt("SumWeeklyHours");
@@ -297,27 +300,27 @@ public class ConsultantDao {
         } catch (SQLException e) {
             throw DaoException.couldNotFetchConsultants(e);
         }
-    
+
         return consultantWeeklyHoursMap;
     }
-    
+
     public List<Consultant> findAllConsultantsInProject(Project project) {
         String query = "SELECT Consultant.EmployeeNo, Consultant.EmployeeTitle, Consultant.EmployeeName " +
-                       "FROM Consultant " +
-                       "JOIN Work ON Work.ConsultantID = Consultant.ConsultantID " +
-                       "WHERE Work.ProjectID = ?";
+                "FROM Consultant " +
+                "JOIN Work ON Work.ConsultantID = Consultant.ConsultantID " +
+                "WHERE Work.ProjectID = ?";
         List<Consultant> consultants = new ArrayList<>();
-    
+
         try (Connection connection = connectionHandler.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-    
+                PreparedStatement statement = connection.prepareStatement(query)) {
+
             // Convert ProjectNo to ProjectID
             int projectID = findProjectIDByProjectNo(project.getProjectNo());
-    
+
             // Set project data into the prepared statement
             statement.setInt(1, projectID);
             ResultSet resultSet = statement.executeQuery();
-    
+
             // Iterate through the result set to create Consultant objects
             while (resultSet.next()) {
                 Consultant consultant = mapToConsultant(resultSet);
@@ -326,10 +329,9 @@ public class ConsultantDao {
         } catch (SQLException e) {
             throw new DaoException("Could not fetch consultants", e);
         }
-    
+
         return consultants; // Return the list of consultants
     }
-
 
     // Fetch all unique titles for consultants from the database
     public List<String> findUniqueTitlesForConsultants() {
@@ -337,8 +339,8 @@ public class ConsultantDao {
         List<String> titles = new ArrayList<>();
 
         try (Connection connection = connectionHandler.getConnection();
-            PreparedStatement statement = connection.prepareStatement(query);
-            ResultSet resultSet = statement.executeQuery()) {
+                PreparedStatement statement = connection.prepareStatement(query);
+                ResultSet resultSet = statement.executeQuery()) {
 
             while (resultSet.next()) {
                 titles.add(resultSet.getString("EmployeeTitle"));
@@ -353,17 +355,17 @@ public class ConsultantDao {
     // Fetch unique number of projects for consultants from the database
     public List<String> findPossibleNoProjectsForConsultants() {
         String query = "SELECT DISTINCT project_count " +
-               "FROM ( " +
-               "    SELECT COUNT(DISTINCT ProjectID) AS project_count " +
-               "    FROM Work " +
-               "    GROUP BY ConsultantID " +
-               ") AS possible_number_of_projects;";
+                "FROM ( " +
+                "    SELECT COUNT(DISTINCT ProjectID) AS project_count " +
+                "    FROM Work " +
+                "    GROUP BY ConsultantID " +
+                ") AS possible_number_of_projects;";
 
         List<String> possibleNoProjects = new ArrayList<>();
 
         try (Connection connection = connectionHandler.getConnection();
-            PreparedStatement statement = connection.prepareStatement(query);
-            ResultSet resultSet = statement.executeQuery()) {
+                PreparedStatement statement = connection.prepareStatement(query);
+                ResultSet resultSet = statement.executeQuery()) {
 
             while (resultSet.next()) {
                 possibleNoProjects.add(resultSet.getString("project_count"));
@@ -379,23 +381,23 @@ public class ConsultantDao {
 
     public List<Consultant> filterConsultants(String employeeNo, String title, String noOfProjects) {
         String query = "SELECT " +
-               "EmployeeNo, " +
-               "EmployeeTitle, " +
-               "EmployeeName, " +
-               "COUNT(ProjectID) AS NumberOfProjects " +
-               "FROM Consultant " +
-               "LEFT JOIN Work ON Consultant.ConsultantID = Work.ConsultantID " +
-               "GROUP BY EmployeeNo, EmployeeTitle, EmployeeName " +
-               "HAVING " +
-               "(EmployeeNo LIKE ? OR ? IS NULL OR ? = '') " +
-               "AND (EmployeeTitle = ? OR ? IS NULL OR ? = '') " +
-               "AND (COUNT(ProjectID) = ? OR ? IS NULL OR ? = '');";
-    
+                "EmployeeNo, " +
+                "EmployeeTitle, " +
+                "EmployeeName, " +
+                "COUNT(ProjectID) AS NumberOfProjects " +
+                "FROM Consultant " +
+                "LEFT JOIN Work ON Consultant.ConsultantID = Work.ConsultantID " +
+                "GROUP BY EmployeeNo, EmployeeTitle, EmployeeName " +
+                "HAVING " +
+                "(EmployeeNo LIKE ? OR ? IS NULL OR ? = '') " +
+                "AND (EmployeeTitle = ? OR ? IS NULL OR ? = '') " +
+                "AND (COUNT(ProjectID) = ? OR ? IS NULL OR ? = '');";
+
         List<Consultant> consultants = new ArrayList<>();
-    
+
         try (Connection connection = connectionHandler.getConnection();
-            PreparedStatement statement = connection.prepareStatement(query)) {
-    
+                PreparedStatement statement = connection.prepareStatement(query)) {
+
             // Allow for partial matches on employeeNo
             String employeeNoPattern = employeeNo == null || employeeNo.isEmpty() ? "%" : "%" + employeeNo + "%";
 
@@ -409,30 +411,30 @@ public class ConsultantDao {
             statement.setString(7, noOfProjects);
             statement.setString(8, noOfProjects);
             statement.setString(9, noOfProjects);
-    
+
             ResultSet resultSet = statement.executeQuery();
-    
+
             while (resultSet.next()) {
                 consultants.add(mapToConsultant(resultSet));
             }
         } catch (SQLException e) {
             throw DaoException.couldNotFetchConsultants(e);
         }
-    
+
         return consultants;
     }
 
     // Convert consultantNo to ConsultantID
-        public int convertConsultantNoToConsultantId(String employeeNo) {
-            if (employeeNo == null) {
-                throw new IllegalArgumentException("ConsultantNo cannot be null");
-            }
+    public int convertConsultantNoToConsultantId(String employeeNo) {
+        if (employeeNo == null) {
+            throw new IllegalArgumentException("ConsultantNo cannot be null");
+        }
 
-            String query = "SELECT ConsultantID FROM Consultant WHERE EmployeeNo = ?";
-            int consultantID = 0;
+        String query = "SELECT ConsultantID FROM Consultant WHERE EmployeeNo = ?";
+        int consultantID = 0;
 
         try (Connection connection = connectionHandler.getConnection();
-            PreparedStatement statement = connection.prepareStatement(query)) {
+                PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setString(1, employeeNo);
             ResultSet resultSet = statement.executeQuery();
@@ -442,40 +444,80 @@ public class ConsultantDao {
             }
         } catch (SQLException e) {
             // Log the exception (assuming a logger is available)
-            // logger.error("Error fetching ConsultantID for ConsultantNo: " + consultantNo, e);
+            // logger.error("Error fetching ConsultantID for ConsultantNo: " + consultantNo,
+            // e);
             throw DaoException.couldNotFetchConsultants(e);
         }
 
         return consultantID;
     }
 
+    // Convert ProjectNo to ProjectID
+    public int findProjectIDByProjectNo(String projectNo) {
+        String query = "SELECT ProjectID FROM Project WHERE ProjectNo = ?";
+        int projectID = 0;
 
-          // Convert ProjectNo to ProjectID
-          public int findProjectIDByProjectNo(String projectNo) {
-            String query = "SELECT ProjectID FROM Project WHERE ProjectNo = ?";
-            int projectID = 0;
-    
-            try (Connection connection = connectionHandler.getConnection();
-                    PreparedStatement statement = connection.prepareStatement(query)) {
-    
-                statement.setString(1, projectNo);
-                ResultSet resultSet = statement.executeQuery();
-    
-                if (resultSet.next()) {
-                    projectID = resultSet.getInt("ProjectID");
-                } else {
-                    throw DaoException.projectNotFound(projectNo);
-                }
-            } catch (SQLException e) {
-                throw DaoException.couldNotFetchProjects(e);
+        try (Connection connection = connectionHandler.getConnection();
+                PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setString(1, projectNo);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                projectID = resultSet.getInt("ProjectID");
+            } else {
+                throw DaoException.projectNotFound(projectNo);
             }
-    
-            return projectID;
-    
+        } catch (SQLException e) {
+            throw DaoException.couldNotFetchProjects(e);
         }
-// Overloaded method with two arguments
-public List<Consultant> filterConsultants(String id, String title) {
-    return filterConsultants(id, title, ""); // Call the three-argument method with a default value
+
+        return projectID;
+
+    }
+
+    // Method for displaying all consultants hours
+    public int fetchAllConsultantsTotalHours() {
+        String query = "SELECT SUM(Work.HoursWorked) AS TotalHours FROM Work";
+
+        int totalHours = 0; // Initialize totalHours
+
+        try (Connection connection = connectionHandler.getConnection();
+                PreparedStatement statement = connection.prepareStatement(query);
+                ResultSet resultSet = statement.executeQuery()) {
+
+            // Check if the result set has any rows
+            if (resultSet.next()) {
+                totalHours = resultSet.getInt("TotalHours"); // Get the total hours
+            }
+        } catch (SQLException e) {
+            throw DaoException.couldNotFetchConsultants(e);
+        }
+
+        return totalHours; // Return the total hours
+    }
+
+    // Method for counting all consultants in the consultant table
+    public int countAllConsultants() {
+        String query = "SELECT COUNT(*) AS TotalCount FROM Consultant";
+        int totalCount = 0;
+
+        try (Connection connection = connectionHandler.getConnection();
+                PreparedStatement statement = connection.prepareStatement(query);
+                ResultSet resultSet = statement.executeQuery()) {
+
+            if (resultSet.next()) {
+                totalCount = resultSet.getInt("TotalCount");
+            }
+        } catch (SQLException e) {
+            throw DaoException.couldNotFetchConsultants(e);
+        }
+
+        return totalCount;
+    }
+
+    // Overloaded method with two arguments
+    public List<Consultant> filterConsultants(String id, String title) {
+        return filterConsultants(id, title, ""); // Call the three-argument method with a default value
+    }
 }
-}
-    

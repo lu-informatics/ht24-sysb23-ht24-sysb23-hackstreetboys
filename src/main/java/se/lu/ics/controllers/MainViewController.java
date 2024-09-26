@@ -2,6 +2,7 @@ package se.lu.ics.controllers;
 
 import java.io.File;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -147,6 +148,12 @@ public class MainViewController implements Initializable {
     @FXML
     private Pane paneWarningProjectsTab;
 
+    @FXML
+    private Button btnclearProjects;
+
+    @FXML
+    private Button searchProjects;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         initializeDaos();
@@ -154,6 +161,8 @@ public class MainViewController implements Initializable {
         setupProjectsTableView();
         populateTitleFilterComboBox();
         populateNoProjectsFilterComboBox();
+        displayTotalHoursForAllConsultants();
+        displayTotalNumberOfConsultants();
     }
 
     private void initializeDaos() {
@@ -260,6 +269,15 @@ public class MainViewController implements Initializable {
         tableViewProjects.setItems(observableProjects);
     }
 
+    // Update project table view
+    public void updateProjectsTableView() {
+        List<Project> projects = projectDao.findAllProjects();
+        ObservableList<Project> observableProjects = FXCollections.observableArrayList(projects);
+        tableViewProjects.setItems(observableProjects);
+
+        setupProjectsTableView();
+    }
+
     // Populate title filter combo box
     public void populateTitleFilterComboBox() {
         try {
@@ -336,6 +354,7 @@ public class MainViewController implements Initializable {
                 ProjectViewController projectViewController = loader.getController();
 
                 projectViewController.setProject(selectedProject);
+                projectViewController.setMainViewController(this); // Pass the reference
                 System.err.println("Project: " + selectedProject.getProjectName());
 
                 Stage modalStage = new Stage();
@@ -350,7 +369,6 @@ public class MainViewController implements Initializable {
     }
 
     // Delete selected consultant from database using the consultantDao
-    // deleteConsultant,
     @FXML
     void handleBtnDeleteConsultant(ActionEvent event) {
         Consultant selectedConsultant = tableViewConsultants.getSelectionModel().getSelectedItem();
@@ -360,6 +378,11 @@ public class MainViewController implements Initializable {
         }
         try {
             consultantDao.deleteConsultant(selectedConsultant.getEmployeeNo());
+
+            // Update counts in the maivilViewController
+            displayTotalHoursForAllConsultants();
+            displayTotalNumberOfConsultants();
+
             updateConsultantsTableView();
         } catch (Exception e) {
             setWarning("Could not delete consultant, please contact the system administrator");
@@ -370,6 +393,20 @@ public class MainViewController implements Initializable {
 
     @FXML
     void handleBtnDeleteProject(ActionEvent event) {
+        Project selectedProject = tableViewProjects.getSelectionModel().getSelectedItem();
+        if (selectedProject == null) {
+            setWarning("Please select a project to delete");
+            return;
+        }
+        try {
+            projectDao.deleteProject(selectedProject.getProjectNo());
+            updateProjectsTableView();
+            setWarning("Project deleted successfully");
+
+        } catch (Exception e) {
+            setWarning("Could not delete project, please contact the system administrator");
+            e.printStackTrace();
+        }
 
     }
 
@@ -429,17 +466,17 @@ public class MainViewController implements Initializable {
             // Load FXML file
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ProjectNewProjectView.fxml"));
             Parent root = loader.load();
-   
+
             // Get the controller for the loaded FXML
             ProjectNewProjectViewController projectController = loader.getController();
             // Set the MainViewController in the ProjectNewProjectViewController
             projectController.setMainViewController(this);
-   
+
             // Create a new stage
             Stage stage = new Stage();
             stage.setTitle("Register New Project");
             stage.setScene(new javafx.scene.Scene(root));
-   
+
             // Show the stage
             stage.show();
         } catch (Exception e) { // Catch any exceptions
@@ -447,8 +484,6 @@ public class MainViewController implements Initializable {
             e.printStackTrace(); // For debugging purposes
         }
     }
-
-
 
     // Filter consultants by ID, title, and number of projects
     @FXML
@@ -471,6 +506,22 @@ public class MainViewController implements Initializable {
         comboBoxNoProjectFilter.getSelectionModel().clearSelection();
 
         setupConsultantsTableView();
+    }
+
+    @FXML
+    void handleBtnSearchProjects(ActionEvent event) throws SQLException {
+
+        String id = textFieldFindProjectByProjectId.getText();
+
+        List<Project> projects = projectDao.filterProjectById(id);
+        ObservableList<Project> observableProjects = FXCollections.observableArrayList(projects);
+        tableViewProjects.setItems(observableProjects);
+    }
+
+    @FXML
+    void handleBtnClearProjects(ActionEvent event) {
+        textFieldFindProjectByProjectId.clear();
+        setupProjectsTableView();
     }
 
     @FXML
@@ -505,6 +556,29 @@ public class MainViewController implements Initializable {
 
     @FXML
     void handleComboBoxTitleFilter(ActionEvent event) {
+    }
+
+    // Method to fetch and display total hours for all consultants
+    public void displayTotalHoursForAllConsultants() {
+        // Fetch the total hours for all consultants from the DAO
+        int totalHours = consultantDao.fetchAllConsultantsTotalHours();
+
+        textTotalHoursForAllConsultants.setText(String.valueOf(totalHours));
+    }
+
+    // Method to display no of consultants.
+    @FXML
+    private Text countAllConsultants;
+
+    // Method to fetch and display the total number of consultants
+    public void displayTotalNumberOfConsultants() {
+        try {
+            int totalConsultants = consultantDao.countAllConsultants(); // Fetch the total count
+            // Set the total count to the text element
+            textTotalNoOfConsultants.setText(String.valueOf(totalConsultants)); // Convert int to String
+        } catch (DaoException e) {
+            setWarning("Could not fetch total number of consultants: " + e.getMessage());
+        }
     }
 
     // setWarning() method for error message handling

@@ -424,7 +424,30 @@ public class MainViewController implements Initializable {
 
     @FXML
     void handleBtnRegisterNewProject(ActionEvent event) {
+        try {
+            // Load FXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ProjectNewProjectView.fxml"));
+            Parent root = loader.load();
+   
+            // Get the controller for the loaded FXML
+            ProjectNewProjectViewController projectController = loader.getController();
+            // Set the MainViewController in the ProjectNewProjectViewController
+            projectController.setMainViewController(this);
+   
+            // Create a new stage
+            Stage stage = new Stage();
+            stage.setTitle("Register New Project");
+            stage.setScene(new javafx.scene.Scene(root));
+   
+            // Show the stage
+            stage.show();
+        } catch (Exception e) { // Catch any exceptions
+            setWarning("Could not open the register project view, contact support");
+            e.printStackTrace(); // For debugging purposes
+        }
     }
+
+
 
     // Filter consultants by ID, title, and number of projects
     @FXML

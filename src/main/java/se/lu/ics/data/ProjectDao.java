@@ -269,8 +269,7 @@ public class ProjectDao {
                 resultSet.getString("ProjectNo"),
                 resultSet.getString("ProjectName"),
                 resultSet.getDate("StartDate").toLocalDate(),
-                resultSet.getDate("EndDate").toLocalDate(),
-                new ArrayList<>());
+                resultSet.getDate("EndDate").toLocalDate());
     }
 
 }

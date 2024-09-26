@@ -34,7 +34,7 @@ public class ConsultantViewController implements Initializable {
     private Consultant consultant;
     private MainViewController mainViewController;
 
-    //a setter for mainviewcontroller
+    // a setter for mainviewcontroller
     public void setMainViewController(MainViewController mainViewController) {
         this.mainViewController = mainViewController;
     }
@@ -85,6 +85,11 @@ public class ConsultantViewController implements Initializable {
 
     @FXML
     void handleBtnCloseConsultantDetails(ActionEvent event) {
+        // Update the consultants in the main view controller if it is set
+        if (mainViewController != null) {
+            mainViewController.updateConsultantsTableView();
+        }
+
         // Get the current stage and close it
         Stage stage = (Stage) btnCloseConsultantDetails.getScene().getWindow();
         stage.close();
@@ -142,45 +147,43 @@ public class ConsultantViewController implements Initializable {
 
     @FXML
     void handleBtnRemoveFromProject(ActionEvent event) {
-           // Get the selected Work (project assignment) from the TableView
-    Work selectedWork = tableViewConsultantProjects.getSelectionModel().getSelectedItem();
+        // Get the selected Work (project assignment) from the TableView
+        Work selectedWork = tableViewConsultantProjects.getSelectionModel().getSelectedItem();
 
-    if (selectedWork != null) {
-        // Get the project number from the selected project
-        String projectNo = selectedWork.getProject().getProjectNo();
-        String employeeNo = consultant.getEmployeeNo();
+        if (selectedWork != null) {
+            // Get the project number from the selected project
+            String projectNo = selectedWork.getProject().getProjectNo();
+            String employeeNo = consultant.getEmployeeNo();
 
-        // Ensure both projectNo and employeeNo are valid before proceeding
-        if (projectNo != null && employeeNo != null) {
-            try {
-                // Call the DAO method to remove the consultant from the project
-                workDao.removeConsultantFromProject(projectNo, employeeNo);
+            // Ensure both projectNo and employeeNo are valid before proceeding
+            if (projectNo != null && employeeNo != null) {
+                try {
+                    // Call the DAO method to remove the consultant from the project
+                    workDao.removeConsultantFromProject(projectNo, employeeNo);
 
-                // Show a success message (optional)
-                System.out.println("Consultant removed from project successfully.");
+                    // Show a success message (optional)
+                    System.out.println("Consultant removed from project successfully.");
 
-                // Refresh the TableView to reflect changes
-                updateWorkTableView();
+                    // Refresh the TableView to reflect changes
+                    updateWorkTableView();
 
+                    // Update the consultants table view in MainViewController
+                    if (mainViewController != null) {
+                        mainViewController.updateConsultantsTableView();
+                    }
 
-                // Update the consultants table view in MainViewController
-                if (mainViewController != null) {
-                    mainViewController.updateConsultantsTableView();
+                } catch (DaoException e) {
+                    // Handle exception, show error message or log the error
+                    System.err.println("Error occurred while removing consultant from project: " + e.getMessage());
                 }
-
-            } catch (DaoException e) {
-                // Handle exception, show error message or log the error
-                System.err.println("Error occurred while removing consultant from project: " + e.getMessage());
+            } else {
+                System.out.println("Project or Consultant is not selected properly.");
             }
         } else {
-            System.out.println("Project or Consultant is not selected properly.");
+            // If no project is selected, show an error message
+            System.out.println("Please select a project to remove the consultant from.");
         }
-    } else {
-        // If no project is selected, show an error message
-        System.out.println("Please select a project to remove the consultant from.");
     }
-    }
-
 
     // Initalize ProjectViewController
     @Override
@@ -255,14 +258,14 @@ public class ConsultantViewController implements Initializable {
     }
 
     // Update method for workTableView
-    private void updateWorkTableView() { 
+    private void updateWorkTableView() {
         if (consultant != null) {
-        // Fetch the updated list of works for the consultant
-        ObservableList<Work> updatedWorkList = workDao.findWorksByConsultantId(consultant.getEmployeeNo());
-        // Update the TableView with the new data
-        tableViewConsultantProjects.setItems(updatedWorkList);
-    } else {
-        System.out.println("Consultant is null. Cannot update work table view.");
+            // Fetch the updated list of works for the consultant
+            ObservableList<Work> updatedWorkList = workDao.findWorksByConsultantId(consultant.getEmployeeNo());
+            // Update the TableView with the new data
+            tableViewConsultantProjects.setItems(updatedWorkList);
+        } else {
+            System.out.println("Consultant is null. Cannot update work table view.");
+        }
     }
-} 
 }

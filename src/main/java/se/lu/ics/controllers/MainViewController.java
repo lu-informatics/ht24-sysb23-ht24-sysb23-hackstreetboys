@@ -269,17 +269,14 @@ public class MainViewController implements Initializable {
         tableViewProjects.setItems(observableProjects);
     }
 
-   // Update project table view
+    // Update project table view
     public void updateProjectsTableView() {
-    List<Project> projects = projectDao.findAllProjects();
-    ObservableList<Project> observableProjects = FXCollections.observableArrayList(projects);
-    tableViewProjects.setItems(observableProjects);
+        List<Project> projects = projectDao.findAllProjects();
+        ObservableList<Project> observableProjects = FXCollections.observableArrayList(projects);
+        tableViewProjects.setItems(observableProjects);
 
-    setupProjectsTableView();
-}
-
-
-
+        setupProjectsTableView();
+    }
 
     // Populate title filter combo box
     public void populateTitleFilterComboBox() {
@@ -385,7 +382,7 @@ public class MainViewController implements Initializable {
             // Update counts in the maivilViewController
             displayTotalHoursForAllConsultants();
             displayTotalNumberOfConsultants();
-            
+
             updateConsultantsTableView();
         } catch (Exception e) {
             setWarning("Could not delete consultant, please contact the system administrator");
@@ -396,6 +393,20 @@ public class MainViewController implements Initializable {
 
     @FXML
     void handleBtnDeleteProject(ActionEvent event) {
+        Project selectedProject = tableViewProjects.getSelectionModel().getSelectedItem();
+        if (selectedProject == null) {
+            setWarning("Please select a project to delete");
+            return;
+        }
+        try {
+            projectDao.deleteProject(selectedProject.getProjectNo());
+            updateProjectsTableView();
+            setWarning("Project deleted successfully");
+
+        } catch (Exception e) {
+            setWarning("Could not delete project, please contact the system administrator");
+            e.printStackTrace();
+        }
 
     }
 
@@ -501,13 +512,11 @@ public class MainViewController implements Initializable {
     void handleBtnSearchProjects(ActionEvent event) throws SQLException {
 
         String id = textFieldFindProjectByProjectId.getText();
-    
+
         List<Project> projects = projectDao.filterProjectById(id);
         ObservableList<Project> observableProjects = FXCollections.observableArrayList(projects);
         tableViewProjects.setItems(observableProjects);
     }
-    
-
 
     @FXML
     void handleBtnClearProjects(ActionEvent event) {

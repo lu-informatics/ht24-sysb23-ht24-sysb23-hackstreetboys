@@ -3,12 +3,14 @@ package se.lu.ics.controllers;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -17,10 +19,13 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import se.lu.ics.data.ConsultantDao;
 import se.lu.ics.data.ProjectDao;
 import se.lu.ics.data.WorkDao;
 import se.lu.ics.data.MilestoneDao;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.property.SimpleIntegerProperty;
 
 //import model classes
@@ -100,6 +105,11 @@ public class ProjectViewController implements Initializable {
 
     @FXML
     private Pane warningPaneProjectView;
+
+    @FXML
+    private Label labelWarning;
+
+
 
     @FXML
     void handleBtnAddConsultant(ActionEvent event) {
@@ -255,6 +265,7 @@ public void handleBtnAddMilestone(ActionEvent event) {
         this.project = project;
         loadConsultant();
         loadMilestones();
+        populateProjectDetails(project.getProjectNo());
     }
 
     @Override
@@ -262,6 +273,7 @@ public void handleBtnAddMilestone(ActionEvent event) {
         try {
             this.consultantDao = new ConsultantDao();
             this.milestoneDao = new MilestoneDao();
+            this.projectDao = new ProjectDao();
         } catch (IOException e) {
             displayErrorMessage("Error initializing DAOs: " + e.getMessage());
             e.printStackTrace();
@@ -343,6 +355,17 @@ public void handleBtnAddMilestone(ActionEvent event) {
         }
     }
 
+            // Populate project details in Text fields
+            private void populateProjectDetails(String projectNo) {
+                project = projectDao.findByProjectNo(projectNo);
+                if (project != null) {
+                    textForProjectID.setText(project.getProjectNo());
+                    textForProjectName.setText(project.getProjectName());
+                } else {
+                    setWarning("Project not found!");
+                }
+            }
+
 
     //update the table view
     public void updateTableView() {
@@ -367,6 +390,40 @@ public void handleBtnAddMilestone(ActionEvent event) {
    public void setmainViewController(MainViewController mainViewController) {
        this.mainViewController = mainViewController;
    }
+
+
+   //WARNING methods
+       public void showSuccessMessage(String message) {
+        warningPaneProjectView.setStyle("-fx-background-color: green;");
+        warningPaneProjectView.setVisible(true);
+        labelWarning.setText(message);
+
+        Timeline timeline = new Timeline(new KeyFrame(
+                Duration.seconds(5),
+                new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent event) {
+                        warningPaneProjectView.setVisible(false);
+                    }
+                }));
+        timeline.play();
+    }
+
+    public void setWarning(String message) {
+        warningPaneProjectView.setStyle("-fx-background-color: red;");
+        warningPaneProjectView.setVisible(true);
+        labelWarning.setText(message);
+
+        Timeline timeline = new Timeline(new KeyFrame(
+                Duration.seconds(5),
+                new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent event) {
+                        warningPaneProjectView.setVisible(false);
+                    }
+                }));
+        timeline.play();
+    }
 
 
 }

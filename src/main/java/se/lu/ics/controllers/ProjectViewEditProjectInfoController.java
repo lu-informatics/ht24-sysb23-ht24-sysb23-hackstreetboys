@@ -1,5 +1,7 @@
 package se.lu.ics.controllers;
 
+import java.time.LocalDate;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -7,23 +9,49 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import se.lu.ics.models.Project;
+import se.lu.ics.data.ProjectDao;
 
 public class ProjectViewEditProjectInfoController {
 
 
     //set project method
+    private ProjectViewController projectViewController;
+    private MainViewController mainViewController;
+    private Project project;
+    private ProjectDao projectDao;
 
-    Project project = new Project();
 
-  public void setProject(Project project) {
+    public ProjectViewEditProjectInfoController() {
+         try {
+            this.projectDao = new ProjectDao();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setProject(Project project) {
         this.project = project;
         // Populate the fields with project data
-        textFieldProjectNo.setText(project.getProjectNo());
+        textForProjectNo.setText(project.getProjectNo());
         textFieldProjectName.setText(project.getProjectName());
         datePickerProjectStartDate.setValue(project.getStartDate());
         datePickerProjectEndDate.setValue(project.getEndDate());
     }
+
+    // Method to set the main view controller
+    public void setMainViewController(MainViewController mainViewController) {
+        this.mainViewController = mainViewController;
+    }
+
+    public void setProjectViewController(ProjectViewController projectViewController) {
+        this.projectViewController = projectViewController;
+    }
+
+
+
     @FXML
     private Button btnCancelProjectEdit;
 
@@ -46,16 +74,66 @@ public class ProjectViewEditProjectInfoController {
     private TextField textFieldProjectName;
 
     @FXML
-    private TextField textFieldProjectNo;
+    private Text textForProjectNo;
+    
 
     @FXML
     void handleBtnCancelProjectEdit(ActionEvent event) {
+        // Close the window
+        Stage stage = (Stage) btnCancelProjectEdit.getScene().getWindow();
+        stage.close();
 
     }
 
     @FXML
     void handleBtnSaveProject(ActionEvent event) {
+        try {
+            // Retrieve updated project information from input fields
+            String projectNo = textForProjectNo.getText();
+            String projectName = textFieldProjectName.getText();
+            LocalDate startDate = datePickerProjectStartDate.getValue();
+            LocalDate endDate = datePickerProjectEndDate.getValue();
+    
+            // Update the project object with new information
+            project.setProjectNo(projectNo);
+            project.setProjectName(projectName);
+            project.setStartDate(startDate);
+            project.setEndDate(endDate);
+    
+            // Save the updated project information to the database
+            projectDao.updateProject(project);
+    
+            // Close the current window
+            Stage stage = (Stage) btnSaveProjectEdit.getScene().getWindow();
+            stage.close();
+    
+            // Refresh the project view to reflect changes
+            if (projectViewController != null) {
+                projectViewController.setProject(project);
+                projectViewController.updateTableView();
+            } else {
+                displayErrorMessage("Project view controller is not set.");
+            }
+    
+            // Update the main view controller to reflect changes
+            if (mainViewController != null) {
+                mainViewController.updateProjectsTableView();
+            }
+    
+        } catch (Exception e) {
+            // Handle exception, show error message or log the error
+            displayErrorMessage("Error occurred while saving project information: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void displayErrorMessage(String message) {
+        paneWarning.setVisible(true);
+        labelWarning.setText(message);
+    }
+
 
     }
 
-}
+
+

@@ -86,36 +86,7 @@ public class ProjectDao {
         }
     }
 
-    // METHOD: Find all consultants in the project from the List of Consultants
-    public List<Consultant> findAllConsultantsInProject(Project project) {
-        String query = "SELECT Consultant.EmployeeNo, Consultant.EmployeeTitle, Consultant.EmployeeName " +
-                "FROM Work " +
-                "JOIN Consultant ON Work.ConsultantID = Consultant.ConsultantID " +
-                "WHERE Work.ProjectNo = ?";
-        List<Consultant> consultants = new ArrayList<>();
 
-        try (Connection connection = connectionHandler.getConnection();
-                PreparedStatement statement = connection.prepareStatement(query)) {
-
-            // Set project data into the prepared statement
-            statement.setString(1, project.getProjectNo());
-            ResultSet resultSet = statement.executeQuery();
-
-            // Iterate through the result set to create Consultant objects
-            while (resultSet.next()) {
-                String employeeNo = resultSet.getString("EmployeeNo");
-                String title = resultSet.getString("Title");
-                String employeeName = resultSet.getString("EmployeeName");
-
-                Consultant consultant = new Consultant(employeeNo, title, employeeName, new ArrayList<>());
-                consultants.add(consultant);
-            }
-        } catch (SQLException e) {
-            throw DaoException.couldNotFetchConsultants(e);
-        }
-
-        return consultants; // Return the list of consultants
-    }
 
     // METHOD: Find no of consultants for a project
     public Map<String, Integer> findNoOfConsultantsForEachProject() {
@@ -267,6 +238,30 @@ public class ProjectDao {
         return noOfMilestonesMap;
     }
 
+      // Convert ProjectNo to ProjectID
+      public int findProjectIDByProjectNo(String projectNo) {
+        String query = "SELECT ProjectID FROM Project WHERE ProjectNo = ?";
+        int projectID = 0;
+
+        try (Connection connection = connectionHandler.getConnection();
+                PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setString(1, projectNo);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                projectID = resultSet.getInt("ProjectID");
+            } else {
+                throw DaoException.projectNotFound(projectNo);
+            }
+        } catch (SQLException e) {
+            throw DaoException.couldNotFetchProjects(e);
+        }
+
+        return projectID;
+
+    }
+
 
     // METHOD mapToProject
     private Project mapToProject(ResultSet resultSet) throws SQLException {
@@ -274,8 +269,7 @@ public class ProjectDao {
                 resultSet.getString("ProjectNo"),
                 resultSet.getString("ProjectName"),
                 resultSet.getDate("StartDate").toLocalDate(),
-                resultSet.getDate("EndDate").toLocalDate(),
-                new ArrayList<>());
+                resultSet.getDate("EndDate").toLocalDate());
     }
 
 }

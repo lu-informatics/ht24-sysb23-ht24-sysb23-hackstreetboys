@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import se.lu.ics.models.Consultant;
 import se.lu.ics.models.Project;
 public class ProjectDao {
 

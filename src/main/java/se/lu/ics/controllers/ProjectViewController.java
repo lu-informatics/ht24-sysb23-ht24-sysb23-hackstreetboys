@@ -29,6 +29,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class ProjectViewController implements Initializable{
@@ -138,15 +139,26 @@ public class ProjectViewController implements Initializable{
             e.printStackTrace();
         }
 
+        tableColumnConsultants.setCellValueFactory(new PropertyValueFactory<>("employeeName"));
 
-        tableColumnConsultants.setCellValueFactory(new PropertyValueFactory<>("EmployeeName"));
+        // For Total Hours Column
         tableColumnTotalHours.setCellValueFactory(cellData -> {
             Work work = cellData.getValue().getWork();
-            return new SimpleIntegerProperty(work != null ? work.getHoursWorked() : 0).asObject();
+            if (work == null) {
+                displayErrorMessage("Error: Work data is missing for " + cellData.getValue().getEmployeeName());
+                return new SimpleIntegerProperty(0).asObject(); // Optionally return 0 in case of error
+            }
+            return new SimpleIntegerProperty(work.getHoursWorked()).asObject();
         });
+
+        // For Weekly Hours Column
         tableColumnWeeklyHours.setCellValueFactory(cellData -> {
             Work work = cellData.getValue().getWork();
-            return new SimpleIntegerProperty(work != null ? work.getWeeklyHours() : 0).asObject();
+            if (work == null) {
+                displayErrorMessage("Error: Work data is missing for " + cellData.getValue().getEmployeeName());
+                return new SimpleIntegerProperty(0).asObject(); // Optionally return 0 in case of error
+            }
+            return new SimpleIntegerProperty(work.getWeeklyHours()).asObject();
         });
     }
 
@@ -158,13 +170,23 @@ public class ProjectViewController implements Initializable{
             return;
         }
         try {
-        List<Consultant> employeeList = consultantDao.findAllConsultantsInProject(project);
-        ObservableList<Consultant> consultantObservableList =
-        FXCollections.observableArrayList(employeeList);
-        tableViewProjectInfo.setItems(consultantObservableList);
-        } catch  (Exception e) {
-        displayErrorMessage("Error: " + e.getMessage());
-        e.printStackTrace();
+            List<Consultant> employeeList = consultantDao.findAllConsultantsInProject(project);
+            Map<String, Integer> weeklyHoursMap = consultantDao.findWeeklyHoursForAllConsultantsInProject(project);
+            Map<String, Integer> totalHoursMap = consultantDao.findTotalHoursForAllConsultantsInProject(project);
+
+            for (Consultant consultant : employeeList) {
+                String employeeNo = consultant.getEmployeeNo();
+                int weeklyHours = weeklyHoursMap.getOrDefault(employeeNo, 0);
+                int totalHours = totalHoursMap.getOrDefault(employeeNo, 0);
+                Work work = new Work(totalHours, weeklyHours, project, consultant);
+                consultant.setWork(work);
+            }
+
+            ObservableList<Consultant> consultantObservableList = FXCollections.observableArrayList(employeeList);
+            tableViewProjectInfo.setItems(consultantObservableList);
+        } catch (Exception e) {
+            displayErrorMessage("Error: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 

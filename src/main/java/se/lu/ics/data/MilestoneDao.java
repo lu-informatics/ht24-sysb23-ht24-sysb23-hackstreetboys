@@ -19,24 +19,24 @@ public class MilestoneDao {
         this.connectionHandler = new ConnectionHandler();
     }
     // METHOD: create milestone and save it to database
-    public void createMilestone(Project project, String milstoneNo, String milestoneDescription, LocalDate milestoneDate) { 
-        String query = "INSERT INTO Milestone (ProjectNo, MilestoneNo, MilestoneDate, MilestoneDescription) VALUES (?, ?, ?, ?)";
+    public void createMilestone(Project project, String milestoneNo, String milestoneDescription, LocalDate milestoneDate) { 
+        String query = "INSERT INTO Milestone (ProjectID, MilestoneNo, MilestoneDate, MilestoneDescription) VALUES (?, ?, ?, ?)";
 
         try (Connection connection = connectionHandler.getConnection();
                 PreparedStatement statement = connection.prepareStatement(query)) {
 
+            Integer projectID = findProjectIDByProjectNo(project.getProjectNo());
             // Set project data into the prepared statement
-            statement.setString(1, project.getProjectNo());
-            statement.setString(2, milstoneNo);
-            statement.setString(3, milestoneDescription);
-            statement.setDate(4, java.sql.Date.valueOf(milestoneDate)); // Omvandla LocalDate till SQL Date
+            statement.setInt(1, projectID);
+            statement.setString(2, milestoneNo);
+            statement.setDate(3, java.sql.Date.valueOf(milestoneDate)); // Convert LocalDate to SQL Date
+            statement.setString(4, milestoneDescription);
 
             // Execute the insert operation
             statement.executeUpdate();
 
             // Create a new milestone and add it to the project 
-            Milestone newMilestone = new Milestone("generatedMilestoneNo", milestoneDate, milestoneDescription, // generatedMilestoneNo is a placeholder
-                    project);
+            Milestone newMilestone = new Milestone(milestoneNo, milestoneDate, milestoneDescription, project);
             project.getMilestones().add(newMilestone);
         } catch (SQLException e) {
             throw DaoException.couldNotAddMilestone(milestoneDescription, e);

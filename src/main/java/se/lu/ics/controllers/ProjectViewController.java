@@ -156,6 +156,8 @@ public void handleBtnAddMilestone(ActionEvent event) {
 
         // Set the selected project in the MilestoneAddController
         milestoneAddController.setProject(project);  // 'project' är det aktuella projektet
+        milestoneAddController.setProjectViewController(this);
+        milestoneAddController.setMainViewController(mainViewController);
 
         // Create a new stage for the window
         Stage modalStage = new Stage();

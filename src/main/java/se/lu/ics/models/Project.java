@@ -22,6 +22,9 @@ public class Project {
     public Project(String projectNo) {
     }
 
+    public Project() {
+    }
+
     // Getters
 
     public String getProjectNo() {

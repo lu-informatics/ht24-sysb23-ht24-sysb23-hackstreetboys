@@ -103,14 +103,9 @@ public class ConsultantDetailsEditViewController {
             existingConsultant.setTitle(employeeTitle);
             consultantDao.updateConsultant(existingConsultant);
 
-            // Update counts in the maivilViewController
-            mainViewController.displayTotalHoursForAllConsultants();
-            mainViewController.displayTotalNumberOfConsultants();
-
             // Close the window
             Stage stage = (Stage) btnSaveConsultantEdit.getScene().getWindow();
             stage.close();
-
 
         } catch (DaoException e) {
             setWarning(e.getMessage());

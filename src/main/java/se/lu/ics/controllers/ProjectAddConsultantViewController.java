@@ -2,6 +2,8 @@ package se.lu.ics.controllers;
 
 import java.net.URL;
 import javafx.util.Duration;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -19,6 +21,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
@@ -37,6 +40,8 @@ public class ProjectAddConsultantViewController implements Initializable {
     private MainViewController mainViewController;
     private ProjectDao projectDao;
     private Project project;
+
+    private Map<String, Integer> consultantWeeklyHoursMap = new HashMap<>();
 
     // Buttons
     @FXML
@@ -80,6 +85,10 @@ public class ProjectAddConsultantViewController implements Initializable {
 
     @FXML
     private Label labelWarning;
+
+    //TextFields
+    @FXML
+    private TextField textFieldWeeklyHours;
 
     // INITALIZE WINDOW
 
@@ -182,10 +191,21 @@ public class ProjectAddConsultantViewController implements Initializable {
             return;
         }
 
+    
+
+        int weeklyHours = Integer.parseInt(textFieldWeeklyHours.getText());
+        if (weeklyHours < 1 || weeklyHours > 40) {
+            setWarning("Weekly hours must be between 1 and 40");
+            return;
+        }
+
+                // Store the weekly hours in the map
+         consultantWeeklyHoursMap.put(consultant.getEmployeeNo(), weeklyHours);
+
         String projectNo = project.getProjectNo(); // Use the project object to get the project number
         String employeeNo = consultant.getEmployeeNo();
         int hoursWorked = 0; // Set appropriate value
-        int weeklyHours = 0; // Set appropriate value
+        // Set appropriate value
 
         WorkDao workDao;
         try {
@@ -199,6 +219,7 @@ public class ProjectAddConsultantViewController implements Initializable {
         }
         projectViewController.updateTableView();
         mainViewController.updateProjectsTableView();
+        updateConsultantsTableView();
 
     }
 

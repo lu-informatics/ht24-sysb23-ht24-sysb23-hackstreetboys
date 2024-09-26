@@ -14,6 +14,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import se.lu.ics.data.ConsultantDao;
 import se.lu.ics.data.ProjectDao;
+import se.lu.ics.data.MilestoneDao;
 import javafx.beans.property.SimpleIntegerProperty;
 
 
@@ -37,6 +38,7 @@ public class ProjectViewController implements Initializable{
     private Project project;
     private ConsultantDao consultantDao;
     private ProjectDao projectDao;
+    private MilestoneDao milestoneDao;
 
 
     @FXML
@@ -128,14 +130,16 @@ public class ProjectViewController implements Initializable{
     public void setProject(Project project) {
        this.project = project;
        loadConsultant();
+       loadMilestones();
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-          try {
+        try {
             this.consultantDao = new ConsultantDao();
+            this.milestoneDao = new MilestoneDao();
         } catch (IOException e) {
-            displayErrorMessage("Error initializing ProjectDao: " + e.getMessage());
+            displayErrorMessage("Error initializing DAOs: " + e.getMessage());
             e.printStackTrace();
         }
 
@@ -160,8 +164,15 @@ public class ProjectViewController implements Initializable{
             }
             return new SimpleIntegerProperty(work.getWeeklyHours()).asObject();
         });
+
+        // Initialize Milestone Table Columns
+        tableColumnMilestone.setCellValueFactory(new PropertyValueFactory<>("milestoneNo"));
+        tableColumnDate.setCellValueFactory(new PropertyValueFactory<>("milestoneDate"));
+        tableColumnDescription.setCellValueFactory(new PropertyValueFactory<>("milestoneDescription"));
     }
 
+
+    //LOAD CONSULTANT
     private void loadConsultant() {
         clearErrorMessage();
         project = ProjectViewController.this.project;
@@ -189,6 +200,27 @@ public class ProjectViewController implements Initializable{
             e.printStackTrace();
         }
     }
+
+    //LOAD MILESTONES
+    private void loadMilestones() {
+        clearErrorMessage();
+        project = ProjectViewController.this.project;
+        if (project == null) {
+            displayErrorMessage("Project is not set.");
+            return;
+        }
+        try {
+
+            List<Milestone> milestoneList = milestoneDao.findMilestonesByProjectNo(project.getProjectNo());
+            ObservableList<Milestone> milestoneObservableList = FXCollections.observableArrayList(milestoneList);
+            tableViewMilestoneInfo.setItems(milestoneObservableList);
+        } catch (Exception e) {
+            displayErrorMessage("Error: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+
 
     private void clearErrorMessage() {
         warningPaneProjectView.setVisible(false);

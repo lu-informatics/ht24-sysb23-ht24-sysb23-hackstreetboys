@@ -127,17 +127,22 @@ public class MilestoneDao {
     }
 
 
-
     // METHOD: delete milestone from project 
     public void deleteMilestone(Milestone milestone, Project project) {
-        String query = "DELETE FROM Milestone WHERE MilestoneNo = ? AND ProjectNo = ?";
+        String query = "DELETE FROM Milestone WHERE MilestoneID = ? AND ProjectID = ?";
     
         try (Connection connection = connectionHandler.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
     
+            // Convert MilestoneNo to MilestoneID
+            int milestoneID = findMilestoneIDByMilestoneNo(milestone.getMilestoneNo());
+    
+            // Convert ProjectNo to ProjectID
+            int projectID = findProjectIDByProjectNo(project.getProjectNo());
+    
             // Set milestone data into the prepared statement
-            statement.setString(1, milestone.getMilestoneNo());
-            statement.setString(2, project.getProjectNo());
+            statement.setInt(1, milestoneID);
+            statement.setInt(2, projectID);
     
             // Execute the delete operation
             statement.executeUpdate();
@@ -168,6 +173,30 @@ public class MilestoneDao {
         }
 
         return projectID;
+
+    }
+
+    //Convert MilestoneNo to MilestoneID
+    public int findMilestoneIDByMilestoneNo(String milestoneNo) {
+        String query = "SELECT MilestoneID FROM Milestone WHERE MilestoneNo = ?";
+        int milestoneID = 0;
+
+        try (Connection connection = connectionHandler.getConnection();
+                PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setString(1, milestoneNo);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                milestoneID = resultSet.getInt("MilestoneID");
+            } else {
+                throw DaoException.couldNotFindMilestoneIdByMilestoneNo(milestoneNo, new SQLException("Milestone not found"));
+            }
+        } catch (SQLException e) {
+            throw DaoException.couldNotFetchMilestones(e);
+        }
+
+        return milestoneID;
 
     }
 

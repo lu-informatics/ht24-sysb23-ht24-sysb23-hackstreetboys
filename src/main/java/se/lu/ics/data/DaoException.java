@@ -143,6 +143,11 @@ public class DaoException extends RuntimeException {
        return new DaoException("Could not count milestones for project with number: " + projectNo, cause);
    }
 
+   //Could not find milestoneId by MilestoneNo
+    public static DaoException couldNotFindMilestoneIdByMilestoneNo(String milestoneNo, Throwable cause) {
+         return new DaoException("Could not find MilestoneID by MilestoneNo: " + milestoneNo, cause);
+    }
+
 
 
 

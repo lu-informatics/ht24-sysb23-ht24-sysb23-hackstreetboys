@@ -142,6 +142,9 @@ public class ProjectViewController implements Initializable{
 
     @FXML
     void handleBtnClose(ActionEvent event) {
+        // Get the current stage and close it
+        Stage stage = (Stage) btnClose.getScene().getWindow();
+        stage.close();
 
     }
 
@@ -170,10 +173,10 @@ public class ProjectViewController implements Initializable{
                 loadConsultant();
                 loadMilestones();
 
-                // Update the consultants table view in MainViewController
-                if (mainViewController != null) {
-                    mainViewController.updateConsultantsTableView();
-                }
+               // Update the projects table view in MainViewController
+               if (mainViewController != null) {
+                mainViewController.updateProjectsTableView();
+            }
 
             } catch (Exception e) {
                 // Handle exception, show error message or log the error

@@ -19,6 +19,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import se.lu.ics.data.ConsultantDao;
 import se.lu.ics.data.ProjectDao;
+import se.lu.ics.data.WorkDao;
 import se.lu.ics.data.MilestoneDao;
 import javafx.beans.property.SimpleIntegerProperty;
 
@@ -44,7 +45,13 @@ public class ProjectViewController implements Initializable{
     private ConsultantDao consultantDao;
     private ProjectDao projectDao;
     private MilestoneDao milestoneDao;
+    private MainViewController mainViewController;
 
+
+    // A setter method for MainViewController
+    public void setMainViewController(MainViewController mainViewController) {
+        this.mainViewController = mainViewController;
+    }
 
     @FXML
     private Button btnAddConsultant;
@@ -142,10 +149,41 @@ public class ProjectViewController implements Initializable{
     void handleBtnEditProjectInfo(ActionEvent event) {
 
     }
-
     @FXML
     void handleBtnRemoveConsultant(ActionEvent event) {
+        // Get the selected consultant from the TableView
+        Consultant selectedConsultant = tableViewProjectInfo.getSelectionModel().getSelectedItem();
 
+        if (selectedConsultant != null) {
+            String projectNo = project.getProjectNo();
+            String employeeNo = selectedConsultant.getEmployeeNo();
+
+            try {
+                // Call the DAO method to remove the consultant from the project
+                WorkDao workDao = new WorkDao();
+                workDao.removeConsultantFromProject(projectNo, employeeNo);
+
+                // Show a success message (optional)
+                System.out.println("Consultant removed from project successfully.");
+
+                // Refresh the ProjectView to reflect changes
+                loadConsultant();
+                loadMilestones();
+
+                // Update the consultants table view in MainViewController
+                if (mainViewController != null) {
+                    mainViewController.updateConsultantsTableView();
+                }
+
+            } catch (Exception e) {
+                // Handle exception, show error message or log the error
+                displayErrorMessage("Error occurred while removing consultant from project: " + e.getMessage());
+                e.printStackTrace();
+            }
+        } else {
+            // If no consultant is selected, show an error message
+            displayErrorMessage("Please select a consultant to remove.");
+        }
     }
 
     @FXML

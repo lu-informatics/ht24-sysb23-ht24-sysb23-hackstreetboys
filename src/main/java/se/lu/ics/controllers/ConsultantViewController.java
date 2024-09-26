@@ -32,6 +32,12 @@ public class ConsultantViewController implements Initializable {
     private ConsultantDao consultantDao;
     private WorkDao workDao;
     private Consultant consultant;
+    private MainViewController mainViewController;
+
+    //a setter for mainviewcontroller
+    public void setMainViewController(MainViewController mainViewController) {
+        this.mainViewController = mainViewController;
+    }
 
     // buttons
     @FXML
@@ -156,6 +162,12 @@ public class ConsultantViewController implements Initializable {
                 // Refresh the TableView to reflect changes
                 updateWorkTableView();
 
+
+                // Update the consultants table view in MainViewController
+                if (mainViewController != null) {
+                    mainViewController.updateConsultantsTableView();
+                }
+
             } catch (DaoException e) {
                 // Handle exception, show error message or log the error
                 System.err.println("Error occurred while removing consultant from project: " + e.getMessage());
@@ -167,8 +179,6 @@ public class ConsultantViewController implements Initializable {
         // If no project is selected, show an error message
         System.out.println("Please select a project to remove the consultant from.");
     }
-
-
     }
 
 
@@ -244,10 +254,15 @@ public class ConsultantViewController implements Initializable {
 
     }
 
-    // Update maethod for workTableView
-    private void updateWorkTableView() {
-        ObservableList<Work> workList = workDao.findConsultantByEmployeeNo(consultant.getEmployeeNo());
-        tableViewConsultantProjects.setItems(workList);
+    // Update method for workTableView
+    private void updateWorkTableView() { 
+        if (consultant != null) {
+        // Fetch the updated list of works for the consultant
+        ObservableList<Work> updatedWorkList = workDao.findWorksByConsultantId(consultant.getEmployeeNo());
+        // Update the TableView with the new data
+        tableViewConsultantProjects.setItems(updatedWorkList);
+    } else {
+        System.out.println("Consultant is null. Cannot update work table view.");
     }
-
+} 
 }

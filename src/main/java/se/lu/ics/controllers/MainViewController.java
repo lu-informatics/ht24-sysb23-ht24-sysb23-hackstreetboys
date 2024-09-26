@@ -306,6 +306,7 @@ public class MainViewController implements Initializable {
                 ConsultantViewController consultantViewController = loader.getController();
 
                 consultantViewController.setConsultant(selectedConsultant);
+                consultantViewController.setMainViewController(this); // Pass the reference
                 System.err.println("Consultant: " + selectedConsultant.getEmployeeName());
 
                 // Create a new stage for the modal dialog

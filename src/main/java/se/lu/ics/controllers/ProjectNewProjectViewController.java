@@ -25,6 +25,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import se.lu.ics.models.Consultant;
 import se.lu.ics.models.Project;
+import se.lu.ics.models.Work;
+import se.lu.ics.models.Work;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
@@ -37,12 +39,6 @@ import se.lu.ics.data.WorkDao;
 import se.lu.ics.models.Consultant;
 
 
-
-
-
-
-
-
 public class ProjectNewProjectViewController implements Initializable {
 
 
@@ -51,110 +47,57 @@ public class ProjectNewProjectViewController implements Initializable {
    @FXML
    private Button btnAddConsultant;
 
-
-
-
    @FXML
    private Button btnCancel;
-
-
-
 
    @FXML
    private Button btnRemoveConsultant;
 
-
-
-
    @FXML
    private Button btnSaveProject;
-
-
-
 
    @FXML
    private ComboBox<String> comboBoxTitleFilter;
 
-
-
-
    @FXML
    private DatePicker datePickerEndDate;
-
-
-
 
    @FXML
    private DatePicker datePickerStartDate;
 
-
-
-
    @FXML
    private Pane paneWarning;
-
-
-
 
    @FXML
    private TableView<Consultant> tableViewSelectedConsultants;
    private ObservableList<Consultant> selectedConsultants = FXCollections.observableArrayList();
 
-
-
-
    @FXML
    private TableColumn<Consultant, String> tableColumnAvailableConsultantAvailability;
-
-
-
 
    @FXML
    private TableColumn<Consultant, String> tableColumnAvailableConsultantId;
 
-
-
-
    @FXML
    private TableColumn<Consultant, String> tableColumnAvailableConsultantName;
-
-
-
 
    @FXML
    private TableColumn<Consultant, String> tableColumnAvailableConsultantTitle;
 
-
-
-
    @FXML
    private TableColumn<Consultant, String> tableColumnSelectedConsultantId;
-
-
-
 
    @FXML
    private TableColumn<Consultant, String> tableColumnSelectedConsultantName;
 
-
-
-
    @FXML
    private TableColumn<Consultant, Integer> tableColumnSelectedConsultantWeeklyHours;
-
-
-
 
    @FXML
    private TableView<Consultant> tableViewAvailableConsultants;
 
-
-
-
    @FXML
    private MainViewController mainViewController;
-
-
 
 
    public void setMainViewController(MainViewController mainViewController) {
@@ -162,47 +105,25 @@ public class ProjectNewProjectViewController implements Initializable {
    }
 
 
-
-
    @FXML
    private Text textErrorMessage;
-
-
-
 
    @FXML
    private TextField textFieldFindEmployeeById;
 
-
-
-
    @FXML
    private TextField textFieldProjectId;
 
-
-
-
    @FXML
    private TextField textFieldProjectName;
-
-
-
 
    @FXML
    private TextField textFieldWeeklyHours;
 
 
-
-
    private ConsultantDao consultantDao;
 
-
-
-
    private ProjectDao projectDao;
-
-
-
 
    private WorkDao workDao;
 
@@ -216,9 +137,6 @@ public class ProjectNewProjectViewController implements Initializable {
        populateComboBoxTitleFilter();
    }
 
-
-
-
    private void initializeDaos() {
        try {
            consultantDao = new ConsultantDao();
@@ -229,9 +147,6 @@ public class ProjectNewProjectViewController implements Initializable {
        }
    }
 
-
-
-
    private void setupTableViewAvailableConsultants() {
        tableColumnAvailableConsultantId.setCellValueFactory(new PropertyValueFactory<>("employeeNo"));
        tableColumnAvailableConsultantName.setCellValueFactory(new PropertyValueFactory<>("employeeName"));
@@ -241,16 +156,12 @@ public class ProjectNewProjectViewController implements Initializable {
    Map<String, Integer> consultantWeeklyHoursMap = consultantDao.findWeeklyHoursForAllConsultants();
 
 
-
-
    // Set the cell value factory for the availability column
    tableColumnAvailableConsultantAvailability.setCellValueFactory(cellData -> {
        Consultant consultant = cellData.getValue();
        int weeklyHours = consultantWeeklyHoursMap.getOrDefault(consultant.getEmployeeNo(), 0);
        return new SimpleStringProperty(String.valueOf(weeklyHours));
    });
-
-
 
 
        // Fetch the list of consultants from the database
@@ -262,13 +173,9 @@ public class ProjectNewProjectViewController implements Initializable {
        ObservableList<Consultant> observableConsultants = FXCollections.observableArrayList(consultants);
 
 
-
-
        // Set the items to the table view
        tableViewAvailableConsultants.setItems(observableConsultants);
    }
-
-
 
 
    private void setupTableViewSelectedConsultants() {
@@ -277,17 +184,8 @@ public class ProjectNewProjectViewController implements Initializable {
        tableColumnSelectedConsultantWeeklyHours.setCellValueFactory(new PropertyValueFactory<>("weeklyHours"));
 
 
-
-
        tableViewSelectedConsultants.setItems(selectedConsultants);
    }
-
-
-
-
- 
-
-
 
 
    private void populateComboBoxTitleFilter() {
@@ -298,16 +196,9 @@ public class ProjectNewProjectViewController implements Initializable {
 
 
 
-
-
-
-
-
    @FXML
    private void comboBoxTitleFilter(ActionEvent event) {
        textErrorMessage.setText("");
-
-
 
 
        try {
@@ -319,18 +210,12 @@ public class ProjectNewProjectViewController implements Initializable {
    }
 
 
-
-
    private void filterAvailableConsultantsByTitle() {
        textErrorMessage.setText("");
 
 
-
-
        String title = comboBoxTitleFilter.getSelectionModel().getSelectedItem();
        ObservableList<Consultant> consultants = FXCollections.observableArrayList();
-
-
 
 
        try {
@@ -346,8 +231,6 @@ public class ProjectNewProjectViewController implements Initializable {
        }
 
 
-
-
        tableViewAvailableConsultants.setItems(consultants);
    }
 
@@ -359,8 +242,6 @@ public class ProjectNewProjectViewController implements Initializable {
        textErrorMessage.setText("");
 
 
-
-
        try {
            filterAvailableConsultantsById();
        } catch (Exception e) {
@@ -370,18 +251,12 @@ public class ProjectNewProjectViewController implements Initializable {
    }
 
 
-
-
    private void filterAvailableConsultantsById() {
        textErrorMessage.setText("");
 
 
-
-
        String id = textFieldFindEmployeeById.getText();
        ObservableList<Consultant> consultants = FXCollections.observableArrayList();
-
-
 
 
        try {
@@ -397,12 +272,8 @@ public class ProjectNewProjectViewController implements Initializable {
        }
 
 
-
-
        tableViewAvailableConsultants.setItems(consultants);
    }
-
-
 
 
    @FXML
@@ -421,14 +292,10 @@ public class ProjectNewProjectViewController implements Initializable {
        }
 
 
-
-
        if (textFieldWeeklyHours.getText().isEmpty()) {
            textErrorMessage.setText("Please enter weekly hours");
            return;
        }
-
-
 
 
        if (!textFieldWeeklyHours.getText().matches("[0-9]+")) {
@@ -437,89 +304,51 @@ public class ProjectNewProjectViewController implements Initializable {
        }
 
 
-
-
        int weeklyHours = Integer.parseInt(textFieldWeeklyHours.getText());
-
-
 
 
        if (weeklyHours < 1 || weeklyHours > 40) {
            textErrorMessage.setText("Weekly hours must be between 1 and 40");
            return;
        }
-
-
-
-
        consultant.setWeeklyHours(weeklyHours);
 
 
+      selectedConsultants.add(consultant);
 
 
-       selectedConsultants.add(consultant);
+      tableViewSelectedConsultants.setItems(selectedConsultants);
 
 
+      tableViewAvailableConsultants.getItems().remove(consultant);
 
 
-       tableViewSelectedConsultants.setItems(selectedConsultants);
+      textErrorMessage.setText("");
 
-
-
-
-       tableViewAvailableConsultants.getItems().remove(consultant);
-
-
-
-
-       textErrorMessage.setText("");
    }
-
-
 
 
    @FXML
    void handleBtnRemoveConsultant(ActionEvent event) {
        textErrorMessage.setText("");
 
-
-
-
        Consultant consultant = tableViewSelectedConsultants.getSelectionModel().getSelectedItem();
-
-
-
 
        if (consultant == null) {
            textErrorMessage.setText("Please select a consultant to remove");
            return;
        }
 
-
-
-
        selectedConsultants.remove(consultant);
-
-
-
 
        tableViewSelectedConsultants.setItems(selectedConsultants);
 
-
-
-
        textErrorMessage.setText("");
-   }
-
-
-
+    }
 
    @FXML
    void handleBtnSaveProject(ActionEvent event) throws SQLException {
        textErrorMessage.setText("");
-
-
-
 
        if (textFieldProjectId.getText().isEmpty() || textFieldProjectName.getText().isEmpty() ||
            datePickerStartDate.getEditor().getText().isEmpty() || datePickerEndDate.getEditor().getText().isEmpty()) {
@@ -527,21 +356,12 @@ public class ProjectNewProjectViewController implements Initializable {
            return;
        }
 
-
-
-
        String projectNo = textFieldProjectId.getText();
        String projectName = textFieldProjectName.getText();
        LocalDate startDate = datePickerStartDate.getValue();
        LocalDate endDate = datePickerEndDate.getValue();
 
-
-
-
        Project project = new Project(projectNo, projectName, startDate, endDate);
-
-
-
 
        try {
            projectDao.save(project);
@@ -549,8 +369,6 @@ public class ProjectNewProjectViewController implements Initializable {
            textErrorMessage.setText("Could not save project");
            return;
        }
-
-
 
 
        for (Consultant consultant : selectedConsultants) {
@@ -566,18 +384,12 @@ public class ProjectNewProjectViewController implements Initializable {
       textErrorMessage.setText("Project saved successfully!");
    }
 
-
-
-
    @FXML
    void handleBtnCancel(ActionEvent event) {
        clearFields();
        Stage stage = (Stage) btnCancel.getScene().getWindow();
        stage.close();
    }
-
-
-
 
    private void clearFields() {
        textFieldProjectId.clear();
@@ -589,12 +401,7 @@ public class ProjectNewProjectViewController implements Initializable {
        paneWarning.setVisible(false);
 
 
-
-
        comboBoxTitleFilter.getSelectionModel().clearSelection();
-
-
-
 
        tableViewAvailableConsultants.getItems().clear();
        tableViewSelectedConsultants.getItems().clear();

@@ -2,6 +2,7 @@ package se.lu.ics.controllers;
 
 import java.io.File;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -146,6 +147,12 @@ public class MainViewController implements Initializable {
 
     @FXML
     private Pane paneWarningProjectsTab;
+
+    @FXML
+    private Button btnclearProjects;
+
+    @FXML
+    private Button searchProjects;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -471,6 +478,24 @@ public class MainViewController implements Initializable {
         comboBoxNoProjectFilter.getSelectionModel().clearSelection();
 
         setupConsultantsTableView();
+    }
+
+    @FXML
+    void handleBtnSearchProjects(ActionEvent event) throws SQLException {
+
+        String id = textFieldFindProjectByProjectId.getText();
+    
+        List<Project> projects = projectDao.filterProjectById(id);
+        ObservableList<Project> observableProjects = FXCollections.observableArrayList(projects);
+        tableViewProjects.setItems(observableProjects);
+    }
+    
+
+
+    @FXML
+    void handleBtnClearProjects(ActionEvent event) {
+        textFieldFindProjectByProjectId.clear();
+        setupProjectsTableView();
     }
 
     @FXML

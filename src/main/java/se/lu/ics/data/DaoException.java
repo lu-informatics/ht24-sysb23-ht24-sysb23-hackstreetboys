@@ -226,4 +226,10 @@ public static DaoException couldNotInsertWeeklyHours(Throwable cause) {
     }
 
 
+    public static Exception projectNotFound(int projectId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'projectNotFound'");
+    }
+
+
 }

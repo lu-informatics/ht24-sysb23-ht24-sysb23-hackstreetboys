@@ -11,17 +11,14 @@ public class Project {
     private LocalDate endDate;
     private List<Milestone> milestones;
 
-    // Constructor
+    // Constructors
     public Project(String projectNo, String projectName, LocalDate startDate, LocalDate endDate) {
         this.projectNo = projectNo;
         this.projectName = projectName;
         this.startDate = startDate;
         this.endDate = endDate;
         this.milestones = new ArrayList<>();
-
-      
     }
-    //Constructor for findMilestonesByProjectNo in milestoneDao
 
     public Project(String projectNo) {
     }

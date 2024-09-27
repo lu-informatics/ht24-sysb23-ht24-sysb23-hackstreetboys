@@ -20,6 +20,32 @@ import se.lu.ics.data.MilestoneDao;
 import se.lu.ics.models.Project;
 
 public class MilestoneAddController {
+
+    
+    @FXML
+    private Button btnCancelMilestoneAdd;
+
+    @FXML
+    private Button btnSaveMilestone;
+
+    @FXML
+    private Label labelWarning;
+
+    @FXML
+    private Pane paneWarning;
+
+    @FXML
+    private TextField textFieldMilestoneNo;
+
+    @FXML
+    private DatePicker datePickerMilestoneDate;
+
+    @FXML
+    private TextField textFieldMilestoneDescription;
+
+    @FXML
+    private Text textProjectNo;
+
     private ProjectViewController projectViewController;
     private MainViewController mainViewController;
     private Project project;
@@ -44,33 +70,10 @@ public class MilestoneAddController {
         this.mainViewController = mainViewController;
     }
 
+    // Method to set the project view controller
     public void setProjectViewController(ProjectViewController projectViewController) {
         this.projectViewController = projectViewController;
     }
-
-    @FXML
-    private Button btnCancelMilestoneAdd;
-
-    @FXML
-    private Button btnSaveMilestone;
-
-    @FXML
-    private Label labelWarning;
-
-    @FXML
-    private Pane paneWarning;
-
-    @FXML
-    private TextField textFieldMilestoneNo;
-
-    @FXML
-    private DatePicker datePickerMilestoneDate;
-
-    @FXML
-    private TextField textFieldMilestoneDescription;
-
-    @FXML
-    private Text textProjectNo;
 
     @FXML
     void handleBtnCancelMilestoneAdd(ActionEvent event) {
@@ -121,7 +124,7 @@ public class MilestoneAddController {
         }
     }
 
-    // WARNING methods
+    // Warning methods
     public void showSuccessMessage(String message) {
         paneWarning.setVisible(true);
         labelWarning.setText(message);

@@ -17,18 +17,6 @@ import se.lu.ics.data.DaoException;
 import se.lu.ics.models.Consultant;
 
 public class ConsultantDetailsEditViewController {
-    private ConsultantDao consultantDao;
-    private MainViewController mainViewController;
-    private ConsultantViewController consultantViewController;
-
-    // Constructor
-    public ConsultantDetailsEditViewController() {
-        try {
-            consultantDao = new ConsultantDao();
-        } catch (Exception e) {
-            setWarning("Could not connect to the database, Please contact the system administrator" + e.getMessage());
-        }
-    }
 
     // Buttons
     @FXML
@@ -38,10 +26,9 @@ public class ConsultantDetailsEditViewController {
     private Button btnSaveConsultantEdit;
 
     // TextFields
-    //
-
     @FXML
     private Text textConsultantID;
+
     @FXML
     private TextField textFieldEmployeeName;
 
@@ -55,6 +42,19 @@ public class ConsultantDetailsEditViewController {
     @FXML
     private Label labelWarning;
 
+    private ConsultantDao consultantDao;
+    private MainViewController mainViewController;
+    private ConsultantViewController consultantViewController;
+
+    // Constructor
+    public ConsultantDetailsEditViewController() {
+        try {
+            consultantDao = new ConsultantDao();
+        } catch (Exception e) {
+            setWarning("Could not connect to the database, Please contact the system administrator" + e.getMessage());
+        }
+    }
+
     // Methods
     @FXML
     void handleBtnCancleConsultantEdit(ActionEvent event) {
@@ -64,6 +64,8 @@ public class ConsultantDetailsEditViewController {
 
     @FXML
     void handleBtnSaveConsultantEdit(ActionEvent event) {
+
+        // Fetch the consultant details from the text fields
         try {
             String employeeNo = textConsultantID.getText();
             String employeeName = textFieldEmployeeName.getText();
@@ -75,14 +77,13 @@ public class ConsultantDetailsEditViewController {
                 return;
             }
 
-            // Check that employeeNo is a number beginning with large E
+            // Check that employeeNo is a number beginning with large E and followed by a number between 0-9999
             if (!employeeNo.matches("E\\d{1,4}")) {
                 setWarning("EmployeeNo must begin with E,\nfollowed by a number between 0-9999");
                 return;
             }
 
-            // Check that employeeName is a string with no special characters, ä, ö, å is
-            // allowed
+            // Check that employeeName is a string with no special characters, ä, ö, å is allowed
             if (!employeeName.matches("[a-zA-ZåäöÅÄÖ]+")) {
                 setWarning("Employee name must contain only letters");
                 return;
@@ -114,24 +115,8 @@ public class ConsultantDetailsEditViewController {
         }
 
         // Update the consultants in the consultant view controller if it is set
-    consultantViewController.setupConsultantTextDetails();
+        consultantViewController.setupConsultantTextDetails();
         
-    }
-
-    public void setConsultant(Consultant consultant) {
-        if (consultant != null) {
-            textConsultantID.setText(consultant.getEmployeeNo());
-            textFieldEmployeeName.setText(consultant.getEmployeeName());
-            textFieldEmployeeTitle.setText(consultant.getEmployeeTitle());
-        }
-    }
-
-    public void setMainViewController(MainViewController mainViewController) {
-        this.mainViewController = mainViewController;
-    }
-
-    public void setConsultantViewController(ConsultantViewController consultantViewController) {
-        this.consultantViewController = consultantViewController;
     }
 
     // setWarning() method for error message handling
@@ -149,5 +134,23 @@ public class ConsultantDetailsEditViewController {
                     }
                 }));
         timeline.play();
+    }
+
+    
+    // setter methods
+    public void setConsultant(Consultant consultant) {
+        if (consultant != null) {
+            textConsultantID.setText(consultant.getEmployeeNo());
+            textFieldEmployeeName.setText(consultant.getEmployeeName());
+            textFieldEmployeeTitle.setText(consultant.getEmployeeTitle());
+        }
+    }
+
+    public void setMainViewController(MainViewController mainViewController) {
+        this.mainViewController = mainViewController;
+    }
+
+    public void setConsultantViewController(ConsultantViewController consultantViewController) {
+        this.consultantViewController = consultantViewController;
     }
 }

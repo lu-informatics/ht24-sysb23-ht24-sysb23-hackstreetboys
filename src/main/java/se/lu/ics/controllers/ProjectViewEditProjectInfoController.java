@@ -16,42 +16,6 @@ import se.lu.ics.data.ProjectDao;
 
 public class ProjectViewEditProjectInfoController {
 
-
-    //set project method
-    private ProjectViewController projectViewController;
-    private MainViewController mainViewController;
-    private Project project;
-    private ProjectDao projectDao;
-
-
-    public ProjectViewEditProjectInfoController() {
-         try {
-            this.projectDao = new ProjectDao();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void setProject(Project project) {
-        this.project = project;
-        // Populate the fields with project data
-        textForProjectNo.setText(project.getProjectNo());
-        textFieldProjectName.setText(project.getProjectName());
-        datePickerProjectStartDate.setValue(project.getStartDate());
-        datePickerProjectEndDate.setValue(project.getEndDate());
-    }
-
-    // Method to set the main view controller
-    public void setMainViewController(MainViewController mainViewController) {
-        this.mainViewController = mainViewController;
-    }
-
-    public void setProjectViewController(ProjectViewController projectViewController) {
-        this.projectViewController = projectViewController;
-    }
-
-
-
     @FXML
     private Button btnCancelProjectEdit;
 
@@ -76,7 +40,39 @@ public class ProjectViewEditProjectInfoController {
     @FXML
     private Text textForProjectNo;
     
+    private ProjectViewController projectViewController;
+    private MainViewController mainViewController;
+    private Project project;
+    private ProjectDao projectDao;
 
+
+    public ProjectViewEditProjectInfoController() {
+         try {
+            this.projectDao = new ProjectDao();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Setters
+    public void setProject(Project project) {
+        this.project = project;
+        // Populate the fields with project data
+        textForProjectNo.setText(project.getProjectNo());
+        textFieldProjectName.setText(project.getProjectName());
+        datePickerProjectStartDate.setValue(project.getStartDate());
+        datePickerProjectEndDate.setValue(project.getEndDate());
+    }
+
+    public void setMainViewController(MainViewController mainViewController) {
+        this.mainViewController = mainViewController;
+    }
+
+    public void setProjectViewController(ProjectViewController projectViewController) {
+        this.projectViewController = projectViewController;
+    }
+
+    // Cancel the project edit, close window
     @FXML
     void handleBtnCancelProjectEdit(ActionEvent event) {
         // Close the window
@@ -85,6 +81,7 @@ public class ProjectViewEditProjectInfoController {
 
     }
 
+    // Save the project edit
     @FXML
     void handleBtnSaveProject(ActionEvent event) {
         try {
@@ -133,13 +130,12 @@ public class ProjectViewEditProjectInfoController {
         }
     }
 
+    // Display error message
     private void displayErrorMessage(String message) {
         paneWarning.setVisible(true);
         labelWarning.setText(message);
     }
-
-
-    }
+}
 
 
 

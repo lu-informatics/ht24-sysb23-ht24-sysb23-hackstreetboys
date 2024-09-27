@@ -85,8 +85,6 @@ public class ProjectDao {
         }
     }
 
-
-
     // METHOD: Find no of consultants for a project
     public Map<String, Integer> findNoOfConsultantsForEachProject() {
         String query = "SELECT Project.ProjectNo, COUNT(Work.ConsultantID) as NoOfConsultants " +
@@ -112,6 +110,7 @@ public class ProjectDao {
         return noOfConsultantsMap;
     }
 
+    // METHOD: Find total weekly hours across all projects
     public double findTotalWeeklyHoursAcrossAllProjects() {
         String query = "SELECT SUM(WeeklyHours) AS TotalWeeklyHours FROM Work";
         try (Connection connection = connectionHandler.getConnection();
@@ -126,6 +125,7 @@ public class ProjectDao {
         return 0.0;
     }
 
+    // METHOD: Find weekly hours for a project
     public double findWeeklyHoursForProject(String projectNo) {
         String query = "SELECT SUM(WeeklyHours) AS ProjectWeeklyHours FROM Work WHERE ProjectID = (SELECT ProjectID FROM Project WHERE ProjectNo = ?)";
         try (Connection connection = connectionHandler.getConnection();
@@ -163,6 +163,7 @@ public class ProjectDao {
             throw DaoException.couldNotDeleteProject(projectNo, e);
         }
     }
+    
     // METHOD: Update an existing project
     public void updateProject(Project project) throws Exception {
         String query = "UPDATE Project SET ProjectName = ?, StartDate = ?, EndDate = ? WHERE ProjectNo = ?";
@@ -187,6 +188,7 @@ public class ProjectDao {
         }
     }
 
+    // METHOD: Find projects involving all consultants
     public List<Project> findProjectsInvolvingAllConsultants() {
         String query = "SELECT p.ProjectNo, p.ProjectName, p.StartDate, p.EndDate " +
                 "FROM Project p " +
@@ -265,8 +267,8 @@ public class ProjectDao {
         return noOfMilestonesMap;
     }
 
-      // Convert ProjectNo to ProjectID
-      public int findProjectIDByProjectNo(String projectNo) {
+    // Convert ProjectNo to ProjectID
+    public int findProjectIDByProjectNo(String projectNo) {
         String query = "SELECT ProjectID FROM Project WHERE ProjectNo = ?";
         int projectID = 0;
 
@@ -290,7 +292,6 @@ public class ProjectDao {
     }
 
     // filter project by id
-
     public List<Project> filterProjectById(String projectNo) throws SQLException {
         String query = "SELECT ProjectNo, ProjectName, StartDate, EndDate FROM Project WHERE ProjectNo = ?";
         List<Project> projects = new ArrayList<>();
@@ -313,12 +314,7 @@ public class ProjectDao {
         return projects;
     }
 
-
-
-
-
-    // convet projectNo to projectID
-
+    // convert projectNo to projectID
     public int findProjectIdByProjectNo(String projectNo) throws SQLException {
         String query = "SELECT ProjectID FROM Project WHERE ProjectNo = ?";
         try (Connection connection = connectionHandler.getConnection();
@@ -342,5 +338,4 @@ public class ProjectDao {
                 resultSet.getDate("StartDate").toLocalDate(),
                 resultSet.getDate("EndDate").toLocalDate());
     }
-
 }

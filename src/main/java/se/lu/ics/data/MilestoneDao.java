@@ -18,6 +18,7 @@ public class MilestoneDao {
     public MilestoneDao () throws IOException {
         this.connectionHandler = new ConnectionHandler();
     }
+
     // METHOD: create milestone and save it to database
     public void createMilestone(Project project, String milestoneNo, String milestoneDescription, LocalDate milestoneDate) { 
         String query = "INSERT INTO Milestone (ProjectID, MilestoneNo, MilestoneDate, MilestoneDescription) VALUES (?, ?, ?, ?)";
@@ -44,7 +45,6 @@ public class MilestoneDao {
     }
 
     // METHOD: total number of milestones for a project
-
     public int getTotalMilestonesForProject(String projectNo) {
         String query = "SELECT COUNT(*) AS total FROM Milestone WHERE ProjectNo = ?";
         int totalMilestones = 0;
@@ -72,7 +72,6 @@ public class MilestoneDao {
 
    
     // METHOD: find milestones by projectNo method
-    
     public List<Milestone> findMilestonesByProjectNo(String projectNo) {
         String query = "SELECT MilestoneNo, MilestoneDescription, MilestoneDate, ProjectID FROM Milestone WHERE ProjectID = ?";
         List<Milestone> milestones = new ArrayList<>();
@@ -106,6 +105,7 @@ public class MilestoneDao {
     
         return milestones;
     }
+
     // METHOD: update milestone method
     public void updateMilestone(Milestone milestone) {
         String query = "UPDATE Milestone SET Milestone = ?, MilestoneDate = ? WHERE MilestoneNo = ? AND ProjectNo = ?";
@@ -126,22 +126,20 @@ public class MilestoneDao {
         }
     }
 
-
     // METHOD: delete milestone from project 
     public void deleteMilestone(Milestone milestone, Project project) {
-        String query = "DELETE FROM Milestone WHERE MilestoneID = ? AND ProjectID = ?";
+        String query = "DELETE FROM Milestone WHERE MilestoneNO = ? AND ProjectID = ?";
     
         try (Connection connection = connectionHandler.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
     
-            // Convert MilestoneNo to MilestoneID
-            int milestoneID = findMilestoneIDByMilestoneNo(milestone.getMilestoneNo());
+
     
             // Convert ProjectNo to ProjectID
             int projectID = findProjectIDByProjectNo(project.getProjectNo());
     
             // Set milestone data into the prepared statement
-            statement.setInt(1, milestoneID);
+            statement.setString(1, milestone.getMilestoneNo());
             statement.setInt(2, projectID);
     
             // Execute the delete operation
@@ -151,7 +149,6 @@ public class MilestoneDao {
         }
     }
 
-    //
      // Convert ProjectNo to ProjectID
      public int findProjectIDByProjectNo(String projectNo) {
         String query = "SELECT ProjectID FROM Project WHERE ProjectNo = ?";
@@ -173,7 +170,6 @@ public class MilestoneDao {
         }
 
         return projectID;
-
     }
 
     //Convert MilestoneNo to MilestoneID
@@ -199,6 +195,4 @@ public class MilestoneDao {
         return milestoneID;
 
     }
-
-
 }

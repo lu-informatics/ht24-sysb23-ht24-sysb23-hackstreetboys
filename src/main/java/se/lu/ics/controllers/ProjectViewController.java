@@ -42,17 +42,6 @@ import java.util.ResourceBundle;
 
 public class ProjectViewController implements Initializable {
 
-    private Project project;
-    private ConsultantDao consultantDao;
-    private MilestoneDao milestoneDao;
-    private MainViewController mainViewController;
-    private ProjectDao projectDao;
-
-    // A setter method for MainViewController
-    public void setMainViewController(MainViewController mainViewController) {
-        this.mainViewController = mainViewController;
-    }
-
     @FXML
     private Button btnAddConsultant;
 
@@ -110,6 +99,56 @@ public class ProjectViewController implements Initializable {
     @FXML
     private Label labelWarning;
 
+    private Project project;
+    private ConsultantDao consultantDao;
+    private MilestoneDao milestoneDao;
+    private MainViewController mainViewController;
+    private ProjectDao projectDao;
+
+    // A setter method for MainViewController
+    public void setMainViewController(MainViewController mainViewController) {
+        this.mainViewController = mainViewController;
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        try {
+            this.consultantDao = new ConsultantDao();
+            this.milestoneDao = new MilestoneDao();
+            this.projectDao = new ProjectDao();
+        } catch (IOException e) {
+            setWarning("Error initializing DAOs: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        tableColumnConsultants.setCellValueFactory(new PropertyValueFactory<>("employeeName"));
+
+        // For Total Hours Column
+        tableColumnTotalHours.setCellValueFactory(cellData -> {
+            Work work = cellData.getValue().getWork();
+            if (work == null) {
+                setWarning("Error: Work data is missing for " + cellData.getValue().getEmployeeName());
+                return new SimpleIntegerProperty(0).asObject(); // Optionally return 0 in case of error
+            }
+            return new SimpleIntegerProperty(work.getHoursWorked()).asObject();
+        });
+
+        // For Weekly Hours Column
+        tableColumnWeeklyHours.setCellValueFactory(cellData -> {
+            Work work = cellData.getValue().getWork();
+            if (work == null) {
+                setWarning("Error: Work data is missing for " + cellData.getValue().getEmployeeName());
+                return new SimpleIntegerProperty(0).asObject(); // Optionally return 0 in case of error
+            }
+            return new SimpleIntegerProperty(work.getWeeklyHours()).asObject();
+        });
+
+        // Initialize Milestone Table Columns
+        tableColumnMilestone.setCellValueFactory(new PropertyValueFactory<>("milestoneNo"));
+        tableColumnDate.setCellValueFactory(new PropertyValueFactory<>("milestoneDate"));
+        tableColumnDescription.setCellValueFactory(new PropertyValueFactory<>("milestoneDescription"));
+    }
+
     @FXML
     void handleBtnAddConsultant(ActionEvent event) {
         try {
@@ -139,7 +178,6 @@ public class ProjectViewController implements Initializable {
             setWarning("Could not open the add consultant view, contact support");
             e.printStackTrace();
         }
-
     }
 
     // Opens MilestoneAdd.fxml
@@ -174,6 +212,7 @@ public class ProjectViewController implements Initializable {
         }
     }
 
+    // Close the window
     @FXML
     void handleBtnClose(ActionEvent event) {
         // Get the current stage and close it
@@ -182,6 +221,7 @@ public class ProjectViewController implements Initializable {
 
     }
 
+    // Edit project information
     @FXML
     void handleBtnEditProjectInfo(ActionEvent event) {
         try {
@@ -213,6 +253,7 @@ public class ProjectViewController implements Initializable {
         }
     }
 
+    // Edit hours for consultant on current project
     @FXML
     void handleBtnEditHours(ActionEvent event) {
 
@@ -260,6 +301,7 @@ public class ProjectViewController implements Initializable {
         }
     }
 
+    // Method for removing a consultant from a project
     @FXML
     void handleBtnRemoveConsultant(ActionEvent event) {
         // Get the selected consultant from the TableView
@@ -306,9 +348,6 @@ public class ProjectViewController implements Initializable {
                 // Call the DAO method to remove the milestone from the project
                 milestoneDao.deleteMilestone(selectedMilestone, project);
 
-                // Show a success message (optional)
-                System.out.println("Milestone removed from project successfully.");
-
                 // Refresh the ProjectView to reflect changes
                 loadConsultant();
                 loadMilestones();
@@ -330,50 +369,12 @@ public class ProjectViewController implements Initializable {
 
     }
 
+    // Setter methods
     public void setProject(Project project) {
         this.project = project;
         loadConsultant();
         loadMilestones();
         populateProjectDetails(project.getProjectNo());
-    }
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        try {
-            this.consultantDao = new ConsultantDao();
-            this.milestoneDao = new MilestoneDao();
-            this.projectDao = new ProjectDao();
-        } catch (IOException e) {
-            setWarning("Error initializing DAOs: " + e.getMessage());
-            e.printStackTrace();
-        }
-
-        tableColumnConsultants.setCellValueFactory(new PropertyValueFactory<>("employeeName"));
-
-        // For Total Hours Column
-        tableColumnTotalHours.setCellValueFactory(cellData -> {
-            Work work = cellData.getValue().getWork();
-            if (work == null) {
-                setWarning("Error: Work data is missing for " + cellData.getValue().getEmployeeName());
-                return new SimpleIntegerProperty(0).asObject(); // Optionally return 0 in case of error
-            }
-            return new SimpleIntegerProperty(work.getHoursWorked()).asObject();
-        });
-
-        // For Weekly Hours Column
-        tableColumnWeeklyHours.setCellValueFactory(cellData -> {
-            Work work = cellData.getValue().getWork();
-            if (work == null) {
-                setWarning("Error: Work data is missing for " + cellData.getValue().getEmployeeName());
-                return new SimpleIntegerProperty(0).asObject(); // Optionally return 0 in case of error
-            }
-            return new SimpleIntegerProperty(work.getWeeklyHours()).asObject();
-        });
-
-        // Initialize Milestone Table Columns
-        tableColumnMilestone.setCellValueFactory(new PropertyValueFactory<>("milestoneNo"));
-        tableColumnDate.setCellValueFactory(new PropertyValueFactory<>("milestoneDate"));
-        tableColumnDescription.setCellValueFactory(new PropertyValueFactory<>("milestoneDescription"));
     }
 
     // LOAD CONSULTANT
@@ -440,6 +441,7 @@ public class ProjectViewController implements Initializable {
         setProject(project);
     }
 
+    // Method to clear error message
     private void clearErrorMessage() {
         warningPaneProjectView.setVisible(false);
         textForProjectID.setText("");
@@ -481,5 +483,4 @@ public class ProjectViewController implements Initializable {
                 }));
         timeline.play();
     }
-
 }

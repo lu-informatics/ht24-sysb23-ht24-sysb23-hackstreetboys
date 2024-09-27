@@ -212,4 +212,17 @@ public class DaoException extends RuntimeException {
         throw new UnsupportedOperationException("Unimplemented method 'projectNotFound'");
     }
 
+    //couldNotCheckIfConsultantIsAssignedToProject
+    public static DaoException couldNotCheckIfConsultantIsAssignedToProject(String projectNo, String employeeNo,
+            SQLException e) {
+        return new DaoException("Could not check if consultant is assigned to project.", e);
+    }
+
+    //couldNotUpdateConsultantWeeklyHours
+    public static DaoException couldNotUpdateConsultantWeeklyHours(String projectNo, String employeeNo, SQLException e) {
+        return new DaoException("Could not update consultant weekly hours for project with number " + projectNo
+                + " and consultant with number " + employeeNo, e);
+    }
+
+
 }

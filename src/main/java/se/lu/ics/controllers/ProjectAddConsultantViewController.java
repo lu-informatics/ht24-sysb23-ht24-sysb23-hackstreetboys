@@ -38,14 +38,6 @@ import se.lu.ics.models.Project;
 
 public class ProjectAddConsultantViewController implements Initializable {
 
-    private ConsultantDao consultantDao;
-    private ProjectViewController projectViewController;
-    private MainViewController mainViewController;
-    private ProjectDao projectDao;
-    private Project project;
-
-    private Map<String, Integer> consultantWeeklyHoursMap = new HashMap<>();
-
     // Buttons
     @FXML
     private Button btnAddToProject;
@@ -84,7 +76,7 @@ public class ProjectAddConsultantViewController implements Initializable {
 
     // Pane
     @FXML
-     private Pane paneWarning;
+        private Pane paneWarning;
 
     @FXML
     private Label labelWarning;
@@ -93,14 +85,21 @@ public class ProjectAddConsultantViewController implements Initializable {
     @FXML
     private TextField textFieldWeeklyHours;
 
-    // INITALIZE WINDOW
+    private ConsultantDao consultantDao;
+    private ProjectViewController projectViewController;
+    private MainViewController mainViewController;
+    private ProjectDao projectDao;
+    private Project project;
+    private Map<String, Integer> consultantWeeklyHoursMap = new HashMap<>();
 
+    // INITALIZE WINDOW
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         initializeDaos();
         setupConsultantsTableView();
     }
 
+    // Initialize the data access objects
     private void initializeDaos() {
         try {
             consultantDao = new ConsultantDao();
@@ -110,6 +109,7 @@ public class ProjectAddConsultantViewController implements Initializable {
         }
     }
 
+    // Setup the consultants table view
     private void setupConsultantsTableView() {
 
         // Set the cell value factories for the instance variables
@@ -279,13 +279,13 @@ public class ProjectAddConsultantViewController implements Initializable {
         paneWarning.setVisible(false);
     }
 
+    // Label warning
     @FXML
     void handleLabelWarning(MouseEvent event) {
         labelWarning.setVisible(false);
     }
 
     // SET AND GET METHODS FOR INSTANCES
-
     public void setProjectViewController(ProjectViewController projectViewController) {
         this.projectViewController = projectViewController;
     }
@@ -302,7 +302,6 @@ public class ProjectAddConsultantViewController implements Initializable {
     }
 
     // SUCCESS AND WARNING MESSAGES
-
     public void showSuccessMessage(String message) {
         paneWarning.setStyle("-fx-background-color: green;");
         paneWarning.setVisible(true);

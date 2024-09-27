@@ -15,6 +15,7 @@ public class Milestone {
         this.milestoneDescription = milestoneDescription;
         this.project = project;
     }
+    
     //Constructor for findMilestonesByProjectNo in milestoneDao
     public Milestone() {
     }

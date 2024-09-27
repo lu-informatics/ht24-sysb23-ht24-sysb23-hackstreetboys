@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import se.lu.ics.models.Milestone;
 
 public class DaoException extends RuntimeException {
+
     public DaoException(String message, Throwable cause) {
         super(message, cause);
     }
@@ -13,8 +14,8 @@ public class DaoException extends RuntimeException {
         super(message);
     }
 
-    // Error handling for ProjectDao
-    // Throwable cause to keep messages easy to understand for the user
+
+    // Could not fetch projects
     public static DaoException couldNotFetchProjects(Throwable cause) {
         return new DaoException("Could not fetch projects", cause);
     }
@@ -44,10 +45,12 @@ public class DaoException extends RuntimeException {
         return new DaoException("Could not fetch milestones", cause);
     }
 
+    // Could not delete project
     public static DaoException couldNotDeleteProject(String projectNo, Throwable cause) {
         return new DaoException("Could not delete project with number " + projectNo, cause);
     }
 
+    // Could not update project
     public static Exception couldNotUpdateProject(String projectNo, SQLException e) {
         return new DaoException("Could not update project with number " + projectNo, e);
     }
@@ -58,48 +61,52 @@ public class DaoException extends RuntimeException {
                 "Milestone number '" + milestoneNo + "' already exists for project ID '" + projectId + "'.");
     }
 
-    // Error handling for ConsultantDao
     // Could not find ConsultantID by EmployeeNo
     public static DaoException couldNotFindConsultantIdByEmployeeNo(String employeeNo, Throwable cause) {
         return new DaoException("Could not find ConsultantID by EmployeeNo: " + employeeNo, cause);
     }
 
+    // Could not find ProjectID by ProjectNo
     public static DaoException couldNotFetchConsultants(Throwable cause) {
         return new DaoException("Could not fetch consultants", cause);
     }
 
+    // consultant already exists
     public static DaoException consultantAlreadyExists(String EmployeeNo, Throwable cause) {
         return new DaoException("Consultant with number " + EmployeeNo + " already exists.", cause);
     }
 
+    // Could not save consultant
     public static DaoException couldNotSaveConsultant(String EmployeeName, Throwable cause) {
         return new DaoException("Could not save consultant: " + EmployeeName, cause);
     }
 
+    // Could not delete consultant
     public static DaoException couldNotDeleteConsultant(String EmployeeNo, Throwable cause) {
         return new DaoException("Could not delete consultant with number " + EmployeeNo, cause);
     }
 
+    // Consultant not found
     public static DaoException consultantNotFound(String EmployeeNo) {
         return new DaoException("Consultant with number " + EmployeeNo + " not found.");
     }
 
+    // Could not update consultant
     public static DaoException couldNotUpdateConsultant(String EmployeeNo, Throwable cause) {
         return new DaoException("Could not update consultant with number " + EmployeeNo, cause);
     }
 
-    // Error handling for WorkDao
     // Could not add consultant to project
     public static DaoException couldNotAddConsultantToProject(String projectNo, String employeeNo, Throwable cause) {
         return new DaoException(
                 "Could not add consultant with id " + employeeNo + " to project with number " + projectNo, cause);
     }
 
+    // Could not find consultant by EmployeeNo
     public static DaoException couldNotFindConsultantByEmployeeNo(String employeeNo, Throwable cause) {
         return new DaoException("Could not find Consultant by EmployeeNo: " + employeeNo, cause);
     }
 
-    // Error handling for MilestoneDao:
     // Could not find Milestone by MilestoneNo
     public static DaoException couldNotFindMilestoneByMilestoneNo(String milestoneNo, Throwable cause) {
         return new DaoException("Could not find Milestone by MilestoneNo: " + milestoneNo, cause);
@@ -219,9 +226,9 @@ public class DaoException extends RuntimeException {
     }
 
 
+    // Could not update consultant hours on project
     public static Exception couldNotUpdateConsultantHoursOnProject(String projectNo, String employeNo,
             Throwable cause) {
         return new DaoException("Could not update consultant hours on project.", cause);
     }
-
 }

@@ -27,16 +27,6 @@ import java.util.ResourceBundle;
 
 public class ConsultantViewController implements Initializable {
 
-    private ConsultantDao consultantDao;
-    private WorkDao workDao;
-    private Consultant consultant;
-    private MainViewController mainViewController;
-
-    // a setter for mainviewcontroller
-    public void setMainViewController(MainViewController mainViewController) {
-        this.mainViewController = mainViewController;
-    }
-
     // buttons
     @FXML
     private Button btnCloseConsultantDetails;
@@ -75,50 +65,10 @@ public class ConsultantViewController implements Initializable {
     @FXML
     private Pane warningPane;
 
-    @FXML
-    void handleBtnCloseConsultantDetails(ActionEvent event) {
-        // Update the consultants in the main view controller if it is set
-        if (mainViewController != null) {
-            mainViewController.updateConsultantsTableView();
-        }
-
-        // Get the current stage and close it
-        Stage stage = (Stage) btnCloseConsultantDetails.getScene().getWindow();
-        stage.close();
-    }
-
-    @FXML
-    void handleBtnEditConsultant(ActionEvent event) {
-        try {
-            // Load the FXML file
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ConsultantEditConsultantInfoView.fxml"));
-            Pane editConsultantPane = loader.load();
-
-            // Get the controller from the loader
-            ConsultantDetailsEditViewController editConsultantController = loader.getController();
-
-            // Pass the consultant object to the controller
-            editConsultantController.setConsultant(consultant);
-            //bring this consultantViewcontrollerwith
-            editConsultantController.setConsultantViewController(this);
-            editConsultantController.setMainViewController(mainViewController);
-
-            // Create a new stage for the modal dialog
-            Stage modalStage = new Stage();
-            modalStage.setScene(new Scene(editConsultantPane));
-            modalStage.setTitle("Edit Consultant Details");
-            modalStage.initModality(Modality.APPLICATION_MODAL);
-            modalStage.showAndWait();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    @FXML
-    void handleBtnRegisterConsultantToProject(ActionEvent event) {
-
-    }
+    private ConsultantDao consultantDao;
+    private WorkDao workDao;
+    private Consultant consultant;
+    private MainViewController mainViewController;
 
     // Initalize ProjectViewController
     @Override
@@ -127,15 +77,7 @@ public class ConsultantViewController implements Initializable {
 
     }
 
-    public void setConsultant(Consultant consultant) {
-        this.consultant = consultant;
-        if (consultant != null) {
-            setupWorkTableView();
-            setupConsultantTextDetails();
-        } else {
-        }
-    }
-
+    // Initialize the DAOs
     private void intitaizeDaos() {
         try {
             consultantDao = new ConsultantDao();
@@ -171,16 +113,66 @@ public class ConsultantViewController implements Initializable {
 
     // setup textfields
     public void setupConsultantTextDetails() {
-        if (consultant != null) {
-            String employeeNO = consultant.getEmployeeNo();
-            consultant = consultantDao.findConsultantByEmployeeNo(employeeNO);
+        
+        String employeeNO = consultant.getEmployeeNo();
+        consultant = consultantDao.findConsultantByEmployeeNo(employeeNO);
 
-            textEmployeeNO.setText(consultant.getEmployeeNo());
-            textEmployeeName.setText(consultant.getEmployeeName());
-            textEmployeeTitle.setText(consultant.getEmployeeTitle());
+        textEmployeeNO.setText(consultant.getEmployeeNo());
+        textEmployeeName.setText(consultant.getEmployeeName());
+        textEmployeeTitle.setText(consultant.getEmployeeTitle());
 
-        } else {
+    }
+
+    // Close the window
+    @FXML
+    void handleBtnCloseConsultantDetails(ActionEvent event) {
+        // Update the consultants in the main view controller if it is set
+        if (mainViewController != null) {
+            mainViewController.updateConsultantsTableView();
         }
 
+        // Get the current stage and close it
+        Stage stage = (Stage) btnCloseConsultantDetails.getScene().getWindow();
+        stage.close();
+    }
+
+    // Edit the consultant details
+    @FXML
+    void handleBtnEditConsultant(ActionEvent event) {
+        try {
+            // Load the FXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ConsultantEditConsultantInfoView.fxml"));
+            Pane editConsultantPane = loader.load();
+
+            // Get the controller from the loader
+            ConsultantDetailsEditViewController editConsultantController = loader.getController();
+
+            // Pass the consultant object to the controller
+            editConsultantController.setConsultant(consultant);
+            //bring this consultantViewcontrollerwith
+            editConsultantController.setConsultantViewController(this);
+            editConsultantController.setMainViewController(mainViewController);
+
+            // Create a new stage for the modal dialog
+            Stage modalStage = new Stage();
+            modalStage.setScene(new Scene(editConsultantPane));
+            modalStage.setTitle("Edit Consultant Details");
+            modalStage.initModality(Modality.APPLICATION_MODAL);
+            modalStage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    // setter methods
+    public void setMainViewController(MainViewController mainViewController) {
+        this.mainViewController = mainViewController;
+    }
+
+    public void setConsultant(Consultant consultant) {
+        this.consultant = consultant;
+        setupWorkTableView();
+        setupConsultantTextDetails();
     }
 }

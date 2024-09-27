@@ -76,6 +76,7 @@ public class WorkDao {
         }
     }
 
+    // METHOD: Find consultant by employee number
     public ObservableList<Work> findConsultantByEmployeeNo(String employeeNo) {
         String query = "SELECT Project.ProjectName, Project.ProjectNo, Work.HoursWorked, Work.WeeklyHours " +
                 "FROM Project " +
@@ -119,6 +120,7 @@ public class WorkDao {
         }
     }
 
+    // METHOD: Find consultant ID by employee number
     public int findConsultantIdByEmployeeNo(String employeeNo) throws SQLException {
         String query = "SELECT ConsultantID FROM Consultant WHERE EmployeeNo = ?";
         try (Connection connection = connectionHandler.getConnection();
@@ -171,28 +173,28 @@ public class WorkDao {
         }
     }
 
-
-
-//needs exception handling
-    private static Work mapToWork(ResultSet resultSet, String employeeNo) throws SQLException {
-        // Extract fields from the result set
-        String projectName = resultSet.getString("ProjectName");
-        String projectNo = resultSet.getString("ProjectNo");
-        int hoursWorked = resultSet.getInt("HoursWorked");
-        int weeklyHours = resultSet.getInt("WeeklyHours");
-
-        // Create Project and Consultant objects (this might involve fetching additional
-        // data if needed)
-        Project project = new Project(projectNo, projectName, null, null); // Assuming startDate and endDate are not
-                                                                           // relevant here
-        Consultant consultant = new Consultant(employeeNo, null, null, null); // Set other parameters as needed
-
-        // Create and return a Work object
-        return new Work(hoursWorked, weeklyHours, project, consultant);
+    // Method to map a result set to a Work object
+    private static Work mapToWork(ResultSet resultSet, String employeeNo) {
+        try {
+            // Extract fields from the result set
+            String projectName = resultSet.getString("ProjectName");
+            String projectNo = resultSet.getString("ProjectNo");
+            int hoursWorked = resultSet.getInt("HoursWorked");
+            int weeklyHours = resultSet.getInt("WeeklyHours");
+    
+            // Create Project and Consultant objects 
+            Project project = new Project(projectNo, projectName, null, null);
+            Consultant consultant = new Consultant(employeeNo, null, null, null);
+    
+            // Create and return a Work object
+            return new Work(hoursWorked, weeklyHours, project, consultant);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     // method to remove a consultant from a project and update the database
-
     public void removeConsultantFromProject(String projectNo, String employeeNo) {
         String query = "DELETE FROM Work WHERE ProjectID = ? AND ConsultantID = ?";
 
@@ -217,6 +219,7 @@ public class WorkDao {
         }
     }
 
+    // METHOD: Find works by consultant ID
     public ObservableList<Work> findWorkByConsultantId(String employeeNo) {
         String query = "SELECT * FROM Work WHERE ConsultantID = (SELECT ConsultantID FROM Consultant WHERE EmployeeNo = ?)";
         ObservableList<Work> workList = FXCollections.observableArrayList();

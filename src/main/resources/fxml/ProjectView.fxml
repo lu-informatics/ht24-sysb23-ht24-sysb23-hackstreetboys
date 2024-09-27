@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
@@ -9,8 +8,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Text?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se.lu.ics.controllers.ProjectViewController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="830.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se.lu.ics.controllers.ProjectViewController">
    <children>
       <TableView fx:id="tableViewProjectInfo" layoutX="51.0" layoutY="93.0" prefHeight="200.0" prefWidth="266.0">
         <columns>
@@ -19,28 +17,30 @@
             <TableColumn fx:id="tableColumnWeeklyHours" prefWidth="91.20001220703125" text="Weekly Hours" />
         </columns>
       </TableView>
-      <TableView fx:id="tableViewMilestoneInfo" layoutX="343.0" layoutY="93.0" prefHeight="200.0" prefWidth="232.0">
+      <TableView fx:id="tableViewMilestoneInfo" layoutX="366.0" layoutY="93.0" prefHeight="200.0" prefWidth="418.0">
         <columns>
-          <TableColumn fx:id="tableColumnMilestone" prefWidth="75.0" text="Milestone" />
-          <TableColumn fx:id="tableColumnDate" prefWidth="75.0" text="Date" />
-            <TableColumn fx:id="tableColumnDescription" prefWidth="81.0" text="Description" />
+          <TableColumn fx:id="tableColumnMilestone" prefWidth="74.0" text="Milestone" />
+          <TableColumn fx:id="tableColumnDate" prefWidth="106.0" text="Date" />
+            <TableColumn fx:id="tableColumnDescription" prefWidth="223.0" text="Description" />
         </columns>
+         <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+         </columnResizePolicy>
       </TableView>
       <Button fx:id="btnAddConsultant" layoutX="51.0" layoutY="310.0" mnemonicParsing="false" onAction="#handleBtnAddConsultant" prefHeight="25.0" prefWidth="120.0" text="Add constultant ..." />
       <Button fx:id="btnRemoveConsultant" layoutX="51.0" layoutY="341.0" mnemonicParsing="false" onAction="#handleBtnRemoveConsultant" prefHeight="25.0" prefWidth="130.0" text="Remove consultant" />
-      <Button fx:id="btnClose" layoutX="525.0" layoutY="341.0" mnemonicParsing="false" onAction="#handleBtnClose" text="Close" />
-      <Button fx:id="btnAddMilestone" layoutX="343.0" layoutY="310.0" mnemonicParsing="false" onAction="#handleBtnAddMilestone" prefHeight="25.0" prefWidth="114.0" text="Add milestone ..." />
-      <Button fx:id="btnRemoveMilestone" layoutX="343.0" layoutY="341.0" mnemonicParsing="false" onAction="#handleBtnRemoveMilestone" prefHeight="25.0" prefWidth="130.0" text="Remove milestone" />
+      <Button fx:id="btnClose" layoutX="739.0" layoutY="341.0" mnemonicParsing="false" onAction="#handleBtnClose" text="Close" />
+      <Button fx:id="btnAddMilestone" layoutX="366.0" layoutY="310.0" mnemonicParsing="false" onAction="#handleBtnAddMilestone" prefHeight="25.0" prefWidth="114.0" text="Add milestone ..." />
+      <Button fx:id="btnRemoveMilestone" layoutX="366.0" layoutY="344.0" mnemonicParsing="false" onAction="#handleBtnRemoveMilestone" prefHeight="25.0" prefWidth="130.0" text="Remove milestone" />
       <Text layoutX="51.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Project ID: " />
       <Text layoutX="51.0" layoutY="81.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name:" />
-      <Button fx:id="btnEditProjectInfo" layoutX="345.0" layoutY="38.0" mnemonicParsing="false" onAction="#handleBtnEditProjectInfo" text="Edit project info ..." />
+      <Button fx:id="btnEditProjectInfo" layoutX="206.0" layoutY="38.0" mnemonicParsing="false" onAction="#handleBtnEditProjectInfo" text="Edit project info ..." />
       <Text fx:id="textForProjectName" layoutX="94.0" layoutY="81.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="195.0" />
       <Text fx:id="textForProjectID" layoutX="113.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="170.0" />
       <Pane fx:id="warningPaneProjectView" layoutY="366.0" prefHeight="35.0" prefWidth="600.0">
          <children>
             <Label fx:id="labelWarning" layoutX="23.0" layoutY="6.0" />
          </children></Pane>
-      <Button fx:id="btnEditHours" layoutX="198.0" layoutY="310.0" mnemonicParsing="false" onAction="#handleBtnEditHours" prefHeight="25.0" prefWidth="120.0" text="Edit hours ..." />
+      <Button fx:id="btnEditHours" layoutX="202.0" layoutY="310.0" mnemonicParsing="false" onAction="#handleBtnEditHours" prefHeight="25.0" prefWidth="120.0" text="Edit hours ..." />
    </children>
 </AnchorPane>
-

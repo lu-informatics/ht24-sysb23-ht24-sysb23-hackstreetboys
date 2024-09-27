@@ -20,21 +20,6 @@ import se.lu.ics.data.DaoException;
 import se.lu.ics.models.Consultant;
 
 public class ConsultantRegisterConsultantViewController {
-    private ConsultantDao consultantDao;
-    private MainViewController mainViewController;
-
-    // Constructor
-    public ConsultantRegisterConsultantViewController() {
-        try {
-            consultantDao = new ConsultantDao();
-        } catch (IOException e) {
-            setWarning("Could not connect to the database, Please contact the system administrator" + e.getMessage());
-        }
-    }
-
-    public void setMainViewController(MainViewController mainViewController) {
-        this.mainViewController = mainViewController;
-    }
 
     @FXML
     private Button btnCancelRegisterConsultant;
@@ -57,6 +42,19 @@ public class ConsultantRegisterConsultantViewController {
     @FXML
     private Label labelWarning;
 
+    private ConsultantDao consultantDao;
+    private MainViewController mainViewController;
+
+    // Constructor
+    public ConsultantRegisterConsultantViewController() {
+        try {
+            consultantDao = new ConsultantDao();
+        } catch (IOException e) {
+            setWarning("Could not connect to the database, Please contact the system administrator" + e.getMessage());
+        }
+    }
+
+    // Close the window
     @FXML
     public void handleBtnCancelRegisterConsultant(ActionEvent event) {
         Stage stage = (Stage) btnCancelRegisterConsultant.getScene().getWindow();
@@ -78,14 +76,13 @@ public class ConsultantRegisterConsultantViewController {
                 return;
             }
 
-            // Check that employeeNo is a number beginning with large E
+            // Check that employeeNo is a number beginning with large E and followed by 0-9999
             if (!employeeNo.matches("E\\d{1,4}")) {
                 setWarning("EmployeeNo must begin with E,\nfollowed by a number between 0-9999");
                 return;
             }
 
-            // Check that employeeName is a string with no special characters, ä, ö, å is
-            // allowed
+            // Check that employeeName is a string with no special characters, ä, ö, å is allowed
             if (!employeeName.matches("[a-zA-ZåäöÅÄÖ]+")) {
                 setWarning("Employee name must contain only letters");
                 return;
@@ -96,11 +93,12 @@ public class ConsultantRegisterConsultantViewController {
             if (existingConsultant != null) {
                 throw DaoException.consultantAlreadyExists(employeeNo, null);
             }
+
             // Save the consultant
             Consultant consultant = new Consultant(employeeNo, employeeTitle, employeeName, new ArrayList<>());
             consultantDao.saveConsultant(consultant);
 
-            // Update counts in the maivilViewController
+            // Update counts in the main view
             mainViewController.displayTotalHoursForAllConsultants();
             mainViewController.displayTotalNumberOfConsultants();
 
@@ -114,7 +112,7 @@ public class ConsultantRegisterConsultantViewController {
         } catch (DaoException e) {
             setWarning(e.getMessage());
         } catch (SQLException e) {
-            setWarning("Could not save consultant, Please contact the system administrator" + e.getMessage());
+            setWarning("Could not save consultant. Please contact the system administrator." + e.getMessage());
         }
 
     }
@@ -134,6 +132,11 @@ public class ConsultantRegisterConsultantViewController {
                     }
                 }));
         timeline.play();
+    }
+
+    // setter methods
+    public void setMainViewController(MainViewController mainViewController) {
+        this.mainViewController = mainViewController;
     }
 
 }

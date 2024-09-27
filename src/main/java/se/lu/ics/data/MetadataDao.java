@@ -12,14 +12,11 @@ import java.util.List;
 
 public class MetadataDao {
 
-
    private ConnectionHandler connectionHandler;
-
 
    public MetadataDao() throws IOException {
        this.connectionHandler = new ConnectionHandler();
    }
-
 
    // METHOD: fetchAllColumnNames
    public List<String> fetchAllColumnNames() {
@@ -39,11 +36,8 @@ public class MetadataDao {
        } catch (SQLException e) {
            e.printStackTrace();
        }
-
-
        return columnNames;
    }
-
 
    // METHOD: Fetch all primary key constraints
    public List<String> fetchAllPrimaryKeyConstraints() {
@@ -64,8 +58,6 @@ public class MetadataDao {
        } catch (SQLException e) {
            e.printStackTrace();
        }
-
-
        return primaryKeyConstraints;
    }
 
@@ -89,11 +81,8 @@ public class MetadataDao {
        } catch (SQLException e) {
            e.printStackTrace();
        }
-
-
        return checkConstraints;
    }
-
 
    // METHOD: Fetch all column names from consultant table, no integers
    public List<String> fetchNonIntegerColumns() throws DaoException {
@@ -117,10 +106,9 @@ public class MetadataDao {
        } catch (SQLException e) {
            throw new DaoException("Error fetching non-INTEGER columns from Consultant table.", e);
        }
-
-
        return nonIntegerColumns;
    }
+
    // METHOD: Fetch table with most rows
    public String[] fetchTableWithMostRows() throws DaoException {
        String query = "SELECT TOP 1 TABLE_NAME, ROW_COUNT " +
@@ -149,8 +137,6 @@ public class MetadataDao {
        } catch (SQLException e) {
            throw new DaoException("Error fetching table with most rows from database.", e);
        }
-
-
        return result; // Return an array containing the table name and row count
    }
 

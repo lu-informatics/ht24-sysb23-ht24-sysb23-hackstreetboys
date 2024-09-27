@@ -17,19 +17,6 @@ import javafx.stage.Stage;
 import se.lu.ics.data.MetadataDao;
 
 public class MetadataViewController {
-    private MetadataDao metadataDao;
-    // Constructor
-    public MetadataViewController() {
-        try {
-            metadataDao = new MetadataDao();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void setMainViewController(MainViewController mainViewController) {
-    }
-
     @FXML
     private Button btnClose;
 
@@ -66,12 +53,26 @@ public class MetadataViewController {
     @FXML
     private TableView<String> tableViewPrimaryKeys;
 
+    private MetadataDao metadataDao;
+    // Constructor
+    public MetadataViewController() {
+        try {
+            metadataDao = new MetadataDao();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    // Method to set main view controller
+    public void setMainViewController(MainViewController mainViewController) {
+    }
+
+    // Method to handle close button
     @FXML
     void handleBtnClose(ActionEvent event) {
         Stage stage = (Stage) btnClose.getScene().getWindow();
         stage.close();
     }
-
+    // Method to initialize
     @FXML
     void initialize() {
         loadAllColumns();
@@ -136,6 +137,7 @@ public class MetadataViewController {
         }
     }
 
+    // Method: Load table with most rows
     private void loadMostRowsTable() {
         try {
             String[] mostRowsTable = metadataDao.fetchTableWithMostRows();

@@ -44,14 +44,6 @@ import java.io.IOException;
 
 public class MainViewController implements Initializable {
 
-    private ProjectDao projectDao;
-    private ConsultantDao consultantDao;
-    private HostServices hostServices;
-
-    public void setHostServices(HostServices hostServices) {
-        this.hostServices = hostServices;
-    }
-
     @FXML
     private Button btnEmpOfMonth;
 
@@ -158,6 +150,9 @@ public class MainViewController implements Initializable {
     private Text textProjectsAllConsultants;
 
     @FXML
+    private Text countAllConsultants;
+
+    @FXML
     private Pane paneWarningConsultantTab;
 
     @FXML
@@ -174,6 +169,10 @@ public class MainViewController implements Initializable {
 
     @FXML
     private Button searchProjects;
+
+    private ProjectDao projectDao;
+    private ConsultantDao consultantDao;
+    private HostServices hostServices;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -409,6 +408,7 @@ public class MainViewController implements Initializable {
             displayTotalNumberOfConsultants();
 
             updateConsultantsTableView();
+            updateProjectsTableView();
 
             // Set a success warning message
             setWarning("Consultant " + selectedConsultant.getEmployeeNo() + " has been successfully deleted.",
@@ -431,14 +431,13 @@ public class MainViewController implements Initializable {
         try {
             projectDao.deleteProject(selectedProject.getProjectNo());
             updateProjectsTableView();
+            updateConsultantsTableView();
             setWarning("Project deleted successfully", "project");
 
         } catch (Exception e) {
             setWarning("Could not delete project, please contact the system administrator", "project");
             e.printStackTrace();
         }
-        updateConsultantsTableView();
-
     }
 
     @FXML
@@ -482,7 +481,6 @@ public class MainViewController implements Initializable {
         } catch (Exception e) {
             setWarning("Could not open the register consultant view, contact support", "consultant");
             e.printStackTrace();
-
         }
     }
 
@@ -541,6 +539,7 @@ public class MainViewController implements Initializable {
         setupConsultantsTableView();
     }
 
+    // Filter projects by project ID
     @FXML
     void handleBtnSearchProjects(ActionEvent event) throws SQLException {
 
@@ -551,12 +550,14 @@ public class MainViewController implements Initializable {
         tableViewProjects.setItems(observableProjects);
     }
 
+    // Clear the search filters, reset table view
     @FXML
     void handleBtnClearProjects(ActionEvent event) {
         textFieldFindProjectByProjectId.clear();
         setupProjectsTableView();
     }
 
+    // Open the metadata view
     @FXML
     void handleBtnViewMetadata(ActionEvent event) {
         try {
@@ -582,15 +583,6 @@ public class MainViewController implements Initializable {
 
     }
 
-    @FXML
-    void handleComboBoxNoProjectFilter(ActionEvent event) {
-
-    }
-
-    @FXML
-    void handleComboBoxTitleFilter(ActionEvent event) {
-    }
-
     // Method to fetch and display total hours for all consultants
     public void displayTotalHoursForAllConsultants() {
         // Fetch the total hours for all consultants from the DAO
@@ -598,10 +590,6 @@ public class MainViewController implements Initializable {
 
         textTotalHoursForAllConsultants.setText(String.valueOf(totalHours));
     }
-
-    // Method to display no of consultants.
-    @FXML
-    private Text countAllConsultants;
 
     // Method to fetch and display the total number of consultants
     public void displayTotalNumberOfConsultants() {
@@ -614,6 +602,7 @@ public class MainViewController implements Initializable {
         }
     }
 
+    // Method to display the employee of the month
     @FXML
     void handleBtnEmpOfMonth(ActionEvent event) {
         try {
@@ -643,6 +632,7 @@ public class MainViewController implements Initializable {
         }
     }
 
+    // Fetch and display projects that include all consultants
     @FXML
     void handleBtnProjectAllConsultants(ActionEvent event) {
         try {
@@ -668,6 +658,7 @@ public class MainViewController implements Initializable {
         }
     }
 
+    // Method to clear the text after a delay
     private void clearTextAfterDelay() {
         PauseTransition pause = new PauseTransition(Duration.seconds(10));
         pause.setOnFinished(e -> textProjectsAllConsultants.setText(""));
@@ -699,4 +690,8 @@ public class MainViewController implements Initializable {
         timeline.play();
     }
 
+    // Setter methods
+    public void setHostServices(HostServices hostServices) {
+        this.hostServices = hostServices;
+    }
 }

@@ -134,7 +134,46 @@ public class WorkDao {
         }
     }
 
-    // needs exception handling
+    //method isConsultantAssignedToProject(projectNo, employeeNo))
+    public boolean isConsultantAssignedToProject(String projectNo, String employeeNo) {
+        String query = "SELECT COUNT(*) AS count FROM Work WHERE ProjectID = ? AND ConsultantID = ?";
+        try (Connection connection = connectionHandler.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            int projectId = this.findProjectIdByProjectNo(projectNo);
+            int consultantId = this.findConsultantIdByEmployeeNo(employeeNo);
+            statement.setInt(1, projectId);
+            statement.setInt(2, consultantId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt("count") > 0;
+                } else {
+                    throw new SQLException("Could not check if consultant is assigned to project.");
+                }
+            }
+        } catch (SQLException e) {
+            throw DaoException.couldNotCheckIfConsultantIsAssignedToProject(projectNo, employeeNo, e);
+        }
+    }
+
+    //updateConsultantWeeklyHours
+    public void updateConsultantWeeklyHours(String projectNo, String employeeNo, int weeklyHours) {
+        String query = "UPDATE Work SET WeeklyHours = ? WHERE ProjectID = ? AND ConsultantID = ?";
+        try (Connection connection = connectionHandler.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            int projectId = this.findProjectIdByProjectNo(projectNo);
+            int consultantId = this.findConsultantIdByEmployeeNo(employeeNo);
+            statement.setInt(1, weeklyHours);
+            statement.setInt(2, projectId);
+            statement.setInt(3, consultantId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw DaoException.couldNotUpdateConsultantWeeklyHours(projectNo, employeeNo, e);
+        }
+    }
+
+
+
+//needs exception handling
     private static Work mapToWork(ResultSet resultSet, String employeeNo) throws SQLException {
         // Extract fields from the result set
         String projectName = resultSet.getString("ProjectName");

@@ -112,6 +112,34 @@ public class ProjectDao {
         return noOfConsultantsMap;
     }
 
+    public double findTotalWeeklyHoursAcrossAllProjects() {
+        String query = "SELECT SUM(WeeklyHours) AS TotalWeeklyHours FROM Work";
+        try (Connection connection = connectionHandler.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet resultSet = statement.executeQuery()) {
+            if (resultSet.next()) {
+                return resultSet.getDouble("TotalWeeklyHours");
+            }
+        } catch (SQLException e) {
+            throw DaoException.couldNotFetchProjects(e);
+        }
+        return 0.0;
+    }
+
+    public double findWeeklyHoursForProject(String projectNo) {
+        String query = "SELECT SUM(WeeklyHours) AS ProjectWeeklyHours FROM Work WHERE ProjectID = (SELECT ProjectID FROM Project WHERE ProjectNo = ?)";
+        try (Connection connection = connectionHandler.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, projectNo);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getDouble("ProjectWeeklyHours");
+            }
+        } catch (SQLException e) {
+            throw DaoException.couldNotFetchProjects(e);
+        }
+        return 0.0;
+    }
 
     // METHOD: Delete a project by project number
     public void deleteProject(String projectNo) throws SQLException {

@@ -6,6 +6,7 @@ import javafx.util.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import javafx.animation.KeyFrame;
@@ -17,7 +18,9 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -185,42 +188,84 @@ public class ProjectAddConsultantViewController implements Initializable {
             setWarning("No consultant selected!");
             return;
         }
-
+    
         if (project == null) {
             setWarning("Project is not initialized!");
             return;
         }
-
     
-
-        int weeklyHours = Integer.parseInt(textFieldWeeklyHours.getText());
+        int weeklyHours;
+        try {
+            weeklyHours = Integer.parseInt(textFieldWeeklyHours.getText());
+        } catch (NumberFormatException e) {
+            setWarning("Invalid number format for weekly hours!");
+            return;
+        }
+    
         if (weeklyHours < 1 || weeklyHours > 40) {
             setWarning("Weekly hours must be between 1 and 40");
             return;
         }
-
-                // Store the weekly hours in the map
-         consultantWeeklyHoursMap.put(consultant.getEmployeeNo(), weeklyHours);
-
-        String projectNo = project.getProjectNo(); // Use the project object to get the project number
-        String employeeNo = consultant.getEmployeeNo();
-        int hoursWorked = 0; // Set appropriate value
-        // Set appropriate value
-
-        WorkDao workDao;
-        try {
-            workDao = new WorkDao();
-            workDao.addConsultantToProject(projectNo, employeeNo, hoursWorked, weeklyHours);
-            showSuccessMessage("Consultant added to project successfully!");
-        } catch (Exception e) {
-            setWarning("Could not add consultant to project!");
-            e.printStackTrace();
-
+    
+        // Fetch the current resource allocation for the project
+        Map<String, Double> resourceAllocationMap = projectDao.findResourcesPercentageForEachProject();
+        double currentAllocation = resourceAllocationMap.getOrDefault(project.getProjectNo(), 0.0);
+    
+        // Fetch the total weekly hours across all projects
+        double totalWeeklyHoursAcrossAllProjects = projectDao.findTotalWeeklyHoursAcrossAllProjects();
+    
+        // Calculate the new total weekly hours for this project
+        double currentProjectWeeklyHours = projectDao.findWeeklyHoursForProject(project.getProjectNo());
+        double newProjectWeeklyHours = currentProjectWeeklyHours + weeklyHours;
+    
+        // Calculate the new total weekly hours across all projects including the new hours
+        double newTotalWeeklyHoursAcrossAllProjects = totalWeeklyHoursAcrossAllProjects + weeklyHours;
+    
+        // Calculate the new resource allocation if the consultant is added
+        double newAllocation = (newProjectWeeklyHours * 100.0) / newTotalWeeklyHoursAcrossAllProjects;
+    
+        // Check if the new allocation exceeds 60%
+        if (newAllocation > 60.0) {
+            // Show confirmation dialog
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Resource Allocation Warning");
+            alert.setHeaderText("Resource Allocation Exceeded");
+            alert.setContentText("Adding this consultant will exceed 60% of the total resources for the project. Do you want to proceed?");
+            
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.isEmpty() || result.get() != ButtonType.OK) {
+                return; // User chose not to proceed
+            }
         }
+    
+        // Store the weekly hours in the map
+        consultantWeeklyHoursMap.put(consultant.getEmployeeNo(), weeklyHours);
+    
+        String projectNo = project.getProjectNo();
+        String employeeNo = consultant.getEmployeeNo();
+        int hoursWorked = 0;
+    
+        try {
+            WorkDao workDao = new WorkDao();
+            if (workDao.isConsultantAssignedToProject(projectNo, employeeNo)) {
+                // Update the weekly hours if the consultant is already assigned to the project
+                workDao.updateConsultantWeeklyHours(projectNo, employeeNo, weeklyHours);
+                showSuccessMessage("Consultant's weekly hours updated successfully!");
+            } else {
+                // Add the consultant to the project
+                workDao.addConsultantToProject(projectNo, employeeNo, hoursWorked, weeklyHours);
+                showSuccessMessage("Consultant added to project successfully!");
+            }
+    
+            textFieldWeeklyHours.clear();
+        } catch (Exception e) {
+            setWarning("Could not add/update consultant to project!");
+            e.printStackTrace();
+        }
+    
         projectViewController.updateTableView();
         mainViewController.updateProjectsTableView();
         updateConsultantsTableView();
-
     }
 
     @FXML

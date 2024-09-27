@@ -93,6 +93,12 @@ public class ProjectViewEditProjectInfoController {
             String projectName = textFieldProjectName.getText();
             LocalDate startDate = datePickerProjectStartDate.getValue();
             LocalDate endDate = datePickerProjectEndDate.getValue();
+
+            // Validate endDate is after startDate
+            if (endDate.isBefore(startDate)) {
+                displayErrorMessage("End date must be after start date.");
+                return;
+            }
     
             // Update the project object with new information
             project.setProjectNo(projectNo);

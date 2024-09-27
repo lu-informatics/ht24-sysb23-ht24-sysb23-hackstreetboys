@@ -24,6 +24,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -310,6 +311,34 @@ public class MainViewController implements Initializable {
         }
     }
 
+
+    // update the title filter combo box
+    public void updateTitleFilterComboBox() {
+        try {
+            List<String> titles = consultantDao.findUniqueTitlesForConsultants();
+            ObservableList<String> observableTitles = FXCollections.observableArrayList(titles);
+            
+            comboBoxTitleFilter.getItems().clear(); // Clear existing items
+            comboBoxTitleFilter.setItems(observableTitles); // Add new items
+            comboBoxTitleFilter.getSelectionModel().clearSelection(); // Clear any existing selection
+            comboBoxTitleFilter.setPromptText("Title: All"); // Set the prompt text
+            comboBoxTitleFilter.setButtonCell(new ListCell<String>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty) ;
+                    if (empty || item == null) {
+                        setText("Title: All");
+                    } else {
+                        setText(item);
+                    }
+                }
+            });
+        } catch (DaoException e) {
+            paneWarningConsultantTab.setVisible(true);
+            e.printStackTrace();
+        }
+    }
+
     // Populate no. of projects filter combo box
     public void populateNoProjectsFilterComboBox() {
 
@@ -319,6 +348,33 @@ public class MainViewController implements Initializable {
             ObservableList<String> observablePossibleNoProjects = FXCollections.observableArrayList(possibleNoProjects);
 
             comboBoxNoProjectFilter.setItems(observablePossibleNoProjects);
+        } catch (DaoException e) {
+            paneWarningConsultantTab.setVisible(true);
+            e.printStackTrace();
+        }
+    }
+
+    // Update the no. of projects filter combo box
+    public void updateNoProjectsFilterComboBox() {
+        try {
+            List<String> possibleNoProjects = consultantDao.findPossibleNoProjectsForConsultants();
+            ObservableList<String> observablePossibleNoProjects = FXCollections.observableArrayList(possibleNoProjects);
+
+            comboBoxNoProjectFilter.getItems().clear(); // Clear existing items
+            comboBoxNoProjectFilter.setItems(observablePossibleNoProjects); // Add new items
+            comboBoxNoProjectFilter.getSelectionModel().clearSelection(); // Clear any existing selection
+            comboBoxNoProjectFilter.setPromptText("No. of projects: All"); // Set the prompt text
+            comboBoxNoProjectFilter.setButtonCell(new ListCell<String>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty) ;
+                    if (empty || item == null) {
+                        setText("No. of projects: All");
+                    } else {
+                        setText(item);
+                    }
+                }
+            });
         } catch (DaoException e) {
             paneWarningConsultantTab.setVisible(true);
             e.printStackTrace();
@@ -533,10 +589,10 @@ public class MainViewController implements Initializable {
     @FXML
     void handleBtnClear(ActionEvent event) {
         textFieldFindEmployeeById.clear();
-        comboBoxTitleFilter.getSelectionModel().clearSelection();
-        comboBoxNoProjectFilter.getSelectionModel().clearSelection();
 
         setupConsultantsTableView();
+        updateTitleFilterComboBox();
+        updateNoProjectsFilterComboBox();
     }
 
     // Filter projects by project ID

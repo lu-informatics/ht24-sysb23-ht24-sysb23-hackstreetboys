@@ -21,6 +21,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import se.lu.ics.models.Consultant;
@@ -280,7 +281,7 @@ public class ProjectNewProjectViewController implements Initializable {
     @FXML
     private void handleBtnClearConsultant(ActionEvent event) {
         textFieldFindEmployeeById.clear();
-        comboBoxTitleFilter.getSelectionModel().clearSelection();
+        updateTitleFilterComboBox();
     
         // Fetch all consultants from the database
         List<Consultant> allConsultants = consultantDao.findAllConsultants();
@@ -450,14 +451,39 @@ public class ProjectNewProjectViewController implements Initializable {
         textFieldFindEmployeeById.clear();
         textFieldWeeklyHours.clear();
         
-
-
-        comboBoxTitleFilter.getSelectionModel().clearSelection();
+        updateTitleFilterComboBox();
 
         tableViewAvailableConsultants.getItems().clear();
         tableViewSelectedConsultants.getItems().clear();
 
         textErrorMessage.setText("");
+    }
+
+    // update the title filter combo box
+    public void updateTitleFilterComboBox() {
+        try {
+            List<String> titles = consultantDao.findUniqueTitlesForConsultants();
+            ObservableList<String> observableTitles = FXCollections.observableArrayList(titles);
+            
+            comboBoxTitleFilter.getItems().clear(); // Clear existing items
+            comboBoxTitleFilter.setItems(observableTitles); // Add new items
+            comboBoxTitleFilter.getSelectionModel().clearSelection(); // Clear any existing selection
+            comboBoxTitleFilter.setPromptText("Title: All"); // Set the prompt text
+            comboBoxTitleFilter.setButtonCell(new ListCell<String>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty) ;
+                    if (empty || item == null) {
+                        setText("Title: All");
+                    } else {
+                        setText(item);
+                    }
+                }
+            });
+        } catch (DaoException e) {
+            paneWarningConsultantTab.setVisible(true);
+            e.printStackTrace();
+        }
     }
 
     // Setter methods 

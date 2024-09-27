@@ -206,11 +206,6 @@ public class DaoException extends RuntimeException {
                 "Could not delete consultant with id " + employeeNo + " from project with number " + projectNo, cause);
     }
 
-    public static Exception projectNotFound(int projectId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'projectNotFound'");
-    }
-
     //couldNotCheckIfConsultantIsAssignedToProject
     public static DaoException couldNotCheckIfConsultantIsAssignedToProject(String projectNo, String employeeNo,
             SQLException e) {

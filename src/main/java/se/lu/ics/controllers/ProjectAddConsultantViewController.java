@@ -207,10 +207,6 @@ public class ProjectAddConsultantViewController implements Initializable {
             return;
         }
     
-        // Fetch the current resource allocation for the project
-        Map<String, Double> resourceAllocationMap = projectDao.findResourcesPercentageForEachProject();
-        double currentAllocation = resourceAllocationMap.getOrDefault(project.getProjectNo(), 0.0);
-    
         // Fetch the total weekly hours across all projects
         double totalWeeklyHoursAcrossAllProjects = projectDao.findTotalWeeklyHoursAcrossAllProjects();
     
@@ -265,6 +261,7 @@ public class ProjectAddConsultantViewController implements Initializable {
     
         projectViewController.updateTableView();
         mainViewController.updateProjectsTableView();
+        mainViewController.updateConsultantsTableView();
         updateConsultantsTableView();
     }
 

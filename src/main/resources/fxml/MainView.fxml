@@ -44,7 +44,7 @@
                       <Text layoutX="608.0" layoutY="404.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Total hrs. for all consultants:" />
                       <Text fx:id="textTotalHoursForAllConsultants" layoutX="764.0" layoutY="404.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1234" AnchorPane.rightAnchor="25.0" />
                       <Text fx:id="textTotalNoOfConsultants" layoutX="770.0" layoutY="387.0" strokeType="OUTSIDE" strokeWidth="0.0" text="67" AnchorPane.rightAnchor="25.0" />
-                      <ComboBox fx:id="comboBoxNoProjectFilter" layoutX="375.0" layoutY="25.0" prefHeight="25.0" prefWidth="150.0" promptText="No. of projects" />
+                      <ComboBox fx:id="comboBoxNoProjectFilter" layoutX="375.0" layoutY="25.0" prefHeight="25.0" prefWidth="150.0" promptText="No. of projects: All" />
                        <Text fx:id="textErrorMessage" layoutX="26.0" layoutY="425.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="152.21630859375" />
                        <Pane fx:id="paneWarningConsultantTab" layoutX="2.0" layoutY="424.0" prefHeight="62.0" prefWidth="815.0">
                            <children>

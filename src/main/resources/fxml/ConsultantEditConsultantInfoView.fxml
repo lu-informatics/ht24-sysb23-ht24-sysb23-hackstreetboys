@@ -8,24 +8,24 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="384.0" prefWidth="418.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se.lu.ics.controllers.ConsultantDetailsEditViewController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="352.0" prefWidth="418.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se.lu.ics.controllers.ConsultantDetailsEditViewController">
    <children>
-      <Text layoutX="167.0" layoutY="53.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Edit Consultant" />
-      <Text layoutX="85.0" layoutY="110.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Consultant ID:" />
-      <Text layoutX="88.0" layoutY="146.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name:" />
-      <Text layoutX="90.0" layoutY="177.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Title:" wrappingWidth="74.56640625" />
-      <TextField fx:id="textFieldEmployeeId" layoutX="173.0" layoutY="93.0" text="1234" />
-      <TextField fx:id="textFieldEmployeeName" layoutX="173.0" layoutY="129.0" text="Berit Östergren" />
-      <TextField fx:id="textFieldEmployeeTitle" layoutX="173.0" layoutY="160.0" text="Senior Blabbermouth" />
-      <Button fx:id="btnSaveConsultantEdit" layoutX="105.0" layoutY="287.0" mnemonicParsing="false" onAction="#handleBtnSaveConsultantEdit" text="Save" />
-      <Button fx:id="btnCancleConsultantEdit" layoutX="264.0" layoutY="287.0" mnemonicParsing="false" onAction="#handleBtnCancleConsultantEdit" prefHeight="26.0" prefWidth="56.0" text="Cancel" />
-      <Pane fx:id="warningPane" layoutY="332.0" prefHeight="52.0" prefWidth="418.0">
+      <Text layoutX="167.0" layoutY="52.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Edit Consultant" />
+      <Text layoutX="87.0" layoutY="110.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Consultant ID" />
+      <Text layoutX="87.0" layoutY="145.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name:" />
+      <Text layoutX="87.0" layoutY="185.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Title:" wrappingWidth="74.56640625" />
+      <TextField fx:id="textFieldEmployeeName" layoutX="170.0" layoutY="128.0" text="Berit Östergren" />
+      <TextField fx:id="textFieldEmployeeTitle" layoutX="170.0" layoutY="168.0" text="Senior Blabbermouth" />
+      <Button fx:id="btnCancleConsultantEdit" layoutX="326.0" layoutY="234.0" mnemonicParsing="false" onAction="#handleBtnCancleConsultantEdit" prefHeight="26.0" prefWidth="56.0" text="Cancel" />
+      <Pane fx:id="warningPane" layoutY="296.0" prefHeight="56.0" prefWidth="418.0">
          <children>
-            <Label fx:id="labelWarning" layoutX="12.0" layoutY="-2.0" prefHeight="56.0" prefWidth="394.0" textAlignment="CENTER" textFill="red">
+            <Label fx:id="labelWarning" layoutX="14.0" prefHeight="56.0" prefWidth="394.0" textAlignment="CENTER" textFill="red">
                <font>
                   <Font name="System Bold" size="14.0" />
                </font>
             </Label>
          </children></Pane>
+      <Text fx:id="textConsultantID" layoutX="170.0" layoutY="110.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="159.5" />
+      <Button fx:id="btnSaveConsultantEdit" layoutX="44.0" layoutY="234.0" mnemonicParsing="false" onAction="#handleBtnSaveConsultantEdit" text="Save" />
    </children>
 </AnchorPane>

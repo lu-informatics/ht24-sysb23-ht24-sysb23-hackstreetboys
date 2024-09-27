@@ -367,7 +367,6 @@ public class ProjectNewProjectViewController implements Initializable {
 
     @FXML
     void handleBtnSaveProject(ActionEvent event) throws SQLException {
-        setWarning("");
     
         // Validate input fields 
         if (textFieldProjectId.getText().isEmpty() || textFieldProjectName.getText().isEmpty() ||

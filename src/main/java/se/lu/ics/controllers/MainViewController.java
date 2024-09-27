@@ -332,7 +332,8 @@ public class MainViewController implements Initializable {
         Consultant selectedConsultant = tableViewConsultants.getSelectionModel().getSelectedItem();
 
         if (selectedConsultant == null) {
-            System.err.println("please select a consultant");
+            setWarning("Please select a consultant to view details", "consultant");
+            return;
         }
 
         if (selectedConsultant != null) {
@@ -346,7 +347,6 @@ public class MainViewController implements Initializable {
 
                 consultantViewController.setConsultant(selectedConsultant);
                 consultantViewController.setMainViewController(this); // Pass the reference
-                System.err.println("Consultant: " + selectedConsultant.getEmployeeName());
 
                 // Create a new stage for the modal dialog
                 Stage modalStage = new Stage();
@@ -365,7 +365,13 @@ public class MainViewController implements Initializable {
         // Get the selected project
         Project selectedProject = tableViewProjects.getSelectionModel().getSelectedItem();
 
+        if (selectedProject == null) {
+            setWarning("Please select a project to view details", "project");
+            return;
+        }
+
         if (selectedProject != null) {
+
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ProjectView.fxml"));
                 Pane projectViewPane = loader.load();

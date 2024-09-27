@@ -136,7 +136,7 @@ public class ProjectViewController implements Initializable {
             // Show the stage
             modalStage.showAndWait();
         } catch (IOException e) {
-            displayErrorMessage("Could not open the add consultant view, contact support");
+            setWarning("Could not open the add consultant view, contact support");
             e.printStackTrace();
         }
 
@@ -169,7 +169,7 @@ public class ProjectViewController implements Initializable {
             // Show the stage and wait for it to close
             modalStage.showAndWait();
         } catch (IOException e) {
-            displayErrorMessage("Could not open the add milestone view, contact support");
+            setWarning("Could not open the add milestone view, contact support");
             e.printStackTrace();
         }
     }
@@ -208,7 +208,7 @@ public class ProjectViewController implements Initializable {
             // Show the stage and wait for it to close
             modalStage.showAndWait();
         } catch (IOException e) {
-            displayErrorMessage("Could not open the edit project info view, contact support");
+            setWarning("Could not open the edit project info view, contact support");
             e.printStackTrace();
         }
     }
@@ -254,7 +254,7 @@ public class ProjectViewController implements Initializable {
                 // Show the stage
                 modalStage.showAndWait();
             } catch (IOException e) {
-                displayErrorMessage("Could not open the edit hours view, contact support");
+                setWarning("Could not open the edit hours view, contact support");
                 e.printStackTrace();
             }
         }
@@ -274,8 +274,6 @@ public class ProjectViewController implements Initializable {
                 WorkDao workDao = new WorkDao();
                 workDao.removeConsultantFromProject(projectNo, employeeNo);
 
-                // Show a success message (optional)
-                System.out.println("Consultant removed from project successfully.");
 
                 // Refresh the ProjectView to reflect changes
                 loadConsultant();
@@ -288,12 +286,12 @@ public class ProjectViewController implements Initializable {
 
             } catch (Exception e) {
                 // Handle exception, show error message or log the error
-                displayErrorMessage("Error occurred while removing consultant from project: " + e.getMessage());
+                setWarning("Error occurred while removing consultant from project: " + e.getMessage());
                 e.printStackTrace();
             }
         } else {
             // If no consultant is selected, show an error message
-            displayErrorMessage("Please select a consultant to remove.");
+            setWarning("Please select a consultant to remove.");
         }
     }
 
@@ -322,12 +320,12 @@ public class ProjectViewController implements Initializable {
 
             } catch (Exception e) {
                 // Handle exception, show error message or log the error
-                displayErrorMessage("Error occurred while removing milestone from project: " + e.getMessage());
+                setWarning("Error occurred while removing milestone from project: " + e.getMessage());
                 e.printStackTrace();
             }
         } else {
             // If no milestone is selected, show an error message
-            displayErrorMessage("Please select a milestone to remove.");
+            setWarning("Please select a milestone to remove.");
         }
 
     }
@@ -346,7 +344,7 @@ public class ProjectViewController implements Initializable {
             this.milestoneDao = new MilestoneDao();
             this.projectDao = new ProjectDao();
         } catch (IOException e) {
-            displayErrorMessage("Error initializing DAOs: " + e.getMessage());
+            setWarning("Error initializing DAOs: " + e.getMessage());
             e.printStackTrace();
         }
 
@@ -356,7 +354,7 @@ public class ProjectViewController implements Initializable {
         tableColumnTotalHours.setCellValueFactory(cellData -> {
             Work work = cellData.getValue().getWork();
             if (work == null) {
-                displayErrorMessage("Error: Work data is missing for " + cellData.getValue().getEmployeeName());
+                setWarning("Error: Work data is missing for " + cellData.getValue().getEmployeeName());
                 return new SimpleIntegerProperty(0).asObject(); // Optionally return 0 in case of error
             }
             return new SimpleIntegerProperty(work.getHoursWorked()).asObject();
@@ -366,7 +364,7 @@ public class ProjectViewController implements Initializable {
         tableColumnWeeklyHours.setCellValueFactory(cellData -> {
             Work work = cellData.getValue().getWork();
             if (work == null) {
-                displayErrorMessage("Error: Work data is missing for " + cellData.getValue().getEmployeeName());
+                setWarning("Error: Work data is missing for " + cellData.getValue().getEmployeeName());
                 return new SimpleIntegerProperty(0).asObject(); // Optionally return 0 in case of error
             }
             return new SimpleIntegerProperty(work.getWeeklyHours()).asObject();
@@ -383,7 +381,7 @@ public class ProjectViewController implements Initializable {
         clearErrorMessage();
         project = ProjectViewController.this.project;
         if (project == null) {
-            displayErrorMessage("Project is not set.");
+            setWarning("Project is not set.");
             return;
         }
         try {
@@ -402,7 +400,7 @@ public class ProjectViewController implements Initializable {
             ObservableList<Consultant> consultantObservableList = FXCollections.observableArrayList(employeeList);
             tableViewProjectInfo.setItems(consultantObservableList);
         } catch (Exception e) {
-            displayErrorMessage("Error: " + e.getMessage());
+            setWarning("Error: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -412,7 +410,7 @@ public class ProjectViewController implements Initializable {
         clearErrorMessage();
         project = ProjectViewController.this.project;
         if (project == null) {
-            displayErrorMessage("Project is not set.");
+            setWarning("Project is not set.");
             return;
         }
         try {
@@ -421,7 +419,7 @@ public class ProjectViewController implements Initializable {
             ObservableList<Milestone> milestoneObservableList = FXCollections.observableArrayList(milestoneList);
             tableViewMilestoneInfo.setItems(milestoneObservableList);
         } catch (Exception e) {
-            displayErrorMessage("Error: " + e.getMessage());
+            setWarning("Error: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -445,11 +443,6 @@ public class ProjectViewController implements Initializable {
     private void clearErrorMessage() {
         warningPaneProjectView.setVisible(false);
         textForProjectID.setText("");
-    }
-
-    private void displayErrorMessage(String message) {
-        warningPaneProjectView.setVisible(true);
-        textForProjectID.setText(message);
     }
 
     public void setmainViewController(MainViewController mainViewController) {

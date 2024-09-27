@@ -207,13 +207,13 @@ public class ProjectAddConsultantViewController implements Initializable {
             return;
         }
     
-        // Fetch the total weekly hours across all projects
-        double totalWeeklyHoursAcrossAllProjects = projectDao.findTotalWeeklyHoursAcrossAllProjects();
     
         // Calculate the new total weekly hours for this project
         double currentProjectWeeklyHours = projectDao.findWeeklyHoursForProject(project.getProjectNo());
         double newProjectWeeklyHours = currentProjectWeeklyHours + weeklyHours;
     
+         // Fetch the total weekly hours across all projects
+         double totalWeeklyHoursAcrossAllProjects = projectDao.findTotalWeeklyHoursAcrossAllProjects();
         // Calculate the new total weekly hours across all projects including the new hours
         double newTotalWeeklyHoursAcrossAllProjects = totalWeeklyHoursAcrossAllProjects + weeklyHours;
     

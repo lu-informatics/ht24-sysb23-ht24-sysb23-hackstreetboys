@@ -157,9 +157,6 @@ public class MetadataViewController {
             tableColumnMostNoOfRows
                     .setCellValueFactory(cellData -> new SimpleObjectProperty<>((Number) cellData.getValue().get(1)));
 
-            System.out.println(
-                    "Fetched table with most rows: " + mostRowsTable[0] + " with " + mostRowsTable[1] + " rows.");
-
         } catch (Exception e) {
             e.printStackTrace();
         }

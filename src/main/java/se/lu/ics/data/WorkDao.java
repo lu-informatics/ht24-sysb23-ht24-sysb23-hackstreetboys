@@ -12,7 +12,6 @@ import se.lu.ics.models.Consultant;
 import se.lu.ics.models.Project;
 import se.lu.ics.models.Work;
 
-
 public class WorkDao {
 
     private ConnectionHandler connectionHandler;
@@ -23,16 +22,16 @@ public class WorkDao {
 
     // METHOD: Add a consultant to a project (and vice versa)
     public void addConsultantToProject(String projectNo, String employeeNo, int hoursWorked, int weeklyHours) {
-        
+
         String query = "INSERT INTO Work (ProjectID, ConsultantID, HoursWorked, WeeklyHours) VALUES (?, ?, ?, ?)";
 
         try (Connection connection = connectionHandler.getConnection();
                 PreparedStatement statement = connection.prepareStatement(query)) {
 
-            //Convert projectNo to ProjectID
+            // Convert projectNo to ProjectID
             int projectId = this.findProjectIdByProjectNo(projectNo);
 
-            //Convert employeeNo to ConsultantID
+            // Convert employeeNo to ConsultantID
             int consultantId = this.findConsultantIdByEmployeeNo(employeeNo);
 
             // Set project data into the prepared statement
@@ -49,20 +48,48 @@ public class WorkDao {
         }
     }
 
+    // Update the hours worked by a consultant on a project
+    public void updateConsultantHoursOnProject(String projectNo, String employeeNo, int hoursWorked, int weeklyHours)
+            throws Exception {
+        String query = "UPDATE Work SET HoursWorked = ?, WeeklyHours = ? WHERE ProjectID = ? AND ConsultantID = ?";
+
+        try (Connection connection = connectionHandler.getConnection();
+                PreparedStatement statement = connection.prepareStatement(query)) {
+
+            // Convert projectNo to ProjectID
+            int projectId = this.findProjectIdByProjectNo(projectNo);
+
+            // Convert employeeNo to ConsultantID
+            int consultantId = this.findConsultantIdByEmployeeNo(employeeNo);
+
+            // Set project data into the prepared statement
+            statement.setInt(1, hoursWorked);
+            statement.setInt(2, weeklyHours);
+            statement.setInt(3, projectId);
+            statement.setInt(4, consultantId);
+
+            // Execute the update operation
+            statement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw DaoException.couldNotUpdateConsultantHoursOnProject(projectNo, employeeNo, e);
+        }
+    }
+
     public ObservableList<Work> findConsultantByEmployeeNo(String employeeNo) {
         String query = "SELECT Project.ProjectName, Project.ProjectNo, Work.HoursWorked, Work.WeeklyHours " +
-                       "FROM Project " +
-                       "JOIN Work ON Project.ProjectID = Work.ProjectID " +
-                       "JOIN Consultant ON Consultant.ConsultantID = Work.ConsultantID " +
-                       "WHERE Consultant.EmployeeNo = ?";
-    
+                "FROM Project " +
+                "JOIN Work ON Project.ProjectID = Work.ProjectID " +
+                "JOIN Consultant ON Consultant.ConsultantID = Work.ConsultantID " +
+                "WHERE Consultant.EmployeeNo = ?";
+
         ObservableList<Work> workList = FXCollections.observableArrayList();
-    
+
         try (Connection connection = connectionHandler.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-            
+                PreparedStatement statement = connection.prepareStatement(query)) {
+
             statement.setString(1, employeeNo);
-            
+
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     Work work = mapToWork(resultSet, employeeNo);
@@ -72,16 +99,15 @@ public class WorkDao {
         } catch (SQLException e) {
             throw DaoException.couldNotFindConsultantByEmployeeNo(employeeNo, e); // Or handle exception accordingly
         }
-    
+
         return workList;
     }
-    
 
     // METHOD: Find project ID by project number
     public int findProjectIdByProjectNo(String projectNo) throws SQLException {
         String query = "SELECT ProjectID FROM Project WHERE ProjectNo = ?";
         try (Connection connection = connectionHandler.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
+                PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, projectNo);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
@@ -92,11 +118,11 @@ public class WorkDao {
             }
         }
     }
-    
+
     public int findConsultantIdByEmployeeNo(String employeeNo) throws SQLException {
         String query = "SELECT ConsultantID FROM Consultant WHERE EmployeeNo = ?";
         try (Connection connection = connectionHandler.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
+                PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, employeeNo);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
@@ -154,49 +180,52 @@ public class WorkDao {
         String projectNo = resultSet.getString("ProjectNo");
         int hoursWorked = resultSet.getInt("HoursWorked");
         int weeklyHours = resultSet.getInt("WeeklyHours");
-    
-        // Create Project and Consultant objects (this might involve fetching additional data if needed)
-        Project project = new Project(projectNo, projectName, null, null); // Assuming startDate and endDate are not relevant here
+
+        // Create Project and Consultant objects (this might involve fetching additional
+        // data if needed)
+        Project project = new Project(projectNo, projectName, null, null); // Assuming startDate and endDate are not
+                                                                           // relevant here
         Consultant consultant = new Consultant(employeeNo, null, null, null); // Set other parameters as needed
-    
+
         // Create and return a Work object
         return new Work(hoursWorked, weeklyHours, project, consultant);
     }
 
-    // method to remove a consultant from a project and update the database 
+    // method to remove a consultant from a project and update the database
 
     public void removeConsultantFromProject(String projectNo, String employeeNo) {
         String query = "DELETE FROM Work WHERE ProjectID = ? AND ConsultantID = ?";
-    
+
         try (Connection connection = connectionHandler.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-    
+                PreparedStatement statement = connection.prepareStatement(query)) {
+
             // Convert projectNo to ProjectID
             int projectId = this.findProjectIdByProjectNo(projectNo);
-    
+
             // Convert employeeNo to ConsultantID
             int consultantId = this.findConsultantIdByEmployeeNo(employeeNo);
-    
+
             // Set project data into the prepared statement
             statement.setInt(1, projectId);
             statement.setInt(2, consultantId);
-    
+
             // Execute the delete operation
             statement.executeUpdate();
-    
+
         } catch (SQLException e) {
             throw DaoException.couldNotRemoveConsultantFromProject(projectNo, employeeNo, e);
         }
     }
+
     public ObservableList<Work> findWorkByConsultantId(String employeeNo) {
         String query = "SELECT * FROM Work WHERE ConsultantID = (SELECT ConsultantID FROM Consultant WHERE EmployeeNo = ?)";
         ObservableList<Work> workList = FXCollections.observableArrayList();
-    
+
         try (Connection connection = connectionHandler.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-            
+                PreparedStatement statement = connection.prepareStatement(query)) {
+
             statement.setString(1, employeeNo);
-            
+
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     // Use the mapToWork method that takes two parameters
@@ -207,7 +236,7 @@ public class WorkDao {
         } catch (SQLException e) {
             throw new DaoException("Could not find works for consultant with employee number " + employeeNo, e);
         }
-    
+
         return workList;
     }
 }

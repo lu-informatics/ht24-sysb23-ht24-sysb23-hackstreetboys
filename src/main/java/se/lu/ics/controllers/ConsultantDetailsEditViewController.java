@@ -29,7 +29,6 @@ public class ConsultantDetailsEditViewController {
     }
 
     // Buttons
-    //
     @FXML
     private Button btnCancleConsultantEdit;
 
@@ -48,7 +47,6 @@ public class ConsultantDetailsEditViewController {
     private TextField textFieldEmployeeTitle;
 
     // Warning Pane
-    //
     @FXML
     private Pane warningPane;
 
@@ -56,13 +54,10 @@ public class ConsultantDetailsEditViewController {
     private Label labelWarning;
 
     // Methods
-    //
-
     @FXML
     void handleBtnCancleConsultantEdit(ActionEvent event) {
         Stage stage = (Stage) btnCancleConsultantEdit.getScene().getWindow();
         stage.close();
-
     }
 
     @FXML

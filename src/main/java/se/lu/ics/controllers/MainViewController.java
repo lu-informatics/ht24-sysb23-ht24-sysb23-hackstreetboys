@@ -364,18 +364,18 @@ public class MainViewController implements Initializable {
     void handleBtnViewProjectDetails(ActionEvent event) {
         // Get the selected project
         Project selectedProject = tableViewProjects.getSelectionModel().getSelectedItem();
-    
+
         if (selectedProject != null) {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ProjectView.fxml"));
                 Pane projectViewPane = loader.load();
-    
+
                 // Get the controller from the loader
                 ProjectViewController projectViewController = loader.getController();
-    
+
                 projectViewController.setProject(selectedProject);
                 projectViewController.setMainViewController(this); // Pass the reference
-    
+
                 Stage modalStage = new Stage();
                 modalStage.setScene(new Scene(projectViewPane));
                 modalStage.setTitle("Project Details");
@@ -405,7 +405,8 @@ public class MainViewController implements Initializable {
             updateConsultantsTableView();
 
             // Set a success warning message
-            setWarning("Consultant " + selectedConsultant.getEmployeeNo() + " has been successfully deleted.", "consultant");
+            setWarning("Consultant " + selectedConsultant.getEmployeeNo() + " has been successfully deleted.",
+                    "consultant");
 
         } catch (Exception e) {
             setWarning("Could not delete consultant, please contact the system administrator", "consultant");
@@ -441,16 +442,11 @@ public class MainViewController implements Initializable {
 
         // Check that the resource URL is not null
         if (resourceUrl != null) {
-            // Create a file object from the resource URL
-            File file = new File(resourceUrl.getPath());
-
-            // Check if file exists
-            if (file.exists()) {
-                // If the file exists, open the file using the host services
-                hostServices.showDocument(file.getAbsolutePath());
-                // Set the warning message if file does not exist
-            } else {
-                setWarning("The file does not exist", "consultant");
+            try {
+                // Open the resource using the host services
+                hostServices.showDocument(resourceUrl.toExternalForm());
+            } catch (Exception e) {
+                setWarning("The file could not be opened", "consultant");
             }
         } else {
             setWarning("Something is wrong, contact support", "consultant");
@@ -601,7 +597,7 @@ public class MainViewController implements Initializable {
             // Set the total count to the text element
             textTotalNoOfConsultants.setText(String.valueOf(totalConsultants)); // Convert int to String
         } catch (DaoException e) {
-            setWarning("Could not fetch total number of consultants: " + e.getMessage(), "consultant"); 
+            setWarning("Could not fetch total number of consultants: " + e.getMessage(), "consultant");
         }
     }
 

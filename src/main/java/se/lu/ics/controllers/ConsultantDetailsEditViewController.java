@@ -9,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import se.lu.ics.data.ConsultantDao;
@@ -17,6 +18,8 @@ import se.lu.ics.models.Consultant;
 
 public class ConsultantDetailsEditViewController {
     private ConsultantDao consultantDao;
+    private MainViewController mainViewController;
+    private ConsultantViewController consultantViewController;
 
     // Constructor
     public ConsultantDetailsEditViewController() {
@@ -36,9 +39,9 @@ public class ConsultantDetailsEditViewController {
 
     // TextFields
     //
-    @FXML
-    private TextField textFieldEmployeeId;
 
+    @FXML
+    private Text textConsultantID;
     @FXML
     private TextField textFieldEmployeeName;
 
@@ -62,7 +65,7 @@ public class ConsultantDetailsEditViewController {
     @FXML
     void handleBtnSaveConsultantEdit(ActionEvent event) {
         try {
-            String employeeNo = textFieldEmployeeId.getText();
+            String employeeNo = textConsultantID.getText();
             String employeeName = textFieldEmployeeName.getText();
             String employeeTitle = textFieldEmployeeTitle.getText();
 
@@ -104,14 +107,31 @@ public class ConsultantDetailsEditViewController {
         } catch (DaoException e) {
             setWarning(e.getMessage());
         }
+
+        // Update the consultants in the main view controller if it is set
+        if (mainViewController != null) {
+            mainViewController.updateConsultantsTableView();
+        }
+
+        // Update the consultants in the consultant view controller if it is set
+    consultantViewController.setupConsultantTextDetails();
+        
     }
 
     public void setConsultant(Consultant consultant) {
         if (consultant != null) {
-            textFieldEmployeeId.setText(consultant.getEmployeeNo());
+            textConsultantID.setText(consultant.getEmployeeNo());
             textFieldEmployeeName.setText(consultant.getEmployeeName());
             textFieldEmployeeTitle.setText(consultant.getEmployeeTitle());
         }
+    }
+
+    public void setMainViewController(MainViewController mainViewController) {
+        this.mainViewController = mainViewController;
+    }
+
+    public void setConsultantViewController(ConsultantViewController consultantViewController) {
+        this.consultantViewController = consultantViewController;
     }
 
     // setWarning() method for error message handling

@@ -99,6 +99,9 @@ public class ConsultantViewController implements Initializable {
 
             // Pass the consultant object to the controller
             editConsultantController.setConsultant(consultant);
+            //bring this consultantViewcontrollerwith
+            editConsultantController.setConsultantViewController(this);
+            editConsultantController.setMainViewController(mainViewController);
 
             // Create a new stage for the modal dialog
             Stage modalStage = new Stage();
@@ -166,8 +169,8 @@ public class ConsultantViewController implements Initializable {
         tableViewConsultantProjects.setItems(workList);
     }
 
-    // setup extfields
-    private void setupConsultantTextDetails() {
+    // setup textfields
+    public void setupConsultantTextDetails() {
         if (consultant != null) {
             String employeeNO = consultant.getEmployeeNo();
             consultant = consultantDao.findConsultantByEmployeeNo(employeeNO);

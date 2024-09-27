@@ -177,6 +177,8 @@ public class MainViewController implements Initializable {
         populateNoProjectsFilterComboBox();
         displayTotalHoursForAllConsultants();
         displayTotalNumberOfConsultants();
+
+        comboBoxTitleFilter.setPromptText("Title: All");
     }
 
     private void initializeDaos() {
@@ -518,6 +520,8 @@ public class MainViewController implements Initializable {
         textFieldFindEmployeeById.clear();
         comboBoxTitleFilter.getSelectionModel().clearSelection();
         comboBoxNoProjectFilter.getSelectionModel().clearSelection();
+
+        comboBoxTitleFilter.setPromptText("Title: All");
 
         setupConsultantsTableView();
     }

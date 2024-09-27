@@ -120,15 +120,14 @@ public class DaoException extends RuntimeException {
         return new DaoException("Could not delete Milestone with MilestoneNo: " + milestoneNo, cause);
     }
 
+    // Could not count milestones for a project
+    public static DaoException couldNotGetTotalMilestonesForProject(String projectNo, Throwable cause) {
+        return new DaoException("Could not count milestones for project with number: " + projectNo, cause);
+    }
 
-   //Could not count milestones for a project
-   public static DaoException couldNotGetTotalMilestonesForProject(String projectNo, Throwable cause) {
-       return new DaoException("Could not count milestones for project with number: " + projectNo, cause);
-   }
-
-   //Could not find milestoneId by MilestoneNo
+    // Could not find milestoneId by MilestoneNo
     public static DaoException couldNotFindMilestoneIdByMilestoneNo(String milestoneNo, Throwable cause) {
-         return new DaoException("Could not find MilestoneID by MilestoneNo: " + milestoneNo, cause);
+        return new DaoException("Could not find MilestoneID by MilestoneNo: " + milestoneNo, cause);
     }
 
     // DAOEXCEPTION for all check constraints
@@ -210,6 +209,11 @@ public class DaoException extends RuntimeException {
     public static Exception projectNotFound(int projectId) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'projectNotFound'");
+    }
+
+    public static Exception couldNotUpdateConsultantHoursOnProject(String projectNo, String employeNo,
+            Throwable cause) {
+        return new DaoException("Could not update consultant hours on project.", cause);
     }
 
 }

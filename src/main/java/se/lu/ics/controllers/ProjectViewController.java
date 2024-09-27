@@ -67,6 +67,9 @@ public class ProjectViewController implements Initializable {
     private Button btnEditProjectInfo;
 
     @FXML
+    private Button btnEditHours;
+
+    @FXML
     private Button btnRemoveConsultant;
 
     @FXML
@@ -108,8 +111,6 @@ public class ProjectViewController implements Initializable {
     @FXML
     private Label labelWarning;
 
-
-
     @FXML
     void handleBtnAddConsultant(ActionEvent event) {
         try {
@@ -120,12 +121,10 @@ public class ProjectViewController implements Initializable {
             // Get the controller for the loaded FXML
             ProjectAddConsultantViewController ProjectAddConsultantcontroller = loader.getController();
 
-
-            //Passes the projectobject to ProjectAddConsultantViewController
+            // Passes the projectobject to ProjectAddConsultantViewController
             ProjectAddConsultantcontroller.setProject(this.project);
             ProjectAddConsultantcontroller.setProjectViewController(this);
             ProjectAddConsultantcontroller.setMainViewController(mainViewController);
-            
 
             // Create a new stage for the window
             Stage modalStage = new Stage();
@@ -143,39 +142,38 @@ public class ProjectViewController implements Initializable {
         }
 
     }
-// Opens MilestoneAdd.fxml
-@FXML
-public void handleBtnAddMilestone(ActionEvent event) {
-    try {
-        // Load the FXML file for the MilestoneAdd view
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MilestoneAdd.fxml"));
-        Parent root = loader.load();
 
-        // Get the controller for the loaded FXML
-        MilestoneAddController milestoneAddController = loader.getController();
+    // Opens MilestoneAdd.fxml
+    @FXML
+    public void handleBtnAddMilestone(ActionEvent event) {
+        try {
+            // Load the FXML file for the MilestoneAdd view
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MilestoneAdd.fxml"));
+            Parent root = loader.load();
 
-        // Set the selected project in the MilestoneAddController
-        milestoneAddController.setProject(project);  // 'project' är det aktuella projektet
-        milestoneAddController.setProjectViewController(this);
-        milestoneAddController.setMainViewController(mainViewController);
+            // Get the controller for the loaded FXML
+            MilestoneAddController milestoneAddController = loader.getController();
 
-        // Create a new stage for the window
-        Stage modalStage = new Stage();
-        modalStage.setScene(new Scene(root));
-        modalStage.setTitle("Add Milestone");
+            // Set the selected project in the MilestoneAddController
+            milestoneAddController.setProject(project); // 'project' är det aktuella projektet
+            milestoneAddController.setProjectViewController(this);
+            milestoneAddController.setMainViewController(mainViewController);
 
-        // Set the stage to be modal
-        modalStage.initModality(Modality.APPLICATION_MODAL);
+            // Create a new stage for the window
+            Stage modalStage = new Stage();
+            modalStage.setScene(new Scene(root));
+            modalStage.setTitle("Add Milestone");
 
-        // Show the stage and wait for it to close
-        modalStage.showAndWait();
-    } catch (IOException e) {
-        displayErrorMessage("Could not open the add milestone view, contact support");
-        e.printStackTrace();
+            // Set the stage to be modal
+            modalStage.initModality(Modality.APPLICATION_MODAL);
+
+            // Show the stage and wait for it to close
+            modalStage.showAndWait();
+        } catch (IOException e) {
+            displayErrorMessage("Could not open the add milestone view, contact support");
+            e.printStackTrace();
+        }
     }
-}
-
-
 
     @FXML
     void handleBtnClose(ActionEvent event) {
@@ -191,28 +189,75 @@ public void handleBtnAddMilestone(ActionEvent event) {
             // Load the FXML file for the ProjectViewEditProjectInfo view
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ProjectViewEditProjectInfo.fxml"));
             Parent root = loader.load();
-    
+
             // Get the controller for the loaded FXML
             ProjectViewEditProjectInfoController editProjectInfoController = loader.getController();
-    
+
             // Set the selected project in the ProjectViewEditProjectInfoController
             editProjectInfoController.setProject(project);
             editProjectInfoController.setProjectViewController(this); // Set the ProjectViewController
             editProjectInfoController.setMainViewController(mainViewController); // Set the MainViewController
-    
+
             // Create a new stage for the window
             Stage modalStage = new Stage();
             modalStage.setScene(new Scene(root));
             modalStage.setTitle("Edit Project Information");
-    
+
             // Set the stage to be modal
             modalStage.initModality(Modality.APPLICATION_MODAL);
-    
+
             // Show the stage and wait for it to close
             modalStage.showAndWait();
         } catch (IOException e) {
             displayErrorMessage("Could not open the edit project info view, contact support");
             e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void handleBtnEditHours(ActionEvent event) {
+
+        // Input validation
+        if (tableViewProjectInfo.getSelectionModel().getSelectedItem() == null) {
+            setWarning("Please select a consultant to edit hours for.");
+            return;
+        } else {
+
+            try {
+                // Load the FXML file for the ProjectEditConsultantHoursView
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ProjectEditConsultantHoursView.fxml"));
+                Pane ProjectEditConsultantHoursViewPane = loader.load();
+
+                // Get the controller for the loaded FXML
+                ProjectEditConsultantHoursViewController ProjectEditConsultantHourscontroller = loader.getController();
+
+                // Set the selected consultant, project and hours in the
+                // ProjectEditConsultantHoursViewController
+                Consultant selectedConsultant = tableViewProjectInfo.getSelectionModel().getSelectedItem();
+
+                ProjectEditConsultantHourscontroller.setProjectViewController(this);
+                ProjectEditConsultantHourscontroller.setMainViewController(mainViewController);
+                ProjectEditConsultantHourscontroller.setConsultant(selectedConsultant);
+                ProjectEditConsultantHourscontroller.setProject(this.project);
+                ProjectEditConsultantHourscontroller
+                        .setWeeklyHours(tableColumnWeeklyHours.getCellData(selectedConsultant).toString());
+                ProjectEditConsultantHourscontroller
+                        .setTotalHours(tableColumnTotalHours.getCellData(selectedConsultant).toString());
+
+                // Create a new stage for the window
+                Stage modalStage = new Stage();
+                modalStage.setScene(new Scene(ProjectEditConsultantHoursViewPane));
+                modalStage.setTitle("Edit Consultant Hours");
+
+                // Set the stage to be modal
+                modalStage.initModality(Modality.APPLICATION_MODAL);
+
+                // Show the stage
+                modalStage.showAndWait();
+            } catch (IOException e) {
+                displayErrorMessage("Could not open the edit hours view, contact support");
+                e.printStackTrace();
+            }
         }
     }
 
@@ -253,38 +298,38 @@ public void handleBtnAddMilestone(ActionEvent event) {
         }
     }
 
-    //Method for removing a milestone from a project
-        @FXML
-        void handleBtnRemoveMilestone(ActionEvent event) {
-            // Get the selected milestone from the TableView
-            Milestone selectedMilestone = tableViewMilestoneInfo.getSelectionModel().getSelectedItem();
-    
-            if (selectedMilestone != null) {
-                try {
-                    // Call the DAO method to remove the milestone from the project
-                    milestoneDao.deleteMilestone(selectedMilestone, project);
-    
-                    // Show a success message (optional)
-                    System.out.println("Milestone removed from project successfully.");
-    
-                    // Refresh the ProjectView to reflect changes
-                    loadConsultant();
-                    loadMilestones();
-    
-                    // Update the projects table view in MainViewController
-                    if (mainViewController != null) {
-                        mainViewController.updateProjectsTableView();
-                    }
-    
-                } catch (Exception e) {
-                    // Handle exception, show error message or log the error
-                    displayErrorMessage("Error occurred while removing milestone from project: " + e.getMessage());
-                    e.printStackTrace();
+    // Method for removing a milestone from a project
+    @FXML
+    void handleBtnRemoveMilestone(ActionEvent event) {
+        // Get the selected milestone from the TableView
+        Milestone selectedMilestone = tableViewMilestoneInfo.getSelectionModel().getSelectedItem();
+
+        if (selectedMilestone != null) {
+            try {
+                // Call the DAO method to remove the milestone from the project
+                milestoneDao.deleteMilestone(selectedMilestone, project);
+
+                // Show a success message (optional)
+                System.out.println("Milestone removed from project successfully.");
+
+                // Refresh the ProjectView to reflect changes
+                loadConsultant();
+                loadMilestones();
+
+                // Update the projects table view in MainViewController
+                if (mainViewController != null) {
+                    mainViewController.updateProjectsTableView();
                 }
-            } else {
-                // If no milestone is selected, show an error message
-                displayErrorMessage("Please select a milestone to remove.");
+
+            } catch (Exception e) {
+                // Handle exception, show error message or log the error
+                displayErrorMessage("Error occurred while removing milestone from project: " + e.getMessage());
+                e.printStackTrace();
             }
+        } else {
+            // If no milestone is selected, show an error message
+            displayErrorMessage("Please select a milestone to remove.");
+        }
 
     }
 
@@ -382,19 +427,18 @@ public void handleBtnAddMilestone(ActionEvent event) {
         }
     }
 
-            // Populate project details in Text fields
-            private void populateProjectDetails(String projectNo) {
-                project = projectDao.findByProjectNo(projectNo);
-                if (project != null) {
-                    textForProjectID.setText(project.getProjectNo());
-                    textForProjectName.setText(project.getProjectName());
-                } else {
-                    setWarning("Project not found!");
-                }
-            }
+    // Populate project details in Text fields
+    private void populateProjectDetails(String projectNo) {
+        project = projectDao.findByProjectNo(projectNo);
+        if (project != null) {
+            textForProjectID.setText(project.getProjectNo());
+            textForProjectName.setText(project.getProjectName());
+        } else {
+            setWarning("Project not found!");
+        }
+    }
 
-
-    //update the table view
+    // update the table view
     public void updateTableView() {
         setProject(project);
     }
@@ -413,14 +457,13 @@ public void handleBtnAddMilestone(ActionEvent event) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getProjectNo'");
     }
-    
-   public void setmainViewController(MainViewController mainViewController) {
-       this.mainViewController = mainViewController;
-   }
 
+    public void setmainViewController(MainViewController mainViewController) {
+        this.mainViewController = mainViewController;
+    }
 
-   //WARNING methods
-       public void showSuccessMessage(String message) {
+    // WARNING methods
+    public void showSuccessMessage(String message) {
         warningPaneProjectView.setStyle("-fx-background-color: green;");
         warningPaneProjectView.setVisible(true);
         labelWarning.setText(message);
@@ -451,6 +494,5 @@ public void handleBtnAddMilestone(ActionEvent event) {
                 }));
         timeline.play();
     }
-
 
 }

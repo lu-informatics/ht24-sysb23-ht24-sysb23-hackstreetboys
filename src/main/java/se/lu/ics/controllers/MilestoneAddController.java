@@ -16,9 +16,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import se.lu.ics.controllers.ProjectViewController;
-import se.lu.ics.data.DaoException;
-import se.lu.ics.data.ProjectDao;
 import se.lu.ics.data.MilestoneDao;
 import se.lu.ics.models.Project;
 
@@ -87,33 +84,45 @@ public class MilestoneAddController {
         String milestoneNo = textFieldMilestoneNo.getText();
         LocalDate milestoneDate = datePickerMilestoneDate.getValue();
         String milestoneDescription = textFieldMilestoneDescription.getText();
-
+    
         if (milestoneNo == null || milestoneNo.isEmpty() ||
                 milestoneDate == null ||
                 milestoneDescription == null || milestoneDescription.isEmpty()) {
             // Display error message
-            projectViewController.setWarning("All fields must be filled out.");
+            setWarning("All fields must be filled out.");
             return;
         }
-
+    
+        // Validate milestoneNo
+        if (!milestoneNo.matches("M\\d{1,4}")) {
+            setWarning("Milestone No must consist of a capital M followed by 0-9999.");
+            return;
+        }
+    
+        // Validate milestoneDate
+        LocalDate minDate = LocalDate.of(2022, 1, 1);
+        if (milestoneDate.isBefore(minDate)) {
+            setWarning("Milestone date must not precede 2022-01-01.");
+            return;
+        }
+    
         try {
             milestoneDao.createMilestone(project, milestoneNo, milestoneDescription, milestoneDate);
             projectViewController.updateTableView();
             mainViewController.updateProjectsTableView();
-            projectViewController.showSuccessMessage("Milestone added successfully.");
+            showSuccessMessage("Milestone added successfully.");
             // Close the window
             Node source = (Node) event.getSource();
             Stage stage = (Stage) source.getScene().getWindow();
             stage.close();
         } catch (Exception e) {
-            projectViewController.setWarning("Error adding milestone: " + e.getMessage());
+            setWarning("Error adding milestone: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
     // WARNING methods
     public void showSuccessMessage(String message) {
-        paneWarning.setStyle("-fx-background-color: green;");
         paneWarning.setVisible(true);
         labelWarning.setText(message);
 
@@ -129,7 +138,6 @@ public class MilestoneAddController {
     }
 
     public void setWarning(String message) {
-        paneWarning.setStyle("-fx-background-color: red;");
         paneWarning.setVisible(true);
         labelWarning.setText(message);
 

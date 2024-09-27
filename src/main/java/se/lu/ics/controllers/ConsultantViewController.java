@@ -1,7 +1,6 @@
 package se.lu.ics.controllers;
 
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -24,7 +23,6 @@ import se.lu.ics.models.Work;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 
 public class ConsultantViewController implements Initializable {
@@ -181,18 +179,5 @@ public class ConsultantViewController implements Initializable {
         } else {
         }
 
-    }
-
-    // Update method for workTableView
-    private void updatetableViewConsultantProjects() {
-        if (consultant != null) {
-            // Fetch the updated list of works for the consultant
-            List<Work> works = workDao.findWorkByConsultantId(consultant.getEmployeeNo());
-
-            ObservableList<Work> observableWorks = FXCollections.observableArrayList(works);
-            tableViewConsultantProjects.setItems(observableWorks);
-            tableViewConsultantProjects.refresh();
-        } else {
-        }
     }
 }

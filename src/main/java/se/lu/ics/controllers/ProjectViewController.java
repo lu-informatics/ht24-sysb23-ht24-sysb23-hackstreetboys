@@ -11,7 +11,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.Labeled;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -451,11 +450,6 @@ public class ProjectViewController implements Initializable {
     private void displayErrorMessage(String message) {
         warningPaneProjectView.setVisible(true);
         textForProjectID.setText(message);
-    }
-
-    public String getProjectNo() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getProjectNo'");
     }
 
     public void setmainViewController(MainViewController mainViewController) {

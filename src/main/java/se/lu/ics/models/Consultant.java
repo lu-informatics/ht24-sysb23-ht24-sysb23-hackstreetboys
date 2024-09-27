@@ -1,6 +1,6 @@
 package se.lu.ics.models;
 
-import java.util.ArrayList; // Tillfällig import för att bedriva tester, ska bytas till observablelist senare
+import java.util.ArrayList;
 
 public class Consultant {
     private String employeeNo;
@@ -59,15 +59,5 @@ public class Consultant {
 
     public void setWork(Work work) {
         this.work = work;
-    }
-
-    public int getWeeklyHours() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getWeeklyHours'");
-    }
-
-    public void setWeeklyHours(int weeklyHours) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setWeeklyHours'");
     }
 }

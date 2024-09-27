@@ -2,6 +2,7 @@ package se.lu.ics.controllers;
 
 import java.net.URL;
 import java.sql.SQLException;
+import javafx.util.Duration;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+import javafx.animation.PauseTransition;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -93,9 +95,6 @@ public class ProjectNewProjectViewController implements Initializable {
     private TableView<Consultant> tableViewAvailableConsultants;
 
     @FXML
-    private MainViewController mainViewController;
-
-    @FXML
     private Pane paneWarningConsultantTab;
 
     @FXML
@@ -113,6 +112,7 @@ public class ProjectNewProjectViewController implements Initializable {
     @FXML
     private TextField textFieldWeeklyHours;
 
+    private MainViewController mainViewController;
 
     private ObservableList<Consultant> selectedConsultants = FXCollections.observableArrayList();
 
@@ -367,48 +367,70 @@ public class ProjectNewProjectViewController implements Initializable {
 
     @FXML
     void handleBtnSaveProject(ActionEvent event) throws SQLException {
-        textErrorMessage.setText("");
-
+        setWarning("");
+    
         // Validate input fields 
         if (textFieldProjectId.getText().isEmpty() || textFieldProjectName.getText().isEmpty() ||
             datePickerStartDate.getEditor().getText().isEmpty() || datePickerEndDate.getEditor().getText().isEmpty()) {
-            textErrorMessage.setText("Please fill in all fields");
+            setWarning("All fields must be filled out.");
             return;
         }
-
+    
         String projectNo = textFieldProjectId.getText();
         String projectName = textFieldProjectName.getText();
         LocalDate startDate = datePickerStartDate.getValue();
         LocalDate endDate = datePickerEndDate.getValue();
-
+    
+        // Validate projectNo
+        if (!projectNo.matches("P\\d{1,4}")) {
+            setWarning("Project ID must begin with a capital P followed by 0-9999.");
+            return;
+        }
+    
+        // Validate endDate
+        if (endDate.isBefore(startDate)) {
+            setWarning("End date must be after start date.");
+            return;
+        }
+    
         Project project = new Project(projectNo, projectName, startDate, endDate);
-
+    
         try {
             projectDao.save(project);
         } catch (DaoException e) {
-            textErrorMessage.setText(e.getMessage());
+            setWarning(e.getMessage());
             return;
         }
-
+    
         for (Consultant consultant : selectedConsultants) {
             try {
-
                 // Retrieve weekly hours from the map
                 Integer weeklyHours = consultantWeeklyHoursMap.get(consultant.getEmployeeNo());
                 if (weeklyHours == null) {
-                    textErrorMessage.setText("Weekly hours not set for consultant: " + consultant.getEmployeeNo());
+                    setWarning("Weekly hours not set for consultant: " + consultant.getEmployeeNo());
                     return;
                 }
-
+    
                 // Add consultant to project
                 workDao.addConsultantToProject(projectNo, consultant.getEmployeeNo(), 0, weeklyHours);
             } catch (DaoException e) {
-                textErrorMessage.setText(e.getMessage());
+                setWarning(e.getMessage());
                 return;
             }
         }
+    
+        setWarning("Project saved successfully!");
 
-        textErrorMessage.setText("Project saved successfully!");
+        mainViewController.updateProjectsTableView();
+        mainViewController.updateConsultantsTableView();
+
+        // Close the view after displaying the success message
+        PauseTransition pause = new PauseTransition(Duration.seconds(1));
+        pause.setOnFinished(e -> {
+            Stage stage = (Stage) btnSaveProject.getScene().getWindow();
+            stage.close();
+        });
+        pause.play();
     }
 
     @FXML
@@ -437,6 +459,18 @@ public class ProjectNewProjectViewController implements Initializable {
     }
 
     public void setMainViewController(MainViewController mainViewController) {
-    this.mainViewController = mainViewController;
+        this.mainViewController = mainViewController;
+    }
+
+    //Warning message
+    @FXML
+    public void setWarning(String message) {
+        textErrorMessage.setText(message);
+        textErrorMessage.setVisible(true);
+
+        // Set a timer to hide the warning pane after two seconds
+        PauseTransition pause = new PauseTransition(Duration.seconds(4));
+        pause.setOnFinished(event -> textErrorMessage.setVisible(false));
+        pause.play();
     }
 }

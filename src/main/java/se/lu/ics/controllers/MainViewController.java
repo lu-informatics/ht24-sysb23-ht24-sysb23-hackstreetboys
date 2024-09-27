@@ -1,11 +1,11 @@
 package se.lu.ics.controllers;
 
-import java.io.File;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 import java.time.LocalDate;
 
 import javafx.animation.KeyFrame;
@@ -508,12 +508,19 @@ public class MainViewController implements Initializable {
     // Filter consultants by ID, title, and number of projects
     @FXML
     void handleBtnSearch(ActionEvent event) {
-
         String id = textFieldFindEmployeeById.getText();
         String title = comboBoxTitleFilter.getValue();
         String noProjects = comboBoxNoProjectFilter.getValue();
 
         List<Consultant> consultants = consultantDao.filterConsultants(id, title, noProjects);
+
+        // Filter the consultants list to only include exact matches for the id
+        if (id != null && !id.isEmpty()) {
+            consultants = consultants.stream()
+                    .filter(consultant -> consultant.getEmployeeNo().equals(id))
+                    .collect(Collectors.toList());
+        }
+
         ObservableList<Consultant> observableConsultants = FXCollections.observableArrayList(consultants);
         tableViewConsultants.setItems(observableConsultants);
     }

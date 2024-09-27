@@ -17,7 +17,6 @@ import se.lu.ics.models.Consultant;
 
 public class ConsultantDetailsEditViewController {
     private ConsultantDao consultantDao;
-    private MainViewController mainViewController;
 
     // Constructor
     public ConsultantDetailsEditViewController() {

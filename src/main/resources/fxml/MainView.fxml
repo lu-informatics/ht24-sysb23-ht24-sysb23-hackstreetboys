@@ -40,10 +40,10 @@
                       <TextField fx:id="textFieldFindEmployeeById" layoutX="25.0" layoutY="25.0" prefWidth="150.0" promptText="Find Employee by ID ..." />
                       <Button fx:id="btnSearch" layoutX="550.0" layoutY="25.0" mnemonicParsing="false" onAction="#handleBtnSearch" prefHeight="25.0" prefWidth="100.0" text="Search" />
                       <ComboBox fx:id="comboBoxTitleFilter" layoutX="200.0" layoutY="25.0" prefHeight="26.0" prefWidth="150.0" promptText="Title: All" />
-                      <Text layoutX="630.0" layoutY="388.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Total no. of consultants:" />
-                      <Text layoutX="608.0" layoutY="404.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Total hrs. for all consultants:" />
-                      <Text fx:id="textTotalHoursForAllConsultants" layoutX="764.0" layoutY="404.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1234" AnchorPane.rightAnchor="25.0" />
-                      <Text fx:id="textTotalNoOfConsultants" layoutX="770.0" layoutY="387.0" strokeType="OUTSIDE" strokeWidth="0.0" text="67" AnchorPane.rightAnchor="25.0" />
+                      <Text layoutX="550.0" layoutY="387.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Total no. of consultants:" />
+                      <Text layoutX="550.0" layoutY="404.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Total hrs. for all consultants:" />
+                      <Text fx:id="textTotalHoursForAllConsultants" layoutX="725.0" layoutY="404.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1234" wrappingWidth="62.67236328125" AnchorPane.rightAnchor="27.32763671875" />
+                      <Text fx:id="textTotalNoOfConsultants" layoutX="725.0" layoutY="387.0" strokeType="OUTSIDE" strokeWidth="0.0" text="67" AnchorPane.rightAnchor="74.8671875" />
                       <ComboBox fx:id="comboBoxNoProjectFilter" layoutX="375.0" layoutY="25.0" prefHeight="25.0" prefWidth="150.0" promptText="No. of projects: All" />
                        <Text fx:id="textErrorMessage" layoutX="26.0" layoutY="425.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="152.21630859375" />
                        <Pane fx:id="paneWarningConsultantTab" layoutX="2.0" layoutY="424.0" prefHeight="62.0" prefWidth="815.0">

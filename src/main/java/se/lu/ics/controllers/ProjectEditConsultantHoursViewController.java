@@ -77,6 +77,8 @@ public class ProjectEditConsultantHoursViewController implements Initializable {
             if (mainViewController != null) {
                 mainViewController.updateConsultantsTableView();
                 mainViewController.updateProjectsTableView();
+                mainViewController.displayTotalHoursForAllConsultants();
+                mainViewController.displayTotalNumberOfConsultants();
             }
 
             //Close the window
